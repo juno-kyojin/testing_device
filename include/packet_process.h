@@ -1,127 +1,126 @@
 /**
  * @file packet_process.h
- * @brief Thread pool and queue management for parallel test execution
- *
- * This module manages a thread pool and distributed in-memory queue system
- * for parallel execution of test cases, optimized for mass batch processing.
+ * @brief Định nghĩa các hàm xử lý gói tin và quản lý thread pool
  */
 
  #ifndef PACKET_PROCESS_H
  #define PACKET_PROCESS_H
  
- #include <stdint.h>
- #include <pthread.h>
- #include "../include/parser_data.h"  // For test_case_t
+ #include <stdbool.h>
+ #include "parser_data.h"
  
  /**
-  * @brief Task status values
-  */
- typedef enum {
-     TASK_STATUS_PENDING,   /**< Task is waiting to be processed */
-     TASK_STATUS_RUNNING,   /**< Task is currently being processed */
-     TASK_STATUS_COMPLETED, /**< Task has been successfully completed */
-     TASK_STATUS_FAILED,    /**< Task failed during processing */
-     TASK_STATUS_TIMEOUT    /**< Task timed out during processing */
- } task_status_t;
- 
- /**
-  * @brief Task structure for the processing queue
+  * @brief Cấu trúc dữ liệu cho task trong queue
   */
  typedef struct {
-     test_case_t test_case;  /**< Test case to process */
-     task_status_t status;   /**< Current status of the task */
-     uint64_t start_time;    /**< Timestamp when processing started */
-     uint64_t end_time;      /**< Timestamp when processing completed */
-     int result_code;        /**< Result code after processing */
-     char result_message[256]; /**< Result message after processing */
+     test_case_t *test_case;       /**< Con trỏ đến test case cần thực thi */
+     int priority;                 /**< Độ ưu tiên của task */
+     void *extra_data;             /**< Dữ liệu bổ sung */
+     size_t extra_data_size;       /**< Kích thước dữ liệu bổ sung */
  } task_t;
  
  /**
-  * @brief Initialize the thread pool for test processing
-  *
-  * @param thread_count Number of threads to create
-  * @param queue_size Maximum queue size
-  * @return int 0 on success, negative value on error
+  * @brief Cấu trúc dữ liệu cho queue
   */
- int init_thread_pool(int thread_count, int queue_size);
+ typedef struct task_queue_t task_queue_t;
  
  /**
-  * @brief Clean up thread pool resources
-  *
-  * @return int 0 on success, negative value on error
+  * @brief Cấu trúc dữ liệu cho thread pool
   */
- int cleanup_thread_pool(void);
+ typedef struct thread_pool_t thread_pool_t;
  
  /**
-  * @brief Adjust thread pool size at runtime
-  *
-  * @param new_thread_count New number of threads
-  * @return int 0 on success, negative value on error
+  * @brief Khởi tạo queue
+  * 
+  * @param max_size Kích thước tối đa của queue
+  * @return task_queue_t* Con trỏ đến queue đã khởi tạo hoặc NULL nếu thất bại
   */
- int adjust_thread_pool_size(int new_thread_count);
+ task_queue_t* init_task_queue(int max_size);
  
  /**
-  * @brief Adjust task queue size at runtime
-  *
-  * @param new_queue_size New maximum queue size
-  * @return int 0 on success, negative value on error
+  * @brief Thêm một task vào queue
+  * 
+  * @param queue Con trỏ đến queue
+  * @param test_case Con trỏ đến test case
+  * @param priority Độ ưu tiên của task
+  * @return int 0 nếu thành công, -1 nếu thất bại
   */
- int adjust_task_queue_size(int new_queue_size);
+ int enqueue_task(task_queue_t *queue, test_case_t *test_case, int priority);
  
  /**
-  * @brief Enqueue a task to the processing queue
-  *
-  * @param task Task to enqueue
-  * @return int 0 on success, negative value on error
+  * @brief Lấy một task từ queue
+  * 
+  * @param queue Con trỏ đến queue
+  * @return task_t* Con trỏ đến task đã lấy ra hoặc NULL nếu queue rỗng
   */
- int enqueue_task(const task_t* task);
+ task_t* dequeue_task(task_queue_t *queue);
  
  /**
-  * @brief Process queued test cases
-  *
-  * This function is called by worker threads to process test cases
-  * from the queue.
-  *
-  * @param thread_id ID of the worker thread
-  * @return void* Always NULL
+  * @brief Giải phóng queue
+  * 
+  * @param queue Con trỏ đến queue cần giải phóng
   */
- void* process_queued_test_cases(void* thread_id);
+ void free_task_queue(task_queue_t *queue);
  
  /**
-  * @brief Get the current progress of the queue
-  *
-  * @param processed Pointer to store number of processed tasks
-  * @param total Pointer to store total number of tasks
-  * @return int 0 on success, negative value on error
+  * @brief Khởi tạo thread pool
+  * 
+  * @param thread_count Số lượng thread trong pool
+  * @param queue Con trỏ đến task queue
+  * @return thread_pool_t* Con trỏ đến thread pool đã khởi tạo hoặc NULL nếu thất bại
   */
- int get_queue_progress(uint64_t* processed, uint64_t* total);
+ thread_pool_t* init_thread_pool(int thread_count, task_queue_t *queue);
  
  /**
-  * @brief Log the current progress of the queue
-  *
-  * @param batch_id Batch identifier
-  * @return int 0 on success, negative value on error
+  * @brief Thêm tất cả test cases vào queue
+  * 
+  * @param queue Con trỏ đến queue
+  * @param test_cases Mảng test cases
+  * @param count Số lượng test cases
+  * @return int Số lượng test cases đã thêm vào queue
   */
- int log_queue_progress(const char* batch_id);
+ int enqueue_test_cases_to_queue(task_queue_t *queue, test_case_t *test_cases, int count);
  
  /**
-  * @brief Wait for all tasks to be processed
-  *
-  * @param timeout_ms Maximum time to wait in milliseconds (0 for infinite)
-  * @return int 0 if all tasks completed, 1 if timeout, negative value on error
+  * @brief Xử lý các test cases trong queue
+  * 
+  * @param thread_pool Con trỏ đến thread pool
+  * @param queue Con trỏ đến queue
+  * @param total_count Số lượng test cases tổng cộng
+  * @return int 0 nếu thành công, -1 nếu thất bại
   */
- int wait_for_queue_completion(uint64_t timeout_ms);
+ int process_queued_test_cases(thread_pool_t *thread_pool, task_queue_t *queue, int total_count);
  
  /**
-  * @brief Get current queue statistics
-  *
-  * @param pending Pointer to store number of pending tasks
-  * @param running Pointer to store number of running tasks
-  * @param completed Pointer to store number of completed tasks
-  * @param failed Pointer to store number of failed tasks
-  * @return int 0 on success, negative value on error
+  * @brief Dừng thread pool và giải phóng tài nguyên
+  * 
+  * @param thread_pool Con trỏ đến thread pool
+  * @return int 0 nếu thành công, -1 nếu thất bại
   */
- int get_queue_stats(uint64_t* pending, uint64_t* running, 
-                    uint64_t* completed, uint64_t* failed);
+ int stop_thread_pool(thread_pool_t *thread_pool);
+ 
+ /**
+  * @brief Lấy số lượng task đã hoàn thành
+  * 
+  * @param thread_pool Con trỏ đến thread pool
+  * @return int Số lượng task đã hoàn thành
+  */
+ int get_completed_task_count(thread_pool_t *thread_pool);
+ 
+ /**
+  * @brief Lấy số lượng task thành công
+  * 
+  * @param thread_pool Con trỏ đến thread pool
+  * @return int Số lượng task thành công
+  */
+ int get_success_task_count(thread_pool_t *thread_pool);
+ 
+ /**
+  * @brief Lấy số lượng task thất bại
+  * 
+  * @param thread_pool Con trỏ đến thread pool
+  * @return int Số lượng task thất bại
+  */
+ int get_failed_task_count(thread_pool_t *thread_pool);
  
  #endif /* PACKET_PROCESS_H */

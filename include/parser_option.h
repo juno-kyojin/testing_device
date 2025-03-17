@@ -1,85 +1,94 @@
 /**
  * @file parser_option.h
- * @brief Command line options parser and configuration manager
- *
- * This module parses command line arguments to configure system parameters
- * such as thread count, queue size, batch size, log level, and progress reporting.
+ * @brief Định nghĩa các hàm để xử lý tham số dòng lệnh và file cấu hình
  */
 
  #ifndef PARSER_OPTION_H
  #define PARSER_OPTION_H
  
  #include <stdbool.h>
- #include "../include/log.h"
+ #include "parser_data.h"
  
  /**
-  * @brief System configuration structure
+  * @brief Cấu trúc lưu trữ các tham số dòng lệnh và cấu hình
   */
  typedef struct {
-     int thread_count;           /**< Number of worker threads */
-     int queue_size;             /**< Maximum task queue size */
-     int batch_size;             /**< Size of batch operations */
-     log_level_t log_level;      /**< Default logging level */
-     int progress_interval;      /**< Interval between progress reports (in test cases) */
-     char input_file[256];       /**< Path to input JSON file */
-     char output_dir[256];       /**< Directory for output files */
-     network_type_t network_type; /**< Network type to filter for (LAN/WAN) */
-     bool compress_results;      /**< Whether to compress results before sending */
-     char pc_host[128];          /**< PC App host address */
-     int pc_port;                /**< PC App SSH port */
-     char pc_username[64];       /**< PC App SSH username */
-     char pc_key_path[256];      /**< Path to SSH private key */
-     char pc_remote_dir[256];    /**< Remote directory on PC App */
- } system_config_t;
+     char config_file[256];         /**< Đường dẫn đến file cấu hình */
+     char log_file[256];            /**< Đường dẫn đến file log */
+     char output_directory[256];    /**< Thư mục lưu kết quả */
+     network_type_t network_type;   /**< Loại mạng cần kiểm tra */
+     int log_level;                 /**< Mức độ chi tiết của log */
+     int thread_count;              /**< Số lượng thread xử lý song song */
+     bool daemon_mode;              /**< Chạy ở chế độ daemon */
+     bool verbose;                  /**< Hiển thị thông tin chi tiết */
+     char connection_host[128];     /**< Địa chỉ host kết nối */
+     int connection_port;           /**< Cổng kết nối */
+     char username[64];             /**< Tên đăng nhập */
+     char password[64];             /**< Mật khẩu */
+ } cmd_options_t;
  
  /**
-  * @brief Parse command line options
-  *
-  * @param argc Number of command line arguments
-  * @param argv Array of command line argument strings
-  * @param config Pointer to configuration structure to fill
-  * @return int 0 on success, negative value on error
+  * @brief Phân tích tham số dòng lệnh
+  * 
+  * @param argc Số lượng tham số
+  * @param argv Mảng các tham số
+  * @param options Con trỏ đến cấu trúc lưu tùy chọn
+  * @return int 0 nếu thành công, -1 nếu thất bại
   */
- int parse_options(int argc, char* argv[], system_config_t* config);
+ int parse_command_line(int argc, char *argv[], cmd_options_t *options);
  
  /**
-  * @brief Parse configuration file
-  *
-  * @param config_file Path to configuration file
-  * @param config Pointer to configuration structure to fill
-  * @return int 0 on success, negative value on error
+  * @brief Hiển thị hướng dẫn sử dụng
+  * 
+  * @param program_name Tên chương trình
   */
- int parse_config_file(const char* config_file, system_config_t* config);
+ void show_usage(const char *program_name);
  
  /**
-  * @brief Initialize configuration with default values
-  *
-  * @param config Pointer to configuration structure to initialize
-  * @return int 0 on success, negative value on error
+  * @brief Đặt giá trị mặc định cho các tùy chọn
+  * 
+  * @param options Con trỏ đến cấu trúc lưu tùy chọn
   */
- int init_default_config(system_config_t* config);
+ void set_default_options(cmd_options_t *options);
  
  /**
-  * @brief Print help message
-  *
-  * @param program_name Name of the executable
+  * @brief Đọc cấu hình từ file
+  * 
+  * @param config_file Đường dẫn đến file cấu hình
+  * @param options Con trỏ đến cấu trúc lưu tùy chọn
+  * @return int 0 nếu thành công, -1 nếu thất bại
   */
- void print_help(const char* program_name);
+ int read_config_file(const char *config_file, cmd_options_t *options);
  
  /**
-  * @brief Set the progress reporting interval
-  *
-  * @param interval Interval between progress reports (in test cases)
-  * @return int 0 on success, negative value on error
+  * @brief Kiểm tra tính hợp lệ của các tùy chọn
+  * 
+  * @param options Con trỏ đến cấu trúc lưu tùy chọn
+  * @return int 0 nếu hợp lệ, -1 nếu không hợp lệ
   */
- int set_progress_interval(int interval);
+ int validate_options(const cmd_options_t *options);
  
  /**
-  * @brief Apply system configuration
-  *
-  * @param config Pointer to configuration structure
-  * @return int 0 on success, negative value on error
+  * @brief Hiển thị các tùy chọn hiện tại
+  * 
+  * @param options Con trỏ đến cấu trúc lưu tùy chọn
   */
- int apply_system_config(const system_config_t* config);
+ void print_options(const cmd_options_t *options);
+ 
+ /**
+  * @brief Chuyển đổi chuỗi thành loại mạng
+  * 
+  * @param network_str Chuỗi đại diện loại mạng
+  * @return network_type_t Loại mạng tương ứng
+  */
+ network_type_t string_to_network_type(const char *network_str);
+ 
+ /**
+  * @brief Chuyển đổi loại mạng thành chuỗi
+  * 
+  * @param type Loại mạng
+  * @return const char* Chuỗi đại diện loại mạng
+  */
+ const char* network_type_to_string(network_type_t type);
  
  #endif /* PARSER_OPTION_H */

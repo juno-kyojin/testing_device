@@ -1,114 +1,123 @@
 /**
  * @file parser_data.h
- * @brief Test case management and JSON parsing
- *
- * This module defines the test case structure and provides functions
- * for reading, filtering, and managing test cases from JSON files.
+ * @brief Định nghĩa các cấu trúc và hàm để phân tích dữ liệu JSON
  */
 
  #ifndef PARSER_DATA_H
  #define PARSER_DATA_H
  
- #include <stdint.h>
  #include <stdbool.h>
+ #include <stddef.h>
  
  /**
-  * @brief Network types supported by the test framework
+  * @brief Loại mạng cho test case
   */
  typedef enum {
-     NETWORK_TYPE_LAN,     /**< Local Area Network */
-     NETWORK_TYPE_WAN,     /**< Wide Area Network */
-     NETWORK_TYPE_UNKNOWN  /**< Unknown network type */
+     NETWORK_LAN,   /**< Mạng LAN */
+     NETWORK_WAN,   /**< Mạng WAN */
+     NETWORK_BOTH   /**< Cả hai loại mạng */
  } network_type_t;
  
  /**
-  * @brief Protocol types for test cases
+  * @brief Loại test case
   */
  typedef enum {
-     PROTOCOL_TCP,    /**< TCP protocol */
-     PROTOCOL_UDP,    /**< UDP protocol */
-     PROTOCOL_ICMP,   /**< ICMP protocol */
-     PROTOCOL_HTTP,   /**< HTTP protocol */
-     PROTOCOL_HTTPS   /**< HTTPS protocol */
- } protocol_t;
+     TEST_PING,             /**< Kiểm tra ping */
+     TEST_THROUGHPUT,       /**< Kiểm tra throughput */
+     TEST_VLAN,             /**< Kiểm tra VLAN */
+     TEST_SECURITY,         /**< Kiểm tra bảo mật */
+     TEST_OTHER             /**< Các loại kiểm tra khác */
+ } test_type_t;
  
  /**
-  * @brief Test case structure
+  * @brief Cấu trúc lưu thông tin của một test case
   */
  typedef struct {
-     uint64_t id;                 /**< Unique test case identifier */
-     char target[256];            /**< Target address/hostname */
-     protocol_t protocol;         /**< Protocol to use */
-     uint16_t port;               /**< Port number */
-     network_type_t network_type; /**< Network type (LAN/WAN) */
-     bool valid;                  /**< Flag indicating if test case is valid */
+     char id[32];                /**< ID của test case */
+     test_type_t type;           /**< Loại test case */
+     network_type_t network_type;/**< Loại mạng */
+     char name[64];              /**< Tên test case */
+     char description[256];      /**< Mô tả test case */
+     char target[128];           /**< Đích thực thi test case */
+     int timeout;                /**< Thời gian timeout (ms) */
+     bool enabled;               /**< Test case có được bật hay không */
+     
+     /* Tham số tùy theo loại test */
+     union {
+         struct {
+             int count;          /**< Số lượng ping */
+             int size;           /**< Kích thước gói tin */
+         } ping;
+         
+         struct {
+             int duration;       /**< Thời gian đo (giây) */
+             char protocol[8];   /**< TCP/UDP */
+         } throughput;
+         
+         struct {
+             int vlan_id;        /**< ID của VLAN */
+         } vlan;
+         
+         struct {
+             char method[32];    /**< Phương thức kiểm tra bảo mật */
+         } security;
+     } params;
+     
+     /* Dữ liệu bổ sung nếu cần */
+     void *extra_data;           /**< Con trỏ đến dữ liệu bổ sung */
+     size_t extra_data_size;     /**< Kích thước dữ liệu bổ sung */
  } test_case_t;
  
  /**
-  * @brief Read test cases from a JSON file
-  *
-  * @param filename JSON file path to read from
-  * @param test_cases Array to store test cases
-  * @param max_cases Maximum number of test cases to read
-  * @param decompress Whether to decompress the file first
-  * @return int Number of test cases read or negative value on error
+  * @brief Đọc test cases từ file JSON
+  * 
+  * @param json_file Đường dẫn đến file JSON
+  * @param test_cases Con trỏ đến mảng test cases
+  * @param count Con trỏ đến biến lưu số lượng test cases đọc được
+  * @return true nếu thành công, false nếu thất bại
   */
- int read_json_test_cases(const char* filename, test_case_t* test_cases, 
-                         int max_cases, bool decompress);
+ bool read_json_test_cases(const char *json_file, test_case_t **test_cases, int *count);
  
  /**
-  * @brief Filter valid test cases based on network type
-  *
-  * @param test_cases Array of test cases to filter
-  * @param num_cases Number of test cases in array
-  * @param network_type Network type to filter for
-  * @return int Number of valid test cases after filtering
+  * @brief Lọc test cases dựa trên loại mạng
+  * 
+  * @param test_cases Mảng test cases đầu vào
+  * @param count Số lượng test cases đầu vào
+  * @param network_type Loại mạng cần lọc
+  * @param filtered_test_cases Con trỏ đến mảng test cases sau khi lọc
+  * @param filtered_count Con trỏ đến biến lưu số lượng test cases sau khi lọc
+  * @return true nếu thành công, false nếu thất bại
   */
- int filter_valid_test_cases(test_case_t* test_cases, int num_cases, 
-                            network_type_t network_type);
+ bool filter_test_cases_by_network(const test_case_t *test_cases, int count, 
+                                 network_type_t network_type, 
+                                 test_case_t **filtered_test_cases, 
+                                 int *filtered_count);
  
  /**
-  * @brief Enqueue test cases to the processing queue
-  *
-  * @param test_cases Array of test cases to enqueue
-  * @param num_cases Number of test cases in array
-  * @return int Number of successfully enqueued test cases or negative value on error
+  * @brief Giải phóng bộ nhớ của mảng test cases
+  * 
+  * @param test_cases Mảng test cases cần giải phóng
+  * @param count Số lượng test cases
   */
- int enqueue_test_cases(const test_case_t* test_cases, int num_cases);
+ void free_test_cases(test_case_t *test_cases, int count);
  
  /**
-  * @brief Get test case progress
-  *
-  * @param processed Number of test cases processed
-  * @param total Total number of test cases
-  * @return double Progress percentage (0-100)
+  * @brief Chuyển đổi JSON thành test case
+  * 
+  * @param json_str Chuỗi JSON
+  * @param test_case Con trỏ đến test case cần điền thông tin
+  * @return true nếu thành công, false nếu thất bại
   */
- double get_test_case_progress(uint64_t processed, uint64_t total);
+ bool json_to_test_case(const char *json_str, test_case_t *test_case);
  
  /**
-  * @brief Log test case progress
-  *
-  * @param processed Number of test cases processed
-  * @param total Total number of test cases
-  * @param batch_id Batch identifier
-  * @return int 0 on success, negative value on error
+  * @brief Chuyển đổi test case thành JSON
+  * 
+  * @param test_case Test case cần chuyển đổi
+  * @param json_buffer Buffer chứa chuỗi JSON kết quả
+  * @param buffer_size Kích thước buffer
+  * @return true nếu thành công, false nếu thất bại
   */
- int log_test_case_progress(uint64_t processed, uint64_t total, const char* batch_id);
- 
- /**
-  * @brief Convert string to network type
-  *
-  * @param str Network type string ("LAN", "WAN", etc.)
-  * @return network_type_t Corresponding network type or NETWORK_TYPE_UNKNOWN
-  */
- network_type_t string_to_network_type(const char* str);
- 
- /**
-  * @brief Convert string to protocol type
-  *
-  * @param str Protocol string ("TCP", "UDP", "ICMP", etc.)
-  * @return protocol_t Corresponding protocol type
-  */
- protocol_t string_to_protocol(const char* str);
+ bool test_case_to_json(const test_case_t *test_case, char *json_buffer, size_t buffer_size);
  
  #endif /* PARSER_DATA_H */

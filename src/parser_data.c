@@ -1,179 +1,132 @@
-/**
- * @file packet_process.c
- * @brief Implementation of thread pool and queue management
- */
+#include "parser_data.h"
+#include "file_process.h"
+#include "cjson/cJSON.h"
+#include <stdlib.h>
+#include <string.h>
 
- #include <stdio.h>
- #include <stdlib.h>
- #include <string.h>
- #include <unistd.h>
- #include <time.h>
- #include <sys/time.h>
- #include <pthread.h>
- 
- #include "../include/packet_process.h"
- #include "../include/log.h"
- #include "../include/tc.h"  // For test case execution
- 
- // Thread pool and queue configuration
- #define DEFAULT_THREAD_COUNT 4
- #define DEFAULT_QUEUE_SIZE 10000
- #define MAX_THREADS 64
- #define MAX_QUEUE_SIZE 1000000
- 
- // Task queue structure
- typedef struct {
-     task_t* tasks;          // Array of tasks
-     int max_size;           // Maximum queue size
-     int head;               // Index of the first task
-     int tail;               // Index of the last task
-     int count;              // Current number of tasks in queue
-     pthread_mutex_t mutex;  // Mutex for thread safety
-     pthread_cond_t not_empty; // Condition variable for empty queue
-     pthread_cond_t not_full;  // Condition variable for full queue
- } task_queue_t;
- 
- // Thread pool structure
- typedef struct {
-     pthread_t* threads;      // Array of thread handles
-     int thread_count;        // Number of threads
-     int running;             // 1 if thread pool is running, 0 otherwise
-     task_queue_t queue;      // Task queue
-     uint64_t total_tasks;    // Total number of tasks received
-     uint64_t completed_tasks; // Number of completed tasks
-     uint64_t failed_tasks;    // Number of failed tasks
-     pthread_mutex_t stats_mutex; // Mutex for statistics
- } thread_pool_t;
- 
- // Global thread pool instance
- static thread_pool_t pool = {0};
- 
- // Get current timestamp in milliseconds
- static uint64_t get_timestamp_ms(void) {
-     struct timeval tv;
-     gettimeofday(&tv, NULL);
-     return (uint64_t)(tv.tv_sec) * 1000 + (uint64_t)(tv.tv_usec) / 1000;
- }
- 
- // Initialize the task queue
- static int init_task_queue(task_queue_t* queue, int queue_size) {
-     if (!queue || queue_size <= 0) {
-         return -1;
-     }
-     
-     // Allocate task array
-     queue->tasks = (task_t*)calloc(queue_size, sizeof(task_t));
-     if (!queue->tasks) {
-         return -1;
-     }
-     
-     // Initialize queue parameters
-     queue->max_size = queue_size;
-     queue->head = 0;
-     queue->tail = 0;
-     queue->count = 0;
-     
-     // Initialize synchronization primitives
-     if (pthread_mutex_init(&queue->mutex, NULL) != 0) {
-         free(queue->tasks);
-         return -1;
-     }
-     
-     if (pthread_cond_init(&queue->not_empty, NULL) != 0) {
-         pthread_mutex_destroy(&queue->mutex);
-         free(queue->tasks);
-         return -1;
-     }
-     
-     if (pthread_cond_init(&queue->not_full, NULL) != 0) {
-         pthread_cond_destroy(&queue->not_empty);
-         pthread_mutex_destroy(&queue->mutex);
-         free(queue->tasks);
-         return -1;
-     }
-     
-     return 0;
- }
- 
- // Clean up the task queue
- static void cleanup_task_queue(task_queue_t* queue) {
-     if (!queue) {
-         return;
-     }
-     
-     pthread_mutex_lock(&queue->mutex);
-     
-     // Free task array
-     if (queue->tasks) {
-         free(queue->tasks);
-         queue->tasks = NULL;
-     }
-     
-     queue->max_size = 0;
-     queue->head = 0;
-     queue->tail = 0;
-     queue->count = 0;
-     
-     pthread_mutex_unlock(&queue->mutex);
-     
-     // Destroy synchronization primitives
-     pthread_cond_destroy(&queue->not_empty);
-     pthread_cond_destroy(&queue->not_full);
-     pthread_mutex_destroy(&queue->mutex);
- }
- 
- // Enqueue a task
- static int enqueue_task_internal(task_queue_t* queue, const task_t* task) {
-     if (!queue || !task) {
-         return -1;
-     }
-     
-     pthread_mutex_lock(&queue->mutex);
-     
-     // Wait if the queue is full
-     while (queue->count == queue->max_size) {
-         pthread_cond_wait(&queue->not_full, &queue->mutex);
-     }
-     
-     // Add the task to the queue
-     memcpy(&queue->tasks[queue->tail], task, sizeof(task_t));
-     
-     // Update queue pointers
-     queue->tail = (queue->tail + 1) % queue->max_size;
-     queue->count++;
-     
-     // Signal that the queue is not empty
-     pthread_cond_signal(&queue->not_empty);
-     
-     pthread_mutex_unlock(&queue->mutex);
-     
-     return 0;
- }
- 
- // Dequeue a task
- static int dequeue_task_internal(task_queue_t* queue, task_t* task) {
-     if (!queue || !task) {
-         return -1;
-     }
-     
-     pthread_mutex_lock(&queue->mutex);
-     
-     // Wait if the queue is empty
-     while (queue->count == 0) {
-         // If thread pool is not running, return immediately
-         if (!pool.running) {
-             pthread_mutex_unlock(&queue->mutex);
-             return -1;
-         }
-         
-         pthread_cond_wait(&queue->not_empty, &queue->mutex);
-         
-         // Check again after waking up
-         if (!pool.running && queue->count == 0) {
-             pthread_mutex_unlock(&queue->mutex);
-             return -1;
-         }
-     }
-     
-     // Get the task from the queue
-     memcpy(task, &queue->tasks[queue->head], sizeof(task_t)); ▋
+bool read_json_test_cases(const char *json_file, test_case_t **test_cases, int *count) {
+    char *json_str = NULL;
+    size_t size;
+    // Đọc nội dung file JSON vào chuỗi
+    if (read_file(json_file, &json_str, &size) != 0) {
+        return false;
+    }
+
+    // Phân tích chuỗi JSON bằng cJSON
+    cJSON *root = cJSON_Parse(json_str);
+    free(json_str); // Giải phóng chuỗi sau khi phân tích
+    if (!root) {
+        return false;
+    }
+
+    // Lấy số lượng phần tử trong mảng JSON
+    int array_size = cJSON_GetArraySize(root);
+    *test_cases = (test_case_t *)malloc(array_size * sizeof(test_case_t));
+    if (!*test_cases) {
+        cJSON_Delete(root);
+        return false;
+    }
+
+    // Chuyển đổi từng phần tử JSON thành test_case_t
+    *count = 0;
+    cJSON *item;
+    cJSON_ArrayForEach(item, root) {
+        test_case_t *tc = &(*test_cases)[*count];
+        if (json_to_test_case(item, tc)) {
+            (*count)++;
+        }
+    }
+
+    cJSON_Delete(root); // Giải phóng đối tượng cJSON
+    return true;
+}
+
+bool json_to_test_case(cJSON *item, test_case_t *test_case) {
+    // Lấy các trường cơ bản từ JSON
+    cJSON *id = cJSON_GetObjectItem(item, "id");
+    cJSON *type = cJSON_GetObjectItem(item, "type");
+    cJSON *network_type = cJSON_GetObjectItem(item, "network_type");
+    cJSON *name = cJSON_GetObjectItem(item, "name");
+    cJSON *description = cJSON_GetObjectItem(item, "description");
+    cJSON *target = cJSON_GetObjectItem(item, "target");
+    cJSON *timeout = cJSON_GetObjectItem(item, "timeout");
+    cJSON *enabled = cJSON_GetObjectItem(item, "enabled");
+    cJSON *params = cJSON_GetObjectItem(item, "params");
+
+    // Kiểm tra các trường bắt buộc
+    if (!id || !type || !network_type || !name || !description || !target || !timeout || !enabled || !params) {
+        return false;
+    }
+
+    // Gán giá trị vào cấu trúc test_case_t
+    strncpy(test_case->id, id->valuestring, sizeof(test_case->id) - 1);
+    test_case->type = (test_type_t)type->valueint;
+    test_case->network_type = (network_type_t)network_type->valueint;
+    strncpy(test_case->name, name->valuestring, sizeof(test_case->name) - 1);
+    strncpy(test_case->description, description->valuestring, sizeof(test_case->description) - 1);
+    strncpy(test_case->target, target->valuestring, sizeof(test_case->target) - 1);
+    test_case->timeout = timeout->valueint;
+    test_case->enabled = enabled->valueint != 0;
+
+    // Xử lý tham số params theo loại test
+    switch (test_case->type) {
+        case TEST_PING:
+            test_case->params.ping.count = cJSON_GetObjectItem(params, "count")->valueint;
+            test_case->params.ping.size = cJSON_GetObjectItem(params, "size")->valueint;
+            break;
+        case TEST_THROUGHPUT:
+            test_case->params.throughput.duration = cJSON_GetObjectItem(params, "duration")->valueint;
+            strncpy(test_case->params.throughput.protocol, cJSON_GetObjectItem(params, "protocol")->valuestring, sizeof(test_case->params.throughput.protocol) - 1);
+            break;
+        case TEST_VLAN:
+            test_case->params.vlan.vlan_id = cJSON_GetObjectItem(params, "vlan_id")->valueint;
+            break;
+        case TEST_SECURITY:
+            strncpy(test_case->params.security.method, cJSON_GetObjectItem(params, "method")->valuestring, sizeof(test_case->params.security.method) - 1);
+            break;
+        default:
+            break; // Có thể mở rộng cho các loại test khác
+    }
+
+    test_case->extra_data = NULL; // Chưa xử lý extra_data
+    test_case->extra_data_size = 0;
+    return true;
+}
+
+void free_test_cases(test_case_t *test_cases, int count) {
+    if (test_cases) {
+        for (int i = 0; i < count; i++) {
+            if (test_cases[i].extra_data) {
+                free(test_cases[i].extra_data);
+            }
+        }
+        free(test_cases);
+    }
+}
+
+bool filter_test_cases_by_network(const test_case_t *test_cases, int count, network_type_t network_type, test_case_t **filtered_test_cases, int *filtered_count) {
+    // Đếm số lượng test case phù hợp
+    int filtered_size = 0;
+    for (int i = 0; i < count; i++) {
+        if (test_cases[i].network_type == network_type || test_cases[i].network_type == NETWORK_BOTH) {
+            filtered_size++;
+        }
+    }
+
+    // Cấp phát bộ nhớ cho mảng lọc
+    *filtered_test_cases = (test_case_t *)malloc(filtered_size * sizeof(test_case_t));
+    if (!*filtered_test_cases) {
+        return false;
+    }
+
+    // Sao chép các test case phù hợp
+    *filtered_count = 0;
+    for (int i = 0; i < count; i++) {
+        if (test_cases[i].network_type == network_type || test_cases[i].network_type == NETWORK_BOTH) {
+            memcpy(&(*filtered_test_cases)[*filtered_count], &test_cases[i], sizeof(test_case_t));
+            (*filtered_count)++;
+        }
+    }
+
+    return true;
+}
