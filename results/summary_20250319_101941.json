@@ -1,0 +1,32 @@
+{
+  "total": 4,
+  "success": 4,
+  "failed": 0,
+  "error": 0,
+  "tests": [
+    {
+      "id": "ping-test-001",
+      "type": 0,
+      "status": 0,
+      "time": 4024.6
+    },
+    {
+      "id": "ping-test-002",
+      "type": 0,
+      "status": 0,
+      "time": 4158.6
+    },
+    {
+      "id": "vlan-test-001",
+      "type": 2,
+      "status": 0,
+      "time": 100.0
+    },
+    {
+      "id": "throughput-test-001",
+      "type": 1,
+      "status": 0,
+      "time": 1000.0
+    }
+  ]
+}
