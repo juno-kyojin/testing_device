@@ -1,6 +1,6 @@
 CC = gcc
 CFLAGS = -Wall -Wextra -g -pthread
-LDFLAGS = -pthread -lz
+LDFLAGS = -pthread -lz -lssh -lcjson
 
 SRC_DIR = src
 INC_DIR = include

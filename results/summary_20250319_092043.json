@@ -1,0 +1,35 @@
+{
+	"report_type":	"test_summary",
+	"timestamp":	1742350843,
+	"total_tests":	3,
+	"success_count":	3,
+	"failed_count":	0,
+	"timeout_count":	0,
+	"error_count":	0,
+	"total_execution_time":	0,
+	"average_execution_time":	0,
+	"min_execution_time":	0,
+	"max_execution_time":	0,
+	"results":	[{
+			"test_id":	"",
+			"test_type":	0,
+			"status":	0,
+			"execution_time":	0,
+			"packet_loss_percent":	null,
+			"avg_rtt":	0
+		}, {
+			"test_id":	"",
+			"test_type":	0,
+			"status":	0,
+			"execution_time":	0,
+			"packet_loss_percent":	null,
+			"avg_rtt":	0
+		}, {
+			"test_id":	"",
+			"test_type":	0,
+			"status":	0,
+			"execution_time":	0,
+			"packet_loss_percent":	null,
+			"avg_rtt":	0
+		}]
+}

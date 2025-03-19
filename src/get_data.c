@@ -1,4 +1,3 @@
-#include "include/get_data.h"
 #include <libssh/libssh.h>
 #include <libssh/sftp.h>
 #include <sys/stat.h>
@@ -7,6 +6,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <errno.h>
+
+#include "get_data.h"
 
 #define BUFFER_SIZE 1024
 
@@ -230,8 +231,8 @@ int send_results_to_pc(connection_info_t* conn, test_result_info_t* results, int
 
     for (int i = 0; i < count; i++) {
         char result_str[BUFFER_SIZE];
-        snprintf(result_str, sizeof(result_str), "Test ID: %d, Success: %s, Description: %s\n",
-                 results[i].test_id, results[i].success ? "true" : "false", results[i].description);
+        snprintf(result_str, sizeof(result_str), "Test ID: %s, Status: %d, Details: %s\n",
+                 results[i].test_id, results[i].status, results[i].result_details);
         if (ssh_channel_write(channel, result_str, strlen(result_str)) < 0) {
             fprintf(stderr, "Failed to write result: %s\n", ssh_get_error(conn->session));
             ssh_channel_close(channel);
@@ -281,7 +282,8 @@ int send_logs_to_pc(connection_info_t* conn, const char* log_file) {
     char buffer[BUFFER_SIZE];
     size_t nbytes;
     while ((nbytes = fread(buffer, 1, sizeof(buffer), local_file)) > 0) {
-        if (sftp_write(remote_file, buffer, nbytes) != nbytes) {
+        ssize_t written = sftp_write(remote_file, buffer, nbytes);
+        if (written != (ssize_t)nbytes) {
             fprintf(stderr, "Failed to write to remote file: %s\n", ssh_get_error(conn->session));
             sftp_close(remote_file);
             fclose(local_file);

@@ -2,6 +2,8 @@
 #define GET_DATA_H
 
 #include <stdbool.h>
+#include <libssh/libssh.h>
+#include "tc.h"  // Include tc.h to access the test_result_info_t definition
 
 // Định nghĩa cấu trúc lưu thông tin kết nối
 typedef struct {
@@ -21,13 +23,6 @@ typedef struct {
     char dns_server[16];
     bool use_dhcp;
 } network_config_t;
-
-// Định nghĩa cấu trúc lưu thông tin kết quả test
-typedef struct {
-    int test_id;
-    bool success;
-    char description[256];
-} test_result_info_t;
 
 // Khai báo các hàm
 connection_info_t* init_connection(const char* host, int port, const char* username, const char* password);

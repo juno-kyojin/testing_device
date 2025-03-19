@@ -1,0 +1,57 @@
+[
+  {
+    "id": "ping-test-001",
+    "type": 0,
+    "network_type": 0,
+    "name": "Basic Ping Test",
+    "description": "Test basic connectivity to Google DNS",
+    "target": "8.8.8.8",
+    "timeout": 5000,
+    "enabled": true,
+    "params": {
+      "count": 5,
+      "size": 64
+    }
+  },
+  {
+    "id": "ping-test-002",
+    "type": 0,
+    "network_type": 0,
+    "name": "Local Network Ping Test",
+    "description": "Test basic connectivity to local gateway",
+    "target": "127.0.0.1",
+    "timeout": 5000,
+    "enabled": true,
+    "params": {
+      "count": 5,
+      "size": 64
+    }
+  },
+  {
+    "id": "throughput-test-001",
+    "type": 1,
+    "network_type": 0,
+    "name": "Basic Throughput Test",
+    "description": "Test local network throughput",
+    "target": "192.168.1.1",
+    "timeout": 10000,
+    "enabled": true,
+    "params": {
+      "duration": 10,
+      "protocol": "tcp"
+    }
+  },
+  {
+    "id": "vlan-test-001",
+    "type": 2,
+    "network_type": 0,
+    "name": "VLAN Test",
+    "description": "Test VLAN configuration",
+    "target": "192.168.1.1",
+    "timeout": 3000,
+    "enabled": true,
+    "params": {
+      "vlan_id": 100
+    }
+  }
+]
