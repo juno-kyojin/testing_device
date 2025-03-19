@@ -1,0 +1,48 @@
+[2025-03-19 16:36:51] DEBUG: Successfully wrote 1133 bytes to file test_data.json
+[2025-03-19 16:36:51] DEBUG: Reading JSON file: test_data.json
+[2025-03-19 16:36:51] DEBUG: Successfully read 1133 bytes from file test_data.json
+[2025-03-19 16:36:51] DEBUG: Successfully read 1133 bytes from JSON file
+[2025-03-19 16:36:51] DEBUG: Starting JSON parsing
+[2025-03-19 16:36:51] DEBUG: Found 3 test cases in JSON
+[2025-03-19 16:36:51] DEBUG: Processing test case ID: TC001
+[2025-03-19 16:36:51] DEBUG: Processing test case ID: TC002
+[2025-03-19 16:36:51] DEBUG: Processing test case ID: TC003
+[2025-03-19 16:36:51] DEBUG: Completed parsing JSON test cases
+[2025-03-19 16:36:51] DEBUG: Successfully parsed 3 test cases from test_data.json
+[2025-03-19 16:36:51] DEBUG: Freeing memory for 3 test cases
+[2025-03-19 16:36:51] DEBUG: Starting JSON parsing
+[2025-03-19 16:36:51] DEBUG: Found 1 test cases in JSON
+[2025-03-19 16:36:51] DEBUG: Processing test case ID: TC004
+[2025-03-19 16:36:51] DEBUG: Completed parsing JSON test cases
+[2025-03-19 16:36:51] DEBUG: Freeing memory for 1 test cases
+[2025-03-19 16:36:51] DEBUG: Successfully wrote 1133 bytes to file test_data.json
+[2025-03-19 16:36:51] DEBUG: Reading JSON file: test_data.json
+[2025-03-19 16:36:51] DEBUG: Successfully read 1133 bytes from file test_data.json
+[2025-03-19 16:36:51] DEBUG: Successfully read 1133 bytes from JSON file
+[2025-03-19 16:36:51] DEBUG: Starting JSON parsing
+[2025-03-19 16:36:51] DEBUG: Found 3 test cases in JSON
+[2025-03-19 16:36:51] DEBUG: Processing test case ID: TC001
+[2025-03-19 16:36:51] DEBUG: Processing test case ID: TC002
+[2025-03-19 16:36:51] DEBUG: Processing test case ID: TC003
+[2025-03-19 16:36:51] DEBUG: Completed parsing JSON test cases
+[2025-03-19 16:36:51] DEBUG: Successfully parsed 3 test cases from test_data.json
+[2025-03-19 16:36:51] DEBUG: Converting 3 test cases to JSON
+[2025-03-19 16:36:51] DEBUG: Successfully converted test cases to JSON
+[2025-03-19 16:36:51] DEBUG: Successfully wrote 592 bytes to file test_output.json
+[2025-03-19 16:36:51] DEBUG: Freeing memory for 3 test cases
+[2025-03-19 16:36:51] DEBUG: Reading JSON file: file_khong_ton_tai.json
+[2025-03-19 16:36:51] ERROR: JSON file does not exist: file_khong_ton_tai.json
+[2025-03-19 16:36:51] DEBUG: Starting JSON parsing
+[2025-03-19 16:36:51] ERROR: Failed to parse JSON: is not valid JSON
+[2025-03-19 16:36:51] DEBUG: Successfully wrote 376 bytes to file test_data.json
+[2025-03-19 16:36:51] DEBUG: Reading JSON file: test_data.json
+[2025-03-19 16:36:51] DEBUG: Successfully read 376 bytes from file test_data.json
+[2025-03-19 16:36:51] DEBUG: Successfully read 376 bytes from JSON file
+[2025-03-19 16:36:51] DEBUG: Starting JSON parsing
+[2025-03-19 16:36:51] DEBUG: Found 1 test cases in JSON
+[2025-03-19 16:36:51] DEBUG: Processing test case ID: TC006
+[2025-03-19 16:36:51] DEBUG: Completed parsing JSON test cases
+[2025-03-19 16:36:51] DEBUG: Successfully parsed 1 test cases from test_data.json
+[2025-03-19 16:36:51] DEBUG: Freeing memory for 1 test cases
+[2025-03-19 16:36:51] DEBUG: Successfully deleted file test_data.json
+[2025-03-19 16:36:51] DEBUG: Successfully deleted file test_output.json

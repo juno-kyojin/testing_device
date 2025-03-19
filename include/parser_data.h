@@ -1,6 +1,6 @@
 /**
  * @file parser_data.h
- * @brief Định nghĩa các cấu trúc và hàm để phân tích dữ liệu JSON
+ * @brief Định nghĩa cấu trúc test case và hàm xử lý
  */
 
  #ifndef PARSER_DATA_H
@@ -24,10 +24,39 @@
  typedef enum {
      TEST_PING,             /**< Kiểm tra ping */
      TEST_THROUGHPUT,       /**< Kiểm tra throughput */
-     TEST_VLAN,             /**< Kiểm tra VLAN */
      TEST_SECURITY,         /**< Kiểm tra bảo mật */
      TEST_OTHER             /**< Các loại kiểm tra khác */
  } test_type_t;
+ 
+ /**
+  * @brief Cấu trúc chung cho các tham số ping test
+  */
+ typedef struct {
+     int count;          /**< Số lượng ping */
+     int size;           /**< Kích thước gói tin */
+     int interval;       /**< Khoảng thời gian giữa các ping (ms) */
+     bool ipv6;          /**< Sử dụng IPv6 */
+ } ping_params_t;
+ 
+ /**
+  * @brief Cấu trúc chung cho các tham số throughput test
+  */
+ typedef struct {
+     int duration;       /**< Thời gian đo (giây) */
+     char protocol[8];   /**< TCP/UDP */
+     int port;           /**< Cổng */
+     int buffer_size;    /**< Kích thước buffer */
+     bool bidirectional; /**< Test hai chiều */
+ } throughput_params_t;
+ 
+ /**
+  * @brief Cấu trúc chung cho các tham số security test
+  */
+ typedef struct {
+     char method[32];    /**< Phương thức kiểm tra bảo mật */
+     int port;           /**< Cổng */
+     bool tls;           /**< Sử dụng TLS */
+ } security_params_t;
  
  /**
   * @brief Cấu trúc lưu thông tin của một test case
@@ -44,23 +73,9 @@
      
      /* Tham số tùy theo loại test */
      union {
-         struct {
-             int count;          /**< Số lượng ping */
-             int size;           /**< Kích thước gói tin */
-         } ping;
-         
-         struct {
-             int duration;       /**< Thời gian đo (giây) */
-             char protocol[8];   /**< TCP/UDP */
-         } throughput;
-         
-         struct {
-             int vlan_id;        /**< ID của VLAN */
-         } vlan;
-         
-         struct {
-             char method[32];    /**< Phương thức kiểm tra bảo mật */
-         } security;
+         ping_params_t ping;         /**< Tham số cho ping test */
+         throughput_params_t throughput; /**< Tham số cho throughput test */
+         security_params_t security;  /**< Tham số cho security test */
      } params;
      
      /* Dữ liệu bổ sung nếu cần */
@@ -77,6 +92,16 @@
   * @return true nếu thành công, false nếu thất bại
   */
  bool read_json_test_cases(const char *json_file, test_case_t **test_cases, int *count);
+ 
+ /**
+  * @brief Phân tích nội dung JSON trực tiếp thành test cases
+  * 
+  * @param json_content Chuỗi JSON chứa test cases
+  * @param test_cases Con trỏ đến mảng test cases
+  * @param count Con trỏ đến biến lưu số lượng test cases
+  * @return true nếu thành công, false nếu thất bại
+  */
+ bool parse_json_content(const char *json_content, test_case_t **test_cases, int *count);
  
  /**
   * @brief Lọc test cases dựa trên loại mạng
@@ -102,16 +127,7 @@
  void free_test_cases(test_case_t *test_cases, int count);
  
  /**
-  * @brief Chuyển đổi JSON thành test case
-  * 
-  * @param json_str Chuỗi JSON
-  * @param test_case Con trỏ đến test case cần điền thông tin
-  * @return true nếu thành công, false nếu thất bại
-  */
- bool json_to_test_case(const char *json_str, test_case_t *test_case);
- 
- /**
-  * @brief Chuyển đổi test case thành JSON
+  * @brief Chuyển đổi một test case thành chuỗi JSON
   * 
   * @param test_case Test case cần chuyển đổi
   * @param json_buffer Buffer chứa chuỗi JSON kết quả
@@ -119,5 +135,16 @@
   * @return true nếu thành công, false nếu thất bại
   */
  bool test_case_to_json(const test_case_t *test_case, char *json_buffer, size_t buffer_size);
+ 
+ /**
+  * @brief Chuyển đổi mảng test cases thành chuỗi JSON
+  * 
+  * @param test_cases Mảng test cases cần chuyển đổi
+  * @param count Số lượng test cases
+  * @param json_buffer Buffer chứa chuỗi JSON kết quả
+  * @param buffer_size Kích thước buffer
+  * @return true nếu thành công, false nếu thất bại
+  */
+ bool test_cases_to_json(const test_case_t *test_cases, int count, char *json_buffer, size_t buffer_size);
  
  #endif /* PARSER_DATA_H */
