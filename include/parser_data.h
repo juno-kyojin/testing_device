@@ -1,7 +1,4 @@
-/**
- * @file parser_data.h
- * @brief Định nghĩa cấu trúc test case và hàm xử lý
- */
+
 
  #ifndef PARSER_DATA_H
  #define PARSER_DATA_H

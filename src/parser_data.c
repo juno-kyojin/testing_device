@@ -1,7 +1,3 @@
-/**
- * @file parser_data.c
- * @brief Triển khai các hàm xử lý file JSON test case
- */
 
  #include <stdio.h>
  #include <stdlib.h>

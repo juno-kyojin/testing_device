@@ -1,7 +1,3 @@
-/**
- * @file parser_option.h
- * @brief Xử lý tham số dòng lệnh và file cấu hình
- */
 
  #ifndef PARSER_OPTION_H
  #define PARSER_OPTION_H

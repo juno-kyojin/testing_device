@@ -1,9 +1,3 @@
-/**
- * @file tc.h
- * @brief Định nghĩa các hàm thực thi test case và xử lý kết quả
- * @author juno-kyojin
- * @date 2025-03-20
- */
 
  #ifndef TC_H
  #define TC_H

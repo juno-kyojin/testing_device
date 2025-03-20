@@ -1,8 +1,6 @@
 /**
  * @file test_parser_data.c
  * @brief Kiểm thử chức năng xử lý và phân tích dữ liệu
- * @author juno-kyojin
- * @date 2025-03-20
  */
 
  #include <stdio.h>

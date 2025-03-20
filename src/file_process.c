@@ -1,7 +1,4 @@
-/**
- * @file file_process.c
- * @brief Triển khai các hàm xử lý file
- */
+
 
  #include "file_process.h"
  #include "log.h"

@@ -1,9 +1,3 @@
-/**
- * @file tc.c
- * @brief Triển khai các hàm thực thi test case và xử lý kết quả
- * @version 0.1
- * @date 2025-03-20
- */
 
 #define _POSIX_C_SOURCE 200809L   /* Thêm để đảm bảo định nghĩa POSIX đầy đủ */
 

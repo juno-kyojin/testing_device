@@ -1,8 +1,4 @@
-/**
- * @file main.c
- * @brief Main program for network testing device
- * @date 2025-03-20
- */
+
 
 #define _POSIX_C_SOURCE 200809L
 

@@ -1,7 +1,3 @@
-/**
- * @file log.c
- * @brief Triển khai các hàm log
- */
 
  #include "log.h"
  #include <stdio.h>

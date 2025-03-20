@@ -1,7 +1,3 @@
-/**
- * @file file_process.h
- * @brief Định nghĩa các hàm xử lý file
- */
 
  #ifndef FILE_PROCESS_H
  #define FILE_PROCESS_H

@@ -1,7 +1,3 @@
-/**
- * @file get_data.h
- * @brief Định nghĩa các hàm giao tiếp giữa thiết bị và PC qua SSH
- */
 
  #ifndef GET_DATA_H
  #define GET_DATA_H

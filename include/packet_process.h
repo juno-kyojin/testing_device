@@ -1,7 +1,4 @@
-/**
- * @file packet_process.h
- * @brief Định nghĩa các hàm xử lý gói tin và quản lý thread pool
- */
+
 
  #ifndef PACKET_PROCESS_H
  #define PACKET_PROCESS_H

@@ -1,8 +1,6 @@
 /**
  * @file test_tc.c
  * @brief Test program for tc.c functionality
- * @version 0.1
- * @date 2025-03-20
  */
 
 #include "../include/tc.h"
