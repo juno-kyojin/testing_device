@@ -1,12 +1,14 @@
 /**
  * @file tc.h
  * @brief Định nghĩa các hàm thực thi test case và xử lý kết quả
+ * @author juno-kyojin
+ * @date 2025-03-20
  */
 
  #ifndef TC_H
  #define TC_H
  
- #include "parser_data.h"
+ #include "parser_data.h"  // Để sử dụng cấu trúc test_case_t
  
  /**
   * @brief Trạng thái kết quả test
@@ -69,6 +71,24 @@
      } data;
  } test_result_info_t;
  
+ /* Các hằng số và macro */
+ /**
+  * @brief Ngưỡng thời gian timeout mặc định (ms)
+  */
+ #define DEFAULT_TEST_TIMEOUT 10000  /* 10 giây */
+ 
+ /**
+  * @brief Ngưỡng tỷ lệ mất gói cho phép đối với ping test
+  */
+ #define PING_ACCEPTABLE_LOSS 20.0f  /* 20% */
+ 
+ /**
+  * @brief Ngưỡng RTT tối đa chấp nhận được cho ping test (ms)
+  */
+ #define PING_MAX_ACCEPTABLE_RTT 200.0f  /* 200ms */
+ 
+ /* Khai báo các hàm */
+ 
  /**
   * @brief Thực thi test case
   * 
@@ -116,4 +136,22 @@
   */
  int execute_test_case_by_network(test_case_t *test_case, network_type_t network_type, test_result_info_t *result);
  
- #endif // TC_H
+ /**
+  * @brief Chuyển đổi kết quả test sang định dạng JSON
+  * 
+  * @param result Con trỏ đến kết quả test
+  * @param json_buffer Buffer để lưu chuỗi JSON
+  * @param buffer_size Kích thước buffer
+  * @return int 0 nếu thành công, -1 nếu thất bại
+  */
+ int test_result_to_json(test_result_info_t *result, char *json_buffer, size_t buffer_size);
+ 
+ /**
+  * @brief Chuyển đổi trạng thái kết quả test sang chuỗi
+  * 
+  * @param status Trạng thái kết quả test
+  * @return const char* Chuỗi mô tả trạng thái
+  */
+ const char* test_result_status_to_string(test_result_status_t status);
+ 
+ #endif /* TC_H */

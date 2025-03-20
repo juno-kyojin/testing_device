@@ -2,7 +2,7 @@
  * @file test_parser_data.c
  * @brief Kiểm thử chức năng xử lý và phân tích dữ liệu
  * @author juno-kyojin
- * @date 2025-03-19
+ * @date 2025-03-20
  */
 
  #include <stdio.h>
@@ -15,6 +15,7 @@
  
  #define TEST_DATA_FILE "test_data.json"
  #define TEST_OUTPUT_FILE "test_output.json"
+ #define TEST_DEFAULT_FILE "test_default.json"
  
  /**
   * @brief Thiết lập môi trường kiểm thử
@@ -28,6 +29,7 @@
      // Xóa các file test cũ nếu tồn tại
      if (file_exists(TEST_DATA_FILE)) delete_file(TEST_DATA_FILE);
      if (file_exists(TEST_OUTPUT_FILE)) delete_file(TEST_OUTPUT_FILE);
+     if (file_exists(TEST_DEFAULT_FILE)) delete_file(TEST_DEFAULT_FILE);
      
      printf("Môi trường kiểm thử đã được thiết lập.\n");
  }
@@ -39,6 +41,7 @@
      // Xóa các file test
      if (file_exists(TEST_DATA_FILE)) delete_file(TEST_DATA_FILE);
      if (file_exists(TEST_OUTPUT_FILE)) delete_file(TEST_OUTPUT_FILE);
+     if (file_exists(TEST_DEFAULT_FILE)) delete_file(TEST_DEFAULT_FILE);
      
      // Dọn dẹp logger
      cleanup_logger();
@@ -113,6 +116,40 @@
  }
  
  /**
+  * @brief Tạo file JSON với một số trường bị thiếu để kiểm tra giá trị mặc định
+  * @return 1 nếu thành công, 0 nếu thất bại
+  */
+ int create_test_json_with_missing_fields() {
+     const char *content = "{\n"
+                           "  \"test_cases\": [\n"
+                           "    {\n"
+                           "      \"id\": \"TC005\",\n"
+                           "      \"type\": \"ping\",\n"
+                           "      \"name\": \"Test With Missing Fields\"\n"
+                           "    },\n"
+                           "    {\n"
+                           "      \"name\": \"Missing ID Test\",\n"
+                           "      \"type\": \"throughput\",\n"
+                           "      \"target\": \"example.com\"\n"
+                           "    },\n"
+                           "    {\n"
+                           "      \"id\": \"TC007\"\n"
+                           "    }\n"
+                           "  ]\n"
+                           "}\n";
+     
+     printf("Tạo file JSON với trường bị thiếu %s...\n", TEST_DEFAULT_FILE);
+     int result = write_file(TEST_DEFAULT_FILE, content, strlen(content));
+     if (result == 0) {
+         printf("   ✓ Tạo file JSON với trường bị thiếu thành công\n");
+         return 1;
+     } else {
+         printf("   ✗ Không thể tạo file JSON với trường bị thiếu\n");
+         return 0;
+     }
+ }
+ 
+ /**
   * @brief Kiểm tra chức năng đọc test cases từ file JSON
   */
  void test_read_json_test_cases() {
@@ -145,6 +182,82 @@
              printf("   ✓ ID test case chính xác: %s\n", test_cases[0].id);
          } else {
              printf("   ✗ ID test case không chính xác, kỳ vọng: TC001, thực tế: %s\n", test_cases[0].id);
+         }
+         
+         // Kiểm tra các trường cơ bản
+         if (strcmp(test_cases[0].name, "Local Server Ping Test") == 0) {
+             printf("   ✓ Tên test case chính xác\n");
+         } else {
+             printf("   ✗ Tên test case không chính xác\n");
+         }
+         
+         if (strcmp(test_cases[0].description, "Test connectivity to local server") == 0) {
+             printf("   ✓ Mô tả test case chính xác\n");
+         } else {
+             printf("   ✗ Mô tả test case không chính xác, kỳ vọng: 'Test connectivity to local server', thực tế: '%s'\n", 
+                    test_cases[0].description);
+         }
+         
+         if (strcmp(test_cases[0].target, "192.168.1.100") == 0) {
+             printf("   ✓ Target test case chính xác\n");
+         } else {
+             printf("   ✗ Target test case không chính xác, kỳ vọng: '192.168.1.100', thực tế: '%s'\n", 
+                    test_cases[0].target);
+         }
+         
+         if (test_cases[0].timeout == 5000) {
+             printf("   ✓ Timeout test case chính xác\n");
+         } else {
+             printf("   ✗ Timeout test case không chính xác, kỳ vọng: 5000, thực tế: %d\n", 
+                    test_cases[0].timeout);
+         }
+         
+         if (test_cases[0].enabled) {
+             printf("   ✓ Trạng thái enabled test case chính xác\n");
+         } else {
+             printf("   ✗ Trạng thái enabled test case không chính xác, kỳ vọng: true, thực tế: false\n");
+         }
+         
+         // Kiểm tra loại test và tham số đặc thù
+         if (test_cases[0].type == TEST_PING) {
+             printf("   ✓ Loại test case chính xác: PING\n");
+             
+             // Kiểm tra tham số ping
+             if (test_cases[0].params.ping.count == 5) {
+                 printf("   ✓ Tham số ping.count chính xác\n");
+             } else {
+                 printf("   ✗ Tham số ping.count không chính xác, kỳ vọng: 5, thực tế: %d\n", 
+                        test_cases[0].params.ping.count);
+             }
+             
+             if (test_cases[0].params.ping.size == 64) {
+                 printf("   ✓ Tham số ping.size chính xác\n");
+             } else {
+                 printf("   ✗ Tham số ping.size không chính xác, kỳ vọng: 64, thực tế: %d\n", 
+                        test_cases[0].params.ping.size);
+             }
+             
+             if (test_cases[0].params.ping.interval == 1000) {
+                 printf("   ✓ Tham số ping.interval chính xác\n");
+             } else {
+                 printf("   ✗ Tham số ping.interval không chính xác, kỳ vọng: 1000, thực tế: %d\n", 
+                        test_cases[0].params.ping.interval);
+             }
+             
+             if (!test_cases[0].params.ping.ipv6) {
+                 printf("   ✓ Tham số ping.ipv6 chính xác\n");
+             } else {
+                 printf("   ✗ Tham số ping.ipv6 không chính xác, kỳ vọng: false, thực tế: true\n");
+             }
+         } else {
+             printf("   ✗ Loại test case không chính xác, kỳ vọng: PING\n");
+         }
+         
+         // Kiểm tra loại mạng
+         if (test_cases[0].network_type == NETWORK_LAN) {
+             printf("   ✓ Loại mạng test case chính xác: LAN\n");
+         } else {
+             printf("   ✗ Loại mạng test case không chính xác, kỳ vọng: LAN\n");
          }
          
          // Giải phóng bộ nhớ
@@ -193,6 +306,34 @@
              printf("   ✗ ID test case không chính xác, kỳ vọng: TC004, thực tế: %s\n", test_cases[0].id);
          }
          
+         // Kiểm tra các trường cơ bản mới
+         if (strcmp(test_cases[0].description, "A custom test case") == 0) {
+             printf("   ✓ Mô tả test case chính xác\n");
+         } else {
+             printf("   ✗ Mô tả test case không chính xác, kỳ vọng: 'A custom test case', thực tế: '%s'\n", 
+                    test_cases[0].description);
+         }
+         
+         if (strcmp(test_cases[0].target, "localhost") == 0) {
+             printf("   ✓ Target test case chính xác\n");
+         } else {
+             printf("   ✗ Target test case không chính xác, kỳ vọng: 'localhost', thực tế: '%s'\n", 
+                    test_cases[0].target);
+         }
+         
+         if (test_cases[0].timeout == 1000) {
+             printf("   ✓ Timeout test case chính xác\n");
+         } else {
+             printf("   ✗ Timeout test case không chính xác, kỳ vọng: 1000, thực tế: %d\n", 
+                    test_cases[0].timeout);
+         }
+         
+         if (test_cases[0].enabled) {
+             printf("   ✓ Trạng thái enabled test case chính xác\n");
+         } else {
+             printf("   ✗ Trạng thái enabled test case không chính xác, kỳ vọng: true, thực tế: false\n");
+         }
+         
          // Giải phóng bộ nhớ
          free_test_cases(test_cases, count);
      } else {
@@ -200,6 +341,122 @@
      }
      
      printf("=> Kiểm tra phân tích chuỗi JSON trực tiếp hoàn tất.\n");
+ }
+ 
+ /**
+  * @brief Kiểm tra xử lý giá trị mặc định khi các trường bị thiếu
+  */
+ void test_default_values() {
+     printf("\n--- Kiểm tra xử lý giá trị mặc định ---\n");
+     
+     if (!create_test_json_with_missing_fields()) {
+         printf("   ✗ Không thể tiếp tục kiểm thử vì không tạo được file JSON\n");
+         return;
+     }
+     
+     test_case_t *test_cases = NULL;
+     int count = 0;
+     
+     printf("1. Đọc test cases từ file với các trường bị thiếu...\n");
+     bool success = read_json_test_cases(TEST_DEFAULT_FILE, &test_cases, &count);
+     
+     if (success && test_cases != NULL && count > 0) {
+         printf("   ✓ Đọc được %d test cases từ file JSON\n", count);
+         
+         // Kiểm tra TC005 với description, target, timeout và enabled bị thiếu
+         printf("2. Kiểm tra các giá trị mặc định cho TC005...\n");
+         test_case_t *tc5 = NULL;
+         for (int i = 0; i < count; i++) {
+             if (strcmp(test_cases[i].id, "TC005") == 0) {
+                 tc5 = &test_cases[i];
+                 break;
+             }
+         }
+         
+         if (tc5) {
+             printf("   ✓ Tìm thấy test case TC005\n");
+             
+             // Description mặc định là rỗng
+             if (strlen(tc5->description) == 0) {
+                 printf("   ✓ Mô tả mặc định là rỗng\n");
+             } else {
+                 printf("   ✗ Mô tả mặc định không đúng, kỳ vọng: '', thực tế: '%s'\n", tc5->description);
+             }
+             
+             // Target mặc định là rỗng
+             if (strlen(tc5->target) == 0) {
+                 printf("   ✓ Target mặc định là rỗng\n");
+             } else {
+                 printf("   ✗ Target mặc định không đúng, kỳ vọng: '', thực tế: '%s'\n", tc5->target);
+             }
+             
+             // Timeout mặc định là 10000
+             if (tc5->timeout == 10000) {
+                 printf("   ✓ Timeout mặc định là 10000ms\n");
+             } else {
+                 printf("   ✗ Timeout mặc định không đúng, kỳ vọng: 10000, thực tế: %d\n", tc5->timeout);
+             }
+             
+             // Enabled mặc định là true
+             if (tc5->enabled) {
+                 printf("   ✓ Trạng thái enabled mặc định là true\n");
+             } else {
+                 printf("   ✗ Trạng thái enabled mặc định không đúng, kỳ vọng: true, thực tế: false\n");
+             }
+             
+             // Network mặc định là LAN
+             if (tc5->network_type == NETWORK_LAN) {
+                 printf("   ✓ Loại mạng mặc định là LAN\n");
+             } else {
+                 printf("   ✗ Loại mạng mặc định không đúng, kỳ vọng: LAN\n");
+             }
+             
+             // Kiểm tra tham số ping mặc định
+             if (tc5->type == TEST_PING) {
+                 printf("   ✓ Loại test là PING\n");
+                 
+                 if (tc5->params.ping.count == 4) {
+                     printf("   ✓ Tham số ping.count mặc định là 4\n");
+                 } else {
+                     printf("   ✗ Tham số ping.count mặc định không đúng, kỳ vọng: 4, thực tế: %d\n", 
+                           tc5->params.ping.count);
+                 }
+                 
+                 if (tc5->params.ping.size == 64) {
+                     printf("   ✓ Tham số ping.size mặc định là 64\n");
+                 } else {
+                     printf("   ✗ Tham số ping.size mặc định không đúng, kỳ vọng: 64, thực tế: %d\n", 
+                           tc5->params.ping.size);
+                 }
+             }
+         } else {
+             printf("   ✗ Không tìm thấy test case TC005\n");
+         }
+         
+         // Kiểm tra test case không có ID
+         printf("3. Kiểm tra ID mặc định cho test case thiếu ID...\n");
+         bool found_missing_id = false;
+         for (int i = 0; i < count; i++) {
+             if (strncmp(test_cases[i].id, "TC", 2) == 0 && 
+                 test_cases[i].id[2] >= '0' && test_cases[i].id[2] <= '9' &&
+                 strcmp(test_cases[i].name, "Missing ID Test") == 0) {
+                 found_missing_id = true;
+                 printf("   ✓ ID mặc định được tạo: %s\n", test_cases[i].id);
+                 break;
+             }
+         }
+         
+         if (!found_missing_id) {
+             printf("   ✗ Không tìm thấy test case với ID mặc định cho 'Missing ID Test'\n");
+         }
+         
+         // Giải phóng bộ nhớ
+         free_test_cases(test_cases, count);
+     } else {
+         printf("   ✗ Không thể đọc test cases từ file JSON\n");
+     }
+     
+     printf("=> Kiểm tra xử lý giá trị mặc định hoàn tất.\n");
  }
  
  /**
@@ -247,6 +504,38 @@
                  strncpy(preview, json_buffer, preview_length);
                  preview[preview_length] = '\0';
                  printf("%s...\n", preview);
+                 
+                 // Đọc lại JSON đã xuất để kiểm tra tính nhất quán
+                 printf("2. Kiểm tra tính nhất quán của JSON sau khi chuyển đổi...\n");
+                 test_case_t *test_cases2 = NULL;
+                 int count2 = 0;
+                 
+                 bool parse_success = parse_json_content(json_buffer, &test_cases2, &count2);
+                 
+                 if (parse_success && test_cases2 != NULL && count2 > 0) {
+                     printf("   ✓ Phân tích lại JSON thành công, đọc được %d test cases\n", count2);
+                     
+                     // So sánh số lượng test cases
+                     if (count == count2) {
+                         printf("   ✓ Số lượng test cases nhất quán\n");
+                     } else {
+                         printf("   ✗ Số lượng test cases không nhất quán, ban đầu: %d, sau chuyển đổi: %d\n", 
+                               count, count2);
+                     }
+                     
+                     // So sánh ID test case đầu tiên
+                     if (strcmp(test_cases[0].id, test_cases2[0].id) == 0) {
+                         printf("   ✓ ID test case nhất quán\n");
+                     } else {
+                         printf("   ✗ ID test case không nhất quán, ban đầu: %s, sau chuyển đổi: %s\n", 
+                               test_cases[0].id, test_cases2[0].id);
+                     }
+                     
+                     // Giải phóng bộ nhớ
+                     free_test_cases(test_cases2, count2);
+                 } else {
+                     printf("   ✗ Không thể phân tích lại JSON sau khi chuyển đổi\n");
+                 }
              } else {
                  printf("   ✗ Không thể ghi JSON vào file output\n");
              }
@@ -289,16 +578,116 @@
      if (!success) {
          printf("   ✓ Xử lý đúng khi chuỗi JSON không hợp lệ\n");
      } else {
-         printf("   ✗ Không xử lý đúng khi chuỗi JSON không hợp lệ\n");
-         free_test_cases(test_cases, count);
-     }
-     
-     printf("=> Kiểm tra xử lý lỗi cơ bản hoàn tất.\n");
- }
- 
- /**
-  * @brief Kiểm tra tích hợp với các module khác
-  */
+        printf("   ✗ Không xử lý đúng khi chuỗi JSON không hợp lệ\n");
+        free_test_cases(test_cases, count);
+    }
+    
+    printf("3. Truyền tham số không hợp lệ cho hàm parse_json_content...\n");
+    success = parse_json_content(NULL, &test_cases, &count);
+    if (!success) {
+        printf("   ✓ Xử lý đúng khi tham số json_content là NULL\n");
+    } else {
+        printf("   ✗ Không xử lý đúng khi tham số json_content là NULL\n");
+        free_test_cases(test_cases, count);
+    }
+    
+    const char *valid_json = "{ \"test_cases\": [] }";
+    success = parse_json_content(valid_json, NULL, &count);
+    if (!success) {
+        printf("   ✓ Xử lý đúng khi tham số test_cases là NULL\n");
+    } else {
+        printf("   ✗ Không xử lý đúng khi tham số test_cases là NULL\n");
+    }
+    
+    success = parse_json_content(valid_json, &test_cases, NULL);
+    if (!success) {
+        printf("   ✓ Xử lý đúng khi tham số count là NULL\n");
+    } else {
+        printf("   ✗ Không xử lý đúng khi tham số count là NULL\n");
+        free_test_cases(test_cases, count);
+    }
+    
+    printf("=> Kiểm tra xử lý lỗi cơ bản hoàn tất.\n");
+}
+
+/**
+ * @brief Kiểm tra xử lý extra_data
+ */
+void test_extra_data() {
+    printf("\n--- Kiểm tra xử lý extra_data ---\n");
+    
+    const char *json_with_extra = "{\n"
+                                  "  \"test_cases\": [\n"
+                                  "    {\n"
+                                  "      \"id\": \"TC008\",\n"
+                                  "      \"name\": \"Test with Extra Data\",\n"
+                                  "      \"type\": \"other\",\n"
+                                  "      \"extra_data\": {\n"
+                                  "        \"custom_field1\": \"value1\",\n"
+                                  "        \"custom_field2\": 42,\n"
+                                  "        \"custom_array\": [1, 2, 3],\n"
+                                  "        \"custom_object\": {\n"
+                                  "          \"nested\": true\n"
+                                  "        }\n"
+                                  "      }\n"
+                                  "    }\n"
+                                  "  ]\n"
+                                  "}\n";
+    
+    printf("1. Phân tích JSON với extra_data...\n");
+    test_case_t *test_cases = NULL;
+    int count = 0;
+    
+    bool success = parse_json_content(json_with_extra, &test_cases, &count);
+    
+    if (success && test_cases != NULL && count > 0) {
+        printf("   ✓ Phân tích thành công JSON với extra_data\n");
+        
+        // Kiểm tra ID
+        if (strcmp(test_cases[0].id, "TC008") == 0) {
+            printf("   ✓ ID test case chính xác: %s\n", test_cases[0].id);
+        } else {
+            printf("   ✗ ID test case không chính xác, kỳ vọng: TC008, thực tế: %s\n", test_cases[0].id);
+        }
+        
+        // Kiểm tra extra_data
+        if (test_cases[0].extra_data != NULL) {
+            printf("   ✓ extra_data được trích xuất\n");
+            
+            // Kiểm tra chuỗi JSON trong extra_data có chứa các giá trị kỳ vọng
+            const char *expected_values[] = {"custom_field1", "value1", "custom_field2", "42", "custom_array", "nested", "true"};
+            int found_count = 0;
+            
+            for (int i = 0; i < sizeof(expected_values) / sizeof(expected_values[0]); i++) {
+                if (strstr(test_cases[0].extra_data, expected_values[i]) != NULL) {
+                    found_count++;
+                }
+            }
+            
+            printf("   ✓ Tìm thấy %d/%lu giá trị kỳ vọng trong extra_data\n", 
+                   found_count, sizeof(expected_values) / sizeof(expected_values[0]));
+            
+            // In một phần extra_data
+            printf("   - Một phần extra_data:\n");
+            int preview_length = strlen(test_cases[0].extra_data) < 100 ? 
+                                 strlen(test_cases[0].extra_data) : 100;
+            char preview[101];
+            strncpy(preview, test_cases[0].extra_data, preview_length);
+            preview[preview_length] = '\0';
+            printf("%s...\n", preview);
+        } else {
+            printf("   ✗ extra_data không được trích xuất\n");
+        }
+        
+        // Giải phóng bộ nhớ
+        free_test_cases(test_cases, count);
+    } else {
+        printf("   ✗ Không thể phân tích JSON với extra_data\n");
+    }
+    
+    printf("=> Kiểm tra xử lý extra_data hoàn tất.\n");
+}
+
 /**
  * @brief Kiểm tra tích hợp với các module khác
  */
@@ -348,6 +737,16 @@ void test_integration() {
                 printf("   ✗ ID test case không chính xác\n");
             }
             
+            // Kiểm tra các trường bổ sung để xác nhận tích hợp hoàn chỉnh
+            if (strcmp(test_cases[0].description, "Testing integration") == 0 &&
+                strcmp(test_cases[0].target, "localhost") == 0 &&
+                test_cases[0].timeout == 1000 &&
+                test_cases[0].enabled == true) {
+                printf("   ✓ Các trường bổ sung của test case được trích xuất chính xác\n");
+            } else {
+                printf("   ✗ Các trường bổ sung của test case không được trích xuất chính xác\n");
+            }
+            
             // Giải phóng bộ nhớ
             free_test_cases(test_cases, count);
         } else {
@@ -374,7 +773,10 @@ void test_integration() {
             log_message(LOG_LVL_DEBUG, "Đọc được %d test cases", count);
             
             for (int i = 0; i < count; i++) {
-                log_message(LOG_LVL_DEBUG, "Test case %d: ID=%s, Name=%s", i+1, test_cases[i].id, test_cases[i].name);
+                log_message(LOG_LVL_DEBUG, "Test case %d: ID=%s, Name=%s, Desc=%s, Target=%s, Timeout=%d, Enabled=%s",
+                           i+1, test_cases[i].id, test_cases[i].name, test_cases[i].description,
+                           test_cases[i].target, test_cases[i].timeout,
+                           test_cases[i].enabled ? "true" : "false");
             }
             
             free_test_cases(test_cases, count);
@@ -404,6 +806,14 @@ void test_integration() {
                 printf("   ✗ Log message không được ghi chính xác\n");
             }
             
+            // Kiểm tra xem log có chứa thông tin về các trường mới được trích xuất không
+            if (strstr(log_content, "Desc=") && strstr(log_content, "Target=") && 
+                strstr(log_content, "Timeout=") && strstr(log_content, "Enabled=")) {
+                printf("   ✓ Log chứa thông tin về các trường mới được trích xuất\n");
+            } else {
+                printf("   ✗ Log không chứa thông tin về các trường mới được trích xuất\n");
+            }
+            
             free(log_content);
         } else {
             printf("   ✗ Không thể đọc log file\n");
@@ -428,19 +838,23 @@ int main() {
     printf("\n=================================================\n");
     printf("      KIỂM THỬ MODULE PARSER_DATA.C\n");
     printf("=================================================\n");
-    printf("Ngày giờ: %s\n", "2025-03-19 09:35:26");
+    printf("Ngày giờ: %s\n", "2025-03-20 03:10:52");
     printf("Người dùng: %s\n", "juno-kyojin");
     printf("=================================================\n");
     
     // Thiết lập môi trường kiểm thử
     setup_test_environment();
     
-    // Chạy các bài kiểm thử cho các hàm đã được triển khai
+    // Chạy các bài kiểm thử cơ bản
     test_read_json_test_cases();
     test_parse_json_content();
     test_test_cases_to_json();
     test_error_handling();
     test_integration();
+    
+    // Chạy các bài kiểm thử mới
+    test_default_values();
+    test_extra_data();
     
     // Dọn dẹp môi trường kiểm thử
     cleanup_test_environment();
