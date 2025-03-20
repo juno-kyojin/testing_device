@@ -13,16 +13,13 @@
  
  #define MAX_LOG_LINE_SIZE 2048
  
- // Cấu hình logger mặc định
  LoggerConfig logger_config = {
      .log_file_path = "application.log",
      .log_level = LOG_LVL_DEBUG
  };
  
- // Mutex để bảo vệ việc ghi log đồng thời
  static pthread_mutex_t log_mutex = PTHREAD_MUTEX_INITIALIZER;
  
- // Tên của các log level
  static const char *log_level_names[] = {
      "NONE",
      "ERROR",
@@ -31,19 +28,15 @@
  };
  
  void init_logger(void) {
-     // Mặc định, đảm bảo file log có thể ghi
      FILE *log_file = fopen(logger_config.log_file_path, "a");
      if (log_file) {
          fclose(log_file);
      } else {
-         // Nếu không tạo được file log, sử dụng stderr
          fprintf(stderr, "Cannot open log file %s. Using stderr for logging.\n", logger_config.log_file_path);
      }
  }
  
  void cleanup_logger(void) {
-     // Không có tài nguyên đặc biệt cần giải phóng
-     // Mutex được khởi tạo tĩnh nên không cần destroy
  }
  
  void set_log_level(int level) {
@@ -57,7 +50,6 @@
          strncpy(logger_config.log_file_path, file_path, sizeof(logger_config.log_file_path) - 1);
          logger_config.log_file_path[sizeof(logger_config.log_file_path) - 1] = '\0';
          
-         // Kiểm tra xem file có thể ghi được không
          FILE *log_file = fopen(logger_config.log_file_path, "a");
          if (log_file) {
              fclose(log_file);
@@ -123,7 +115,6 @@
       fputs(log_buffer, log_file);
       fclose(log_file);
   } else {
-      // Fallback: output to stderr if cannot open file
       fputs(log_buffer, stderr);
   }
   

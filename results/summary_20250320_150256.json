@@ -1,0 +1,14 @@
+{
+  "test_results": [
+    {
+      "test_id": "PING_01",
+      "status": "SUCCESS",
+      "details": "Ping to 8.8.8.8 completed. Packets: 4/4, Loss: 0.0%, RTT min/avg/max: 22.474/22.557/22.689 ms"
+    },
+    {
+      "test_id": "PING_02",
+      "status": "SUCCESS",
+      "details": "Ping to 127.0.0.1 completed. Packets: 3/3, Loss: 0.0%, RTT min/avg/max: 0.044/0.048/0.058 ms"
+    }
+  ]
+}

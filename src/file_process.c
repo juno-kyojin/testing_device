@@ -236,7 +236,6 @@
          return NULL;
      }
      
-     // Tạo tên file tạm thời theo mẫu /tmp/prefix-XXXXXX
      snprintf(temp_path, path_size, "/tmp/%s-XXXXXX", prefix);
      
      int fd = mkstemp(temp_path);
