@@ -1,0 +1,74 @@
+{
+  "test_cases": [
+    {
+      "id": "ping_test_1",
+      "name": "Ping Google DNS",
+      "description": "Test ping đến Google DNS Server",
+      "type": "ping",
+      "target": "8.8.8.8",
+      "timeout": 5000,
+      "enabled": true,
+      "network": "WAN",
+      "ping_params": {
+        "count": 5,
+        "size": 64,
+        "interval": 1000,
+        "ipv6": false
+      }
+    }
+  ],
+  "action": "ping",
+  "input_params": {
+    "host": "google.com"
+  },
+  "attributes": [
+    {
+      "public_attr_name": "pingCode",
+      "private_attr_name": "Status",
+      "attr_type": "int",
+      "attr_execute": "yes"
+    },
+    {
+      "public_attr_name": "host",
+      "private_attr_name": "host",
+      "attr_type": "string",
+      "attr_execute": "yes"
+    },
+    {
+      "public_attr_name": "hostAddress",
+      "private_attr_name": "hostAddress",
+      "attr_type": "string",
+      "attr_execute": "yes"
+    },
+    {
+      "public_attr_name": "successCount",
+      "private_attr_name": "successCount",
+      "attr_type": "int",
+      "attr_execute": "yes"
+    },
+    {
+      "public_attr_name": "failureCount",
+      "private_attr_name": "failureCount",
+      "attr_type": "int",
+      "attr_execute": "yes"
+    },
+    {
+      "public_attr_name": "averageResponseTime",
+      "private_attr_name": "averageResponseTime",
+      "attr_type": "float",
+      "attr_execute": "yes"
+    },
+    {
+      "public_attr_name": "minimumResponseTime",
+      "private_attr_name": "minimumResponseTime",
+      "attr_type": "float",
+      "attr_execute": "yes"
+    },
+    {
+      "public_attr_name": "maximumResponseTime",
+      "private_attr_name": "maximumResponseTime",
+      "attr_type": "float",
+      "attr_execute": "yes"
+    }
+  ]
+}

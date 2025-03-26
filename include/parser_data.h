@@ -1,7 +1,4 @@
-/**
- * @file parser_data.h
- * @brief Định nghĩa các cấu trúc và hàm để phân tích dữ liệu JSON
- */
+
 
  #ifndef PARSER_DATA_H
  #define PARSER_DATA_H
@@ -69,6 +66,43 @@
  } test_case_t;
  
  /**
+  * @brief Loại hành động cho instruction
+  */
+ typedef enum {
+     ACTION_DIAGNOSTIC,
+     ACTION_CONFIG,
+     ACTION_STATUS
+ } action_type_t;
+
+ /**
+  * @brief Cấu trúc cho một thuộc tính
+  */
+ typedef struct {
+     char public_name[64];    /**< Tên thuộc tính công khai */
+     char private_name[64];   /**< Tên thuộc tính nội bộ */
+     char attr_type[16];      /**< Kiểu dữ liệu (int, float, string) */
+     char execute[8];         /**< Có thực thi hay không (yes/no) */
+ } attribute_t;
+
+ /**
+  * @brief Cấu trúc cho một instruction
+  */
+ typedef struct {
+     char action[64];         /**< Hành động (ping, config, etc.) */
+     action_type_t type;      /**< Loại hành động */
+     char set_func[64];       /**< Hàm set */
+     char get_func[64];       /**< Hàm get */
+     char commit_func[64];    /**< Hàm commit */
+     char save_func[64];      /**< Hàm save */
+     char node_type[16];      /**< Loại node (single, multi) */
+     char node_name[64];      /**< Tên node */
+     char sub_node[64];       /**< Tên sub node */
+     int max_entry;           /**< Số entry tối đa */
+     attribute_t *attributes; /**< Mảng các thuộc tính */
+     int attr_count;          /**< Số lượng thuộc tính */
+ } instruction_t;
+
+ /**
   * @brief Đọc test cases từ file JSON
   * 
   * @param json_file Đường dẫn đến file JSON
@@ -119,5 +153,16 @@
   * @return true nếu thành công, false nếu thất bại
   */
  bool test_case_to_json(const test_case_t *test_case, char *json_buffer, size_t buffer_size);
+ 
+ /**
+  * @brief Chuyển đổi mảng test cases thành chuỗi JSON
+  * 
+  * @param test_cases Mảng test cases cần chuyển đổi
+  * @param count Số lượng test cases
+  * @param json_buffer Buffer chứa chuỗi JSON kết quả
+  * @param buffer_size Kích thước buffer
+  * @return true nếu thành công, false nếu thất bại
+  */
+ bool test_cases_to_json(const test_case_t *test_cases, int count, char *json_buffer, size_t buffer_size);
  
  #endif /* PARSER_DATA_H */
