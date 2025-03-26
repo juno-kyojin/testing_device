@@ -1,11 +1,6 @@
 CC = gcc
-<<<<<<< Updated upstream
 CFLAGS = -Wall -Wextra -g -pthread
 LDFLAGS = -pthread -lz
-=======
-CFLAGS = -Wall -Iinclude
-LDFLAGS = -lpthread -lm -lcjson
->>>>>>> Stashed changes
 
 SRC_DIR = src
 BUILD_DIR = build

@@ -1,28 +1,14 @@
-<<<<<<< Updated upstream
 #include "parser_data.h"
 #include "file_process.h"
 #include "cjson/cJSON.h"
 #include <stdlib.h>
 #include <string.h>
-
+#include <log.h>
 bool read_json_test_cases(const char *json_file, test_case_t **test_cases, int *count) {
     char *json_str = NULL;
     size_t size;
     // Đọc nội dung file JSON vào chuỗi
     if (read_file(json_file, &json_str, &size) != 0) {
-=======
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include "parser_data.h"
-#include "file_process.h"
-#include "log.h"
-#include "cjson/cJSON.h"
-
-bool parse_json_content(const char *json_content, test_case_t **test_cases, int *count) {
-    if (!json_content || !test_cases || !count) {
-        log_message(LOG_LVL_ERROR, "Invalid parameters for parse_json_content");
->>>>>>> Stashed changes
         return false;
     }
 
@@ -143,8 +129,6 @@ bool filter_test_cases_by_network(const test_case_t *test_cases, int count, netw
     }
 
     return true;
-<<<<<<< Updated upstream
-=======
 }
 
 bool read_json_test_cases(const char *json_file, test_case_t **test_cases, int *count) {
@@ -434,5 +418,4 @@ void free_instructions(instruction_t *instructions, int count) {
     }
     
     free(instructions);
->>>>>>> Stashed changes
 }

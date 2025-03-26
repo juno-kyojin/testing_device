@@ -1,5 +1,3 @@
-<<<<<<< Updated upstream
-=======
 // src/main.c
 #include <stdio.h>
 #include <stdlib.h>
@@ -94,4 +92,3 @@ int main() {
     log_message(LOG_LVL_DEBUG, "Test program completed");
     return 0;
 }
->>>>>>> Stashed changes
