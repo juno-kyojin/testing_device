@@ -1,22 +1,4 @@
 {
-  "test_cases": [
-    {
-      "id": "ping_test_1",
-      "name": "Ping Google DNS",
-      "description": "Test ping đến Google DNS Server",
-      "type": "ping",
-      "target": "8.8.8.8",
-      "timeout": 5000,
-      "enabled": true,
-      "network": "WAN",
-      "ping_params": {
-        "count": 5,
-        "size": 64,
-        "interval": 1000,
-        "ipv6": false
-      }
-    }
-  ],
   "action": "ping",
   "input_params": {
     "host": "google.com"

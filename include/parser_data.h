@@ -164,5 +164,28 @@
   * @return true nếu thành công, false nếu thất bại
   */
  bool test_cases_to_json(const test_case_t *test_cases, int count, char *json_buffer, size_t buffer_size);
+<<<<<<< Updated upstream
  
  #endif /* PARSER_DATA_H */
+=======
+
+ /**
+  * @brief Phân tích nội dung JSON trực tiếp thành instruction
+  * 
+  * @param json_content Chuỗi JSON chứa instruction
+  * @param instructions Con trỏ đến mảng instructions
+  * @param count Con trỏ đến biến lưu số lượng instructions
+  * @return true nếu thành công, false nếu thất bại
+  */
+ bool parse_json_instruction(const char *json_content, instruction_t **instructions, int *count);
+
+ /**
+  * @brief Giải phóng bộ nhớ của mảng instructions
+  * 
+  * @param instructions Mảng instructions cần giải phóng
+  * @param count Số lượng instructions
+  */
+ void free_instructions(instruction_t *instructions, int count);
+
+#endif /* PARSER_DATA_H */
+>>>>>>> Stashed changes

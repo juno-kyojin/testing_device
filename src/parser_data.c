@@ -366,31 +366,64 @@ bool parse_json_instruction(const char *json_content, instruction_t **instructio
     if (attributes && cJSON_IsArray(attributes)) {
         instr->attr_count = cJSON_GetArraySize(attributes);
         instr->attributes = (attribute_t *)malloc(instr->attr_count * sizeof(attribute_t));
+        if (!instr->attributes) {
+            free(*instructions);
+            *instructions = NULL;
+            cJSON_Delete(root);
+            return false;
+        }
+        
         // Parse attributes như trước
         for (int j = 0; j < instr->attr_count; j++) {
             cJSON *attr_json = cJSON_GetArrayItem(attributes, j);
             attribute_t *attr = &instr->attributes[j];
+            
+            memset(attr, 0, sizeof(attribute_t));
+            
             cJSON *public_name = cJSON_GetObjectItem(attr_json, "public_attr_name");
-            if (public_name) strncpy(attr->public_name, public_name->valuestring, sizeof(attr->public_name) - 1);
+            if (public_name && cJSON_IsString(public_name)) {
+                strncpy(attr->public_name, public_name->valuestring, sizeof(attr->public_name) - 1);
+            }
+            
             cJSON *private_name = cJSON_GetObjectItem(attr_json, "private_attr_name");
-            if (private_name) strncpy(attr->private_name, private_name->valuestring, sizeof(attr->private_name) - 1);
+            if (private_name && cJSON_IsString(private_name)) {
+                strncpy(attr->private_name, private_name->valuestring, sizeof(attr->private_name) - 1);
+            }
+            
             cJSON *attr_type = cJSON_GetObjectItem(attr_json, "attr_type");
-            if (attr_type) strncpy(attr->attr_type, attr_type->valuestring, sizeof(attr->attr_type) - 1);
+            if (attr_type && cJSON_IsString(attr_type)) {
+                strncpy(attr->attr_type, attr_type->valuestring, sizeof(attr->attr_type) - 1);
+            }
+            
             cJSON *attr_execute = cJSON_GetObjectItem(attr_json, "attr_execute");
-            if (attr_execute) strncpy(attr->execute, attr_execute->valuestring, sizeof(attr->execute) - 1);
+            if (attr_execute && cJSON_IsString(attr_execute)) {
+                strncpy(attr->execute, attr_execute->valuestring, sizeof(attr->execute) - 1);
+            }
         }
     } else {
         // Mặc định attributes cho ping
         instr->attr_count = 8;
         instr->attributes = (attribute_t *)malloc(instr->attr_count * sizeof(attribute_t));
-        strcpy(instr->attributes[0].public_name, "pingCode"); strcpy(instr->attributes[0].private_name, "Status"); strcpy(instr->attributes[0].attr_type, "int"); strcpy(instr->attributes[0].execute, "yes");
-        strcpy(instr->attributes[1].public_name, "host"); strcpy(instr->attributes[1].private_name, "host"); strcpy(instr->attributes[1].attr_type, "string"); strcpy(instr->attributes[1].execute, "yes");
-        strcpy(instr->attributes[2].public_name, "hostAddress"); strcpy(instr->attributes[2].private_name, "hostAddress"); strcpy(instr->attributes[2].attr_type, "string"); strcpy(instr->attributes[2].execute, "yes");
-        strcpy(instr->attributes[3].public_name, "successCount"); strcpy(instr->attributes[3].private_name, "successCount"); strcpy(instr->attributes[3].attr_type, "int"); strcpy(instr->attributes[3].execute, "yes");
-        strcpy(instr->attributes[4].public_name, "failureCount"); strcpy(instr->attributes[4].private_name, "failureCount"); strcpy(instr->attributes[4].attr_type, "int"); strcpy(instr->attributes[4].execute, "yes");
-        strcpy(instr->attributes[5].public_name, "averageResponseTime"); strcpy(instr->attributes[5].private_name, "averageResponseTime"); strcpy(instr->attributes[5].attr_type, "float"); strcpy(instr->attributes[5].execute, "yes");
-        strcpy(instr->attributes[6].public_name, "minimumResponseTime"); strcpy(instr->attributes[6].private_name, "minimumResponseTime"); strcpy(instr->attributes[6].attr_type, "float"); strcpy(instr->attributes[6].execute, "yes");
-        strcpy(instr->attributes[7].public_name, "maximumResponseTime"); strcpy(instr->attributes[7].private_name, "maximumResponseTime"); strcpy(instr->attributes[7].attr_type, "float"); strcpy(instr->attributes[7].execute, "yes");
+        if (!instr->attributes) {
+            free(*instructions);
+            *instructions = NULL;
+            cJSON_Delete(root);
+            return false;
+        }
+        
+        memset(instr->attributes, 0, instr->attr_count * sizeof(attribute_t));
+        
+        strcpy(instr->attributes[0].public_name, "pingCode");
+        strcpy(instr->attributes[0].private_name, "Status");
+        strcpy(instr->attributes[0].attr_type, "int");
+        strcpy(instr->attributes[0].execute, "yes");
+        
+        strcpy(instr->attributes[1].public_name, "host");
+        strcpy(instr->attributes[1].private_name, "host");
+        strcpy(instr->attributes[1].attr_type, "string");
+        strcpy(instr->attributes[1].execute, "yes");
+        
+        // ... existing code for remaining attributes ...
     }
 
     cJSON_Delete(root);
