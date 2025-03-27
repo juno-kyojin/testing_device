@@ -1,133 +1,332 @@
-#include "parser_data.h"
-#include "file_process.h"
-#include "cjson/cJSON.h"
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <log.h>
-bool read_json_test_cases(const char *json_file, test_case_t **test_cases, int *count) {
-    char *json_str = NULL;
-    size_t size;
-    // Đọc nội dung file JSON vào chuỗi
-    if (read_file(json_file, &json_str, &size) != 0) {
+#include "parser_data.h"
+#include "file_process.h"
+#include "log.h"
+#include "cjson/cJSON.h"
+
+bool parse_json_content(const char *json_content, test_case_t **test_cases, int *count) {
+    if (!json_content || !test_cases || !count) {
+        log_message(LOG_LVL_ERROR, "Invalid parameters for parse_json_content");
         return false;
     }
-
-    // Phân tích chuỗi JSON bằng cJSON
-    cJSON *root = cJSON_Parse(json_str);
-    free(json_str); // Giải phóng chuỗi sau khi phân tích
+    
+    // Log bắt đầu parse JSON
+    log_message(LOG_LVL_DEBUG, "Starting JSON parsing");
+    
+    cJSON *root = cJSON_Parse(json_content);
     if (!root) {
+        log_message(LOG_LVL_ERROR, "Failed to parse JSON: %s", cJSON_GetErrorPtr());
         return false;
     }
-
-    // Lấy số lượng phần tử trong mảng JSON
-    int array_size = cJSON_GetArraySize(root);
-    *test_cases = (test_case_t *)malloc(array_size * sizeof(test_case_t));
-    if (!*test_cases) {
+    
+    // Xử lý JSON như triển khai trước đó
+    cJSON *test_cases_array = cJSON_GetObjectItem(root, "test_cases");
+    if (!test_cases_array || !cJSON_IsArray(test_cases_array)) {
+        log_message(LOG_LVL_ERROR, "JSON doesn't contain 'test_cases' array");
         cJSON_Delete(root);
         return false;
     }
-
-    // Chuyển đổi từng phần tử JSON thành test_case_t
-    *count = 0;
-    cJSON *item;
-    cJSON_ArrayForEach(item, root) {
-        test_case_t *tc = &(*test_cases)[*count];
-        if (json_to_test_case(item, tc)) {
-            (*count)++;
-        }
-    }
-
-    cJSON_Delete(root); // Giải phóng đối tượng cJSON
-    return true;
-}
-
-bool json_to_test_case(cJSON *item, test_case_t *test_case) {
-    // Lấy các trường cơ bản từ JSON
-    cJSON *id = cJSON_GetObjectItem(item, "id");
-    cJSON *type = cJSON_GetObjectItem(item, "type");
-    cJSON *network_type = cJSON_GetObjectItem(item, "network_type");
-    cJSON *name = cJSON_GetObjectItem(item, "name");
-    cJSON *description = cJSON_GetObjectItem(item, "description");
-    cJSON *target = cJSON_GetObjectItem(item, "target");
-    cJSON *timeout = cJSON_GetObjectItem(item, "timeout");
-    cJSON *enabled = cJSON_GetObjectItem(item, "enabled");
-    cJSON *params = cJSON_GetObjectItem(item, "params");
-
-    // Kiểm tra các trường bắt buộc
-    if (!id || !type || !network_type || !name || !description || !target || !timeout || !enabled || !params) {
+    
+    *count = cJSON_GetArraySize(test_cases_array);
+    if (*count <= 0) {
+        log_message(LOG_LVL_ERROR, "No test cases found in JSON");
+        cJSON_Delete(root);
         return false;
     }
-
-    // Gán giá trị vào cấu trúc test_case_t
-    strncpy(test_case->id, id->valuestring, sizeof(test_case->id) - 1);
-    test_case->type = (test_type_t)type->valueint;
-    test_case->network_type = (network_type_t)network_type->valueint;
-    strncpy(test_case->name, name->valuestring, sizeof(test_case->name) - 1);
-    strncpy(test_case->description, description->valuestring, sizeof(test_case->description) - 1);
-    strncpy(test_case->target, target->valuestring, sizeof(test_case->target) - 1);
-    test_case->timeout = timeout->valueint;
-    test_case->enabled = enabled->valueint != 0;
-
-    // Xử lý tham số params theo loại test
-    switch (test_case->type) {
-        case TEST_PING:
-            test_case->params.ping.count = cJSON_GetObjectItem(params, "count")->valueint;
-            test_case->params.ping.size = cJSON_GetObjectItem(params, "size")->valueint;
-            break;
-        case TEST_THROUGHPUT:
-            test_case->params.throughput.duration = cJSON_GetObjectItem(params, "duration")->valueint;
-            strncpy(test_case->params.throughput.protocol, cJSON_GetObjectItem(params, "protocol")->valuestring, sizeof(test_case->params.throughput.protocol) - 1);
-            break;
-        case TEST_VLAN:
-            test_case->params.vlan.vlan_id = cJSON_GetObjectItem(params, "vlan_id")->valueint;
-            break;
-        case TEST_SECURITY:
-            strncpy(test_case->params.security.method, cJSON_GetObjectItem(params, "method")->valuestring, sizeof(test_case->params.security.method) - 1);
-            break;
-        default:
-            break; // Có thể mở rộng cho các loại test khác
+    
+    log_message(LOG_LVL_DEBUG, "Found %d test cases in JSON", *count);
+    
+    // Cấp phát bộ nhớ cho mảng test cases
+    *test_cases = (test_case_t *)malloc(*count * sizeof(test_case_t));
+    if (!(*test_cases)) {
+        log_message(LOG_LVL_ERROR, "Memory allocation failed for test cases");
+        cJSON_Delete(root);
+        return false;
     }
-
-    test_case->extra_data = NULL; // Chưa xử lý extra_data
-    test_case->extra_data_size = 0;
-    return true;
-}
-
-void free_test_cases(test_case_t *test_cases, int count) {
-    if (test_cases) {
-        for (int i = 0; i < count; i++) {
-            if (test_cases[i].extra_data) {
-                free(test_cases[i].extra_data);
+    memset(*test_cases, 0, *count * sizeof(test_case_t));
+    
+    // Xử lý từng test case
+    for (int i = 0; i < *count; i++) {
+        cJSON *test_case_json = cJSON_GetArrayItem(test_cases_array, i);
+        test_case_t *current_test = &((*test_cases)[i]);
+        
+        // Xử lý ID
+        cJSON *id = cJSON_GetObjectItem(test_case_json, "id");
+        if (id && cJSON_IsString(id)) {
+            strncpy(current_test->id, id->valuestring, sizeof(current_test->id) - 1);
+            current_test->id[sizeof(current_test->id) - 1] = '\0'; // Đảm bảo null-terminated
+            log_message(LOG_LVL_DEBUG, "Processing test case ID: %s", current_test->id);
+        } else {
+            log_message(LOG_LVL_WARN, "Test case at index %d has no valid ID", i);
+            snprintf(current_test->id, sizeof(current_test->id), "TC%03d", i+1); // ID mặc định
+            log_message(LOG_LVL_DEBUG, "Assigned default ID: %s", current_test->id);
+        }
+        
+        // Xử lý name
+        cJSON *name = cJSON_GetObjectItem(test_case_json, "name");
+        if (name && cJSON_IsString(name)) {
+            strncpy(current_test->name, name->valuestring, sizeof(current_test->name) - 1);
+            current_test->name[sizeof(current_test->name) - 1] = '\0'; // Đảm bảo null-terminated
+            log_message(LOG_LVL_DEBUG, "Test case %s name: %s", current_test->id, current_test->name);
+        } else {
+            log_message(LOG_LVL_WARN, "Test case %s has no valid name", current_test->id);
+            snprintf(current_test->name, sizeof(current_test->name), "Unnamed Test %s", current_test->id);
+        }
+        
+        // Xử lý description
+        cJSON *description = cJSON_GetObjectItem(test_case_json, "description");
+        if (description && cJSON_IsString(description)) {
+            strncpy(current_test->description, description->valuestring, sizeof(current_test->description) - 1);
+            current_test->description[sizeof(current_test->description) - 1] = '\0';
+            log_message(LOG_LVL_DEBUG, "Test case %s description processed", current_test->id);
+        } else {
+            log_message(LOG_LVL_WARN, "Test case %s has no valid description", current_test->id);
+            current_test->description[0] = '\0'; // Mô tả rỗng
+        }
+        
+        // Xử lý target
+        cJSON *target = cJSON_GetObjectItem(test_case_json, "target");
+        if (target && cJSON_IsString(target)) {
+            strncpy(current_test->target, target->valuestring, sizeof(current_test->target) - 1);
+            current_test->target[sizeof(current_test->target) - 1] = '\0';
+            log_message(LOG_LVL_DEBUG, "Test case %s target: %s", current_test->id, current_test->target);
+        } else {
+            log_message(LOG_LVL_WARN, "Test case %s has no valid target", current_test->id);
+            current_test->target[0] = '\0'; // Target rỗng
+        }
+        
+        // Xử lý timeout
+        cJSON *timeout = cJSON_GetObjectItem(test_case_json, "timeout");
+        if (timeout && cJSON_IsNumber(timeout)) {
+            current_test->timeout = timeout->valueint;
+            log_message(LOG_LVL_DEBUG, "Test case %s timeout: %d ms", current_test->id, current_test->timeout);
+        } else {
+            current_test->timeout = 10000; // Mặc định 10 giây (10000 ms)
+            log_message(LOG_LVL_WARN, "Test case %s has no valid timeout, setting default: 10000 ms", current_test->id);
+        }
+        
+        // Xử lý enabled
+        cJSON *enabled = cJSON_GetObjectItem(test_case_json, "enabled");
+        if (enabled && cJSON_IsBool(enabled)) {
+            current_test->enabled = cJSON_IsTrue(enabled);
+            log_message(LOG_LVL_DEBUG, "Test case %s enabled: %s", current_test->id, current_test->enabled ? "true" : "false");
+        } else {
+            current_test->enabled = true; // Mặc định là enabled
+            log_message(LOG_LVL_WARN, "Test case %s has no valid enabled flag, enabling by default", current_test->id);
+        }
+        
+        // Xử lý type (loại test case)
+        cJSON *type = cJSON_GetObjectItem(test_case_json, "type");
+        if (type && cJSON_IsString(type)) {
+            const char *type_str = type->valuestring;
+            if (strcmp(type_str, "ping") == 0) {
+                current_test->type = TEST_PING;
+                log_message(LOG_LVL_DEBUG, "Test case %s type: PING", current_test->id);
+                
+                // Xử lý các tham số ping nếu có
+                cJSON *ping_params = cJSON_GetObjectItem(test_case_json, "ping_params");
+                if (ping_params && cJSON_IsObject(ping_params)) {
+                    // Đọc count
+                    cJSON *count_param = cJSON_GetObjectItem(ping_params, "count");
+                    if (count_param && cJSON_IsNumber(count_param)) {
+                        current_test->params.ping.count = count_param->valueint;
+                    } else {
+                        current_test->params.ping.count = 4; // Mặc định
+                    }
+                    
+                    // Đọc size
+                    cJSON *size_param = cJSON_GetObjectItem(ping_params, "size");
+                    if (size_param && cJSON_IsNumber(size_param)) {
+                        current_test->params.ping.size = size_param->valueint;
+                    } else {
+                        current_test->params.ping.size = 64; // Mặc định
+                    }
+                    
+                    // Đọc interval
+                    cJSON *interval_param = cJSON_GetObjectItem(ping_params, "interval");
+                    if (interval_param && cJSON_IsNumber(interval_param)) {
+                        current_test->params.ping.interval = interval_param->valueint;
+                    } else {
+                        current_test->params.ping.interval = 1000; // Mặc định 1 giây
+                    }
+                    
+                    // Đọc ipv6
+                    cJSON *ipv6_param = cJSON_GetObjectItem(ping_params, "ipv6");
+                    if (ipv6_param && cJSON_IsBool(ipv6_param)) {
+                        current_test->params.ping.ipv6 = cJSON_IsTrue(ipv6_param);
+                    } else {
+                        current_test->params.ping.ipv6 = false; // Mặc định IPv4
+                    }
+                    
+                    log_message(LOG_LVL_DEBUG, "Test case %s ping params processed", current_test->id);
+                } else {
+                    log_message(LOG_LVL_WARN, "Test case %s missing ping parameters, using defaults", current_test->id);
+                    // Sử dụng giá trị mặc định
+                    current_test->params.ping.count = 4;
+                    current_test->params.ping.size = 64;
+                    current_test->params.ping.interval = 1000;
+                    current_test->params.ping.ipv6 = false;
+                }
             }
+            else if (strcmp(type_str, "throughput") == 0) {
+                current_test->type = TEST_THROUGHPUT;
+                log_message(LOG_LVL_DEBUG, "Test case %s type: THROUGHPUT", current_test->id);
+                
+                // Xử lý các tham số throughput nếu có
+                cJSON *throughput_params = cJSON_GetObjectItem(test_case_json, "throughput_params");
+                if (throughput_params && cJSON_IsObject(throughput_params)) {
+                    // Đọc duration
+                    cJSON *duration_param = cJSON_GetObjectItem(throughput_params, "duration");
+                    if (duration_param && cJSON_IsNumber(duration_param)) {
+                        current_test->params.throughput.duration = duration_param->valueint;
+                    } else {
+                        current_test->params.throughput.duration = 10; // Mặc định 10 giây
+                    }
+                    
+                    // Đọc protocol
+                    cJSON *protocol_param = cJSON_GetObjectItem(throughput_params, "protocol");
+                    if (protocol_param && cJSON_IsString(protocol_param)) {
+                        strncpy(current_test->params.throughput.protocol, protocol_param->valuestring, 
+                                sizeof(current_test->params.throughput.protocol) - 1);
+                        current_test->params.throughput.protocol[sizeof(current_test->params.throughput.protocol) - 1] = '\0';
+                    } else {
+                        strcpy(current_test->params.throughput.protocol, "TCP"); // Mặc định TCP
+                    }
+                    
+                    // Đọc port
+                    cJSON *port_param = cJSON_GetObjectItem(throughput_params, "port");
+                    if (port_param && cJSON_IsNumber(port_param)) {
+                        current_test->params.throughput.port = port_param->valueint;
+                    } else {
+                        current_test->params.throughput.port = 5201; // Mặc định cổng iperf3
+                    }
+                    
+                    // Đọc buffer_size nếu có
+                    cJSON *buffer_param = cJSON_GetObjectItem(throughput_params, "buffer_size");
+                    if (buffer_param && cJSON_IsNumber(buffer_param)) {
+                        current_test->params.throughput.buffer_size = buffer_param->valueint;
+                    } else {
+                        current_test->params.throughput.buffer_size = 8192; // Mặc định 8KB
+                    }
+                    
+                    // Đọc bidirectional nếu có
+                    cJSON *bidir_param = cJSON_GetObjectItem(throughput_params, "bidirectional");
+                    if (bidir_param && cJSON_IsBool(bidir_param)) {
+                        current_test->params.throughput.bidirectional = cJSON_IsTrue(bidir_param);
+                    } else {
+                        current_test->params.throughput.bidirectional = false; // Mặc định một chiều
+                    }
+                    
+                    log_message(LOG_LVL_DEBUG, "Test case %s throughput params processed", current_test->id);
+                } else {
+                    log_message(LOG_LVL_WARN, "Test case %s missing throughput parameters, using defaults", current_test->id);
+                    // Sử dụng giá trị mặc định
+                    current_test->params.throughput.duration = 10;
+                    strcpy(current_test->params.throughput.protocol, "TCP");
+                    current_test->params.throughput.port = 5201;
+                    current_test->params.throughput.buffer_size = 8192;
+                    current_test->params.throughput.bidirectional = false;
+                }
+            }
+            else if (strcmp(type_str, "security") == 0) {
+                current_test->type = TEST_SECURITY;
+                log_message(LOG_LVL_DEBUG, "Test case %s type: SECURITY", current_test->id);
+                
+                // Xử lý các tham số security nếu có
+                cJSON *security_params = cJSON_GetObjectItem(test_case_json, "security_params");
+                if (security_params && cJSON_IsObject(security_params)) {
+                    // Đọc method
+                    cJSON *method_param = cJSON_GetObjectItem(security_params, "method");
+                    if (method_param && cJSON_IsString(method_param)) {
+                        strncpy(current_test->params.security.method, method_param->valuestring, 
+                                sizeof(current_test->params.security.method) - 1);
+                        current_test->params.security.method[sizeof(current_test->params.security.method) - 1] = '\0';
+                    } else {
+                        strcpy(current_test->params.security.method, "tls_scan"); // Mặc định
+                    }
+                    
+                    // Đọc port
+                    cJSON *port_param = cJSON_GetObjectItem(security_params, "port");
+                    if (port_param && cJSON_IsNumber(port_param)) {
+                        current_test->params.security.port = port_param->valueint;
+                    } else {
+                        current_test->params.security.port = 443; // Mặc định HTTPS 
+                    }
+                    
+                    // Đọc tls flag
+                    cJSON *tls_param = cJSON_GetObjectItem(security_params, "tls");
+                    if (tls_param && cJSON_IsBool(tls_param)) {
+                        current_test->params.security.tls = cJSON_IsTrue(tls_param);
+                    } else {
+                        current_test->params.security.tls = true; // Mặc định sử dụng TLS
+                    }
+                    
+                    log_message(LOG_LVL_DEBUG, "Test case %s security params processed", current_test->id);
+                } else {
+                    log_message(LOG_LVL_WARN, "Test case %s missing security parameters, using defaults", current_test->id);
+                    // Sử dụng giá trị mặc định
+                    strcpy(current_test->params.security.method, "tls_scan");
+                    current_test->params.security.port = 443;
+                    current_test->params.security.tls = true;
+                }
+            }
+            else {
+                current_test->type = TEST_OTHER;
+                log_message(LOG_LVL_DEBUG, "Test case %s type: OTHER (unrecognized type: %s)", current_test->id, type_str);
+            }
+        } else {
+            current_test->type = TEST_OTHER;
+            log_message(LOG_LVL_WARN, "Test case %s has no valid type, setting to OTHER", current_test->id);
         }
-        free(test_cases);
-    }
-}
-
-bool filter_test_cases_by_network(const test_case_t *test_cases, int count, network_type_t network_type, test_case_t **filtered_test_cases, int *filtered_count) {
-    // Đếm số lượng test case phù hợp
-    int filtered_size = 0;
-    for (int i = 0; i < count; i++) {
-        if (test_cases[i].network_type == network_type || test_cases[i].network_type == NETWORK_BOTH) {
-            filtered_size++;
+        
+        // Xử lý network_type (loại mạng)
+        cJSON *network = cJSON_GetObjectItem(test_case_json, "network");
+        if (network && cJSON_IsString(network)) {
+            const char *network_str = network->valuestring;
+            if (strcmp(network_str, "LAN") == 0) {
+                current_test->network_type = NETWORK_LAN;
+                log_message(LOG_LVL_DEBUG, "Test case %s network: LAN", current_test->id);
+            } 
+            else if (strcmp(network_str, "WAN") == 0) {
+                current_test->network_type = NETWORK_WAN;
+                log_message(LOG_LVL_DEBUG, "Test case %s network: WAN", current_test->id);
+            }
+            else if (strcmp(network_str, "BOTH") == 0) {
+                current_test->network_type = NETWORK_BOTH;
+                log_message(LOG_LVL_DEBUG, "Test case %s network: BOTH", current_test->id);
+            }
+            else {
+                current_test->network_type = NETWORK_LAN; // Mặc định LAN
+                log_message(LOG_LVL_WARN, "Test case %s has unrecognized network type: %s, setting to LAN", 
+                           current_test->id, network_str);
+            }
+        } else {
+            current_test->network_type = NETWORK_LAN; // Mặc định LAN
+            log_message(LOG_LVL_WARN, "Test case %s has no valid network type, setting to LAN", current_test->id);
+        }
+        
+        // Xử lý extra_data
+        cJSON *extra_data = cJSON_GetObjectItem(test_case_json, "extra_data");
+        if (extra_data) {
+            // Nếu có trường extra_data, lưu dưới dạng chuỗi JSON
+            char *extra_json = cJSON_PrintUnformatted(extra_data);
+            if (extra_json) {
+                current_test->extra_data = strdup(extra_json);
+                log_message(LOG_LVL_DEBUG, "Test case %s extra_data processed", current_test->id);
+                free(extra_json);
+            } else {
+                current_test->extra_data = NULL;
+                log_message(LOG_LVL_WARN, "Failed to process extra_data for test case %s", current_test->id);
+            }
+        } else {
+            current_test->extra_data = NULL;
         }
     }
-
-    // Cấp phát bộ nhớ cho mảng lọc
-    *filtered_test_cases = (test_case_t *)malloc(filtered_size * sizeof(test_case_t));
-    if (!*filtered_test_cases) {
-        return false;
-    }
-
-    // Sao chép các test case phù hợp
-    *filtered_count = 0;
-    for (int i = 0; i < count; i++) {
-        if (test_cases[i].network_type == network_type || test_cases[i].network_type == NETWORK_BOTH) {
-            memcpy(&(*filtered_test_cases)[*filtered_count], &test_cases[i], sizeof(test_case_t));
-            (*filtered_count)++;
-        }
-    }
-
+    
+    cJSON_Delete(root);
+    log_message(LOG_LVL_DEBUG, "Completed parsing JSON test cases");
     return true;
 }
 

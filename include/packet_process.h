@@ -1,22 +1,40 @@
-/**
- * @file packet_process.h
- * @brief Định nghĩa các hàm xử lý gói tin và quản lý thread pool
- */
+
 
  #ifndef PACKET_PROCESS_H
  #define PACKET_PROCESS_H
  
- #include <stdbool.h>
  #include "parser_data.h"
+ #include "tc.h"
  
  /**
-  * @brief Cấu trúc dữ liệu cho task trong queue
+  * @brief Độ ưu tiên của task
+  */
+ typedef enum {
+     TASK_PRIORITY_LOW,     /**< Độ ưu tiên thấp */
+     TASK_PRIORITY_NORMAL,  /**< Độ ưu tiên bình thường */
+     TASK_PRIORITY_HIGH,    /**< Độ ưu tiên cao */
+     TASK_PRIORITY_CRITICAL /**< Độ ưu tiên tối cao */
+ } task_priority_t;
+ 
+ /**
+  * @brief Trạng thái của task
+  */
+ typedef enum {
+     TASK_PENDING,          /**< Task đang chờ thực thi */
+     TASK_RUNNING,          /**< Task đang thực thi */
+     TASK_COMPLETED,        /**< Task đã hoàn thành */
+     TASK_FAILED            /**< Task thất bại */
+ } task_status_t;
+ 
+ /**
+  * @brief Cấu trúc dữ liệu cho task
   */
  typedef struct {
-     test_case_t *test_case;       /**< Con trỏ đến test case cần thực thi */
-     int priority;                 /**< Độ ưu tiên của task */
-     void *extra_data;             /**< Dữ liệu bổ sung */
-     size_t extra_data_size;       /**< Kích thước dữ liệu bổ sung */
+     test_case_t *test_case;       /**< Con trỏ đến test case */
+     task_priority_t priority;     /**< Độ ưu tiên của task */
+     task_status_t status;         /**< Trạng thái của task */
+     test_result_info_t result;    /**< Kết quả thực thi */
+     unsigned long creation_time;  /**< Thời điểm tạo task */
  } task_t;
  
  /**
@@ -32,10 +50,10 @@
  /**
   * @brief Khởi tạo queue
   * 
-  * @param max_size Kích thước tối đa của queue
+  * @param capacity Kích thước tối đa của queue
   * @return task_queue_t* Con trỏ đến queue đã khởi tạo hoặc NULL nếu thất bại
   */
- task_queue_t* init_task_queue(int max_size);
+ task_queue_t* init_task_queue(int capacity);
  
  /**
   * @brief Thêm một task vào queue
@@ -45,15 +63,18 @@
   * @param priority Độ ưu tiên của task
   * @return int 0 nếu thành công, -1 nếu thất bại
   */
- int enqueue_task(task_queue_t *queue, test_case_t *test_case, int priority);
+ int enqueue_task(task_queue_t *queue, test_case_t *test_case, task_priority_t priority);
  
  /**
-  * @brief Lấy một task từ queue
+  * @brief Thêm nhiều test cases vào queue
   * 
   * @param queue Con trỏ đến queue
-  * @return task_t* Con trỏ đến task đã lấy ra hoặc NULL nếu queue rỗng
+  * @param test_cases Mảng test cases
+  * @param count Số lượng test cases
+  * @param priority Độ ưu tiên của các task
+  * @return int Số lượng test cases đã thêm vào queue
   */
- task_t* dequeue_task(task_queue_t *queue);
+ int enqueue_test_cases(task_queue_t *queue, test_case_t *test_cases, int count, task_priority_t priority);
  
  /**
   * @brief Giải phóng queue
@@ -69,58 +90,46 @@
   * @param queue Con trỏ đến task queue
   * @return thread_pool_t* Con trỏ đến thread pool đã khởi tạo hoặc NULL nếu thất bại
   */
- thread_pool_t* init_thread_pool(int thread_count, task_queue_t *queue);
- 
- /**
-  * @brief Thêm tất cả test cases vào queue
-  * 
-  * @param queue Con trỏ đến queue
-  * @param test_cases Mảng test cases
-  * @param count Số lượng test cases
-  * @return int Số lượng test cases đã thêm vào queue
-  */
- int enqueue_test_cases_to_queue(task_queue_t *queue, test_case_t *test_cases, int count);
- 
- /**
-  * @brief Xử lý các test cases trong queue
-  * 
-  * @param thread_pool Con trỏ đến thread pool
-  * @param queue Con trỏ đến queue
-  * @param total_count Số lượng test cases tổng cộng
-  * @return int 0 nếu thành công, -1 nếu thất bại
-  */
- int process_queued_test_cases(thread_pool_t *thread_pool, task_queue_t *queue, int total_count);
+ thread_pool_t* init_thread_pool(int threads, task_queue_t *queue);
  
  /**
   * @brief Dừng thread pool và giải phóng tài nguyên
   * 
-  * @param thread_pool Con trỏ đến thread pool
-  * @return int 0 nếu thành công, -1 nếu thất bại
+  * @param pool Con trỏ đến thread pool
   */
- int stop_thread_pool(thread_pool_t *thread_pool);
+ void stop_thread_pool(thread_pool_t *pool);
  
  /**
   * @brief Lấy số lượng task đã hoàn thành
   * 
-  * @param thread_pool Con trỏ đến thread pool
+  * @param pool Con trỏ đến thread pool
   * @return int Số lượng task đã hoàn thành
   */
- int get_completed_task_count(thread_pool_t *thread_pool);
+ int get_completed_count(thread_pool_t *pool);
  
  /**
   * @brief Lấy số lượng task thành công
   * 
-  * @param thread_pool Con trỏ đến thread pool
+  * @param pool Con trỏ đến thread pool
   * @return int Số lượng task thành công
   */
- int get_success_task_count(thread_pool_t *thread_pool);
+ int get_success_count(thread_pool_t *pool);
  
  /**
   * @brief Lấy số lượng task thất bại
   * 
-  * @param thread_pool Con trỏ đến thread pool
+  * @param pool Con trỏ đến thread pool
   * @return int Số lượng task thất bại
   */
- int get_failed_task_count(thread_pool_t *thread_pool);
+ int get_failed_count(thread_pool_t *pool);
  
- #endif /* PACKET_PROCESS_H */
+ /**
+  * @brief Lấy mảng kết quả test từ thread pool
+  * 
+  * @param pool Con trỏ đến thread pool
+  * @param count Con trỏ để lưu số lượng kết quả
+  * @return test_result_info_t* Mảng kết quả test
+  */
+ test_result_info_t* get_results(thread_pool_t *pool, int *count);
+ 
+ #endif // PACKET_PROCESS_H

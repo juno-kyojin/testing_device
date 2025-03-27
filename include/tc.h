@@ -1,134 +1,151 @@
-/**
- * @file tc.h
- * @brief Định nghĩa các hàm thực thi test case và xử lý kết quả
- */
 
  #ifndef TC_H
  #define TC_H
  
- #include "parser_data.h"
+ #include "parser_data.h"  // Để sử dụng cấu trúc test_case_t
  
  /**
-  * @brief Trạng thái thực thi test case
+  * @brief Trạng thái kết quả test
   */
  typedef enum {
-     TEST_RESULT_SUCCESS,       /**< Test case thành công */
-     TEST_RESULT_FAILED,        /**< Test case thất bại */
-     TEST_RESULT_TIMEOUT,       /**< Test case bị timeout */
-     TEST_RESULT_ERROR          /**< Lỗi khi thực thi */
+     TEST_RESULT_SUCCESS,  /**< Test thành công */
+     TEST_RESULT_FAILED,   /**< Test thất bại */
+     TEST_RESULT_TIMEOUT,  /**< Test bị timeout */
+     TEST_RESULT_ERROR     /**< Lỗi khi thực thi test */
  } test_result_status_t;
  
  /**
-  * @brief Cấu trúc lưu thông tin kết quả của một test case
+  * @brief Kết quả chi tiết cho ping test
   */
  typedef struct {
-     char test_id[32];              /**< ID của test case */
-     test_type_t test_type;         /**< Loại test case */
-     test_result_status_t status;   /**< Trạng thái thực thi */
-     float execution_time;          /**< Thời gian thực thi (ms) */
-     char result_details[1024];     /**< Chi tiết kết quả */
+     int packets_sent;      /**< Số gói tin đã gửi */
+     int packets_received;  /**< Số gói tin đã nhận */
+     float min_rtt;         /**< RTT nhỏ nhất (ms) */
+     float avg_rtt;         /**< RTT trung bình (ms) */
+     float max_rtt;         /**< RTT lớn nhất (ms) */
+     float packet_loss;     /**< Tỷ lệ mất gói (%) */
+ } ping_result_t;
+ 
+ /**
+  * @brief Kết quả chi tiết cho throughput test
+  */
+ typedef struct {
+     float bandwidth;       /**< Băng thông (Mbps) */
+     int jitter;            /**< Jitter (ms) */
+     int packet_loss;       /**< Mất gói (%) */
+     float retransmits;     /**< Tỷ lệ gửi lại (%) */
+ } throughput_result_t;
+ 
+ /**
+  * @brief Kết quả chi tiết cho security test
+  */
+ typedef struct {
+     bool passed;           /**< Test bảo mật qua */
+     int vulnerabilities;   /**< Số lỗ hổng tìm thấy */
+     char vuln_details[256];/**< Chi tiết về lỗ hổng */
+ } security_result_t;
+ 
+ /**
+  * @brief Cấu trúc kết quả test
+  */
+ typedef struct {
+     char test_id[32];               /**< ID của test case */
+     test_type_t test_type;          /**< Loại test */
+     test_result_status_t status;    /**< Trạng thái kết quả */
+     float execution_time;           /**< Thời gian thực thi (ms) */
+     char result_details[1024];      /**< Chi tiết kết quả dạng text */
      
-     /* Kết quả chi tiết tùy theo loại test */
+     /**
+      * @brief Union chứa kết quả chi tiết tùy theo loại test
+      */
      union {
-         struct {
-             int packets_sent;      /**< Số gói tin đã gửi */
-             int packets_received;  /**< Số gói tin đã nhận */
-             float min_rtt;         /**< RTT tối thiểu (ms) */
-             float avg_rtt;         /**< RTT trung bình (ms) */
-             float max_rtt;         /**< RTT tối đa (ms) */
-         } ping;
-         
-         struct {
-             float bandwidth;       /**< Băng thông đo được (Mbps) */
-             int jitter;            /**< Jitter (ms) */
-             int packet_loss;       /**< Tỷ lệ mất gói (%) */
-         } throughput;
-         
-         struct {
-             bool vlan_detected;    /**< VLAN có được phát hiện không */
-             int frames_sent;       /**< Số frame đã gửi */
-             int frames_received;   /**< Số frame đã nhận */
-         } vlan;
-         
-         struct {
-             int vulnerabilities;   /**< Số lỗ hổng phát hiện */
-             char details[512];     /**< Chi tiết lỗ hổng */
-         } security;
+         ping_result_t ping;             /**< Kết quả ping test */
+         throughput_result_t throughput; /**< Kết quả throughput test */
+         security_result_t security;     /**< Kết quả security test */
      } data;
  } test_result_info_t;
  
+ /* Các hằng số và macro */
  /**
-  * @brief Thực thi một test case
+  * @brief Ngưỡng thời gian timeout mặc định (ms)
+  */
+ #define DEFAULT_TEST_TIMEOUT 10000  /* 10 giây */
+ 
+ /**
+  * @brief Ngưỡng tỷ lệ mất gói cho phép đối với ping test
+  */
+ #define PING_ACCEPTABLE_LOSS 20.0f  /* 20% */
+ 
+ /**
+  * @brief Ngưỡng RTT tối đa chấp nhận được cho ping test (ms)
+  */
+ #define PING_MAX_ACCEPTABLE_RTT 200.0f  /* 200ms */
+ 
+ /* Khai báo các hàm */
+ 
+ /**
+  * @brief Thực thi test case
   * 
-  * @param test_case Con trỏ đến test case cần thực thi
+  * @param test_case Con trỏ đến test case
   * @param result Con trỏ đến biến lưu kết quả
-  * @return int 0 nếu thực thi thành công, -1 nếu có lỗi
+  * @return int 0 nếu thành công, -1 nếu thất bại
   */
  int execute_test_case(test_case_t *test_case, test_result_info_t *result);
  
  /**
-  * @brief Thực thi test case dựa vào loại mạng
+  * @brief Thực thi ping test
   * 
   * @param test_case Con trỏ đến test case
-  * @param network_type Loại mạng cần thực thi
   * @param result Con trỏ đến biến lưu kết quả
-  * @return int 0 nếu thực thi thành công, -1 nếu có lỗi
-  */
- int execute_test_case_by_network(test_case_t *test_case, network_type_t network_type, test_result_info_t *result);
- 
- /**
-  * @brief Thực thi test ping
-  * 
-  * @param test_case Con trỏ đến test case kiểu ping
-  * @param result Con trỏ đến biến lưu kết quả
-  * @return int 0 nếu thực thi thành công, -1 nếu có lỗi
+  * @return int 0 nếu thành công, -1 nếu thất bại
   */
  int execute_ping_test(test_case_t *test_case, test_result_info_t *result);
  
  /**
-  * @brief Thực thi test throughput
+  * @brief Thực thi throughput test
   * 
-  * @param test_case Con trỏ đến test case kiểu throughput
+  * @param test_case Con trỏ đến test case
   * @param result Con trỏ đến biến lưu kết quả
-  * @return int 0 nếu thực thi thành công, -1 nếu có lỗi
+  * @return int 0 nếu thành công, -1 nếu thất bại
   */
  int execute_throughput_test(test_case_t *test_case, test_result_info_t *result);
  
  /**
-  * @brief Thực thi test VLAN
+  * @brief Tạo báo cáo tổng hợp từ các kết quả test
   * 
-  * @param test_case Con trỏ đến test case kiểu VLAN
-  * @param result Con trỏ đến biến lưu kết quả
-  * @return int 0 nếu thực thi thành công, -1 nếu có lỗi
-  */
- int execute_vlan_test(test_case_t *test_case, test_result_info_t *result);
- 
- /**
-  * @brief Thực thi test bảo mật
-  * 
-  * @param test_case Con trỏ đến test case kiểu bảo mật
-  * @param result Con trỏ đến biến lưu kết quả
-  * @return int 0 nếu thực thi thành công, -1 nếu có lỗi
-  */
- int execute_security_test(test_case_t *test_case, test_result_info_t *result);
- 
- /**
-  * @brief Lưu kết quả test case vào file
-  * 
-  * @param result Con trỏ đến kết quả
-  * @param output_file Đường dẫn tới file đầu ra
-  * @return int 0 nếu thành công, -1 nếu thất bại
-  */
- int save_test_result(test_result_info_t *result, const char *output_file);
- 
- /**
-  * @brief Tạo báo cáo tổng hợp từ nhiều kết quả test case
-  * 
-  * @param results Mảng các kết quả test case
+  * @param results Mảng kết quả test
   * @param count Số lượng kết quả
-  * @param output_file Đường dẫn tới file báo cáo
+  * @param filename Đường dẫn đến file báo cáo
   * @return int 0 nếu thành công, -1 nếu thất bại
   */
- int generate_summary_report(test_result_info_t *results, int count, const char *output_file);
+ int generate_summary_report(test_result_info_t *results, int count, const char *filename);
+ 
+ /**
+  * @brief Thực thi test case dựa trên loại mạng
+  * 
+  * @param test_case Con trỏ đến test case
+  * @param network_type Loại mạng để thực thi (LAN hoặc WAN)
+  * @param result Con trỏ đến biến lưu kết quả
+  * @return int 0 nếu thành công, -1 nếu thất bại
+  */
+ int execute_test_case_by_network(test_case_t *test_case, network_type_t network_type, test_result_info_t *result);
+ 
+ /**
+  * @brief Chuyển đổi kết quả test sang định dạng JSON
+  * 
+  * @param result Con trỏ đến kết quả test
+  * @param json_buffer Buffer để lưu chuỗi JSON
+  * @param buffer_size Kích thước buffer
+  * @return int 0 nếu thành công, -1 nếu thất bại
+  */
+ int test_result_to_json(test_result_info_t *result, char *json_buffer, size_t buffer_size);
+ 
+ /**
+  * @brief Chuyển đổi trạng thái kết quả test sang chuỗi
+  * 
+  * @param status Trạng thái kết quả test
+  * @return const char* Chuỗi mô tả trạng thái
+  */
+ const char* test_result_status_to_string(test_result_status_t status);
  
  #endif /* TC_H */

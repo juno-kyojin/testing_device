@@ -91,3 +91,18 @@
 [2025-03-27 02:46:25] DEBUG: Freeing memory for 1 instructions
 [2025-03-27 02:46:25] DEBUG: Test program completed
 >>>>>>> Stashed changes
+[2025-03-27 02:57:35] DEBUG: Starting test program
+[2025-03-27 02:57:35] DEBUG: Successfully read 1336 bytes from file config/config.json
+[2025-03-27 02:57:35] DEBUG: Parsed 1 instructions from config/config.json
+[2025-03-27 02:57:35] DEBUG: Executing ping test
+[2025-03-27 02:57:35] DEBUG: Executing real ping to google.com
+[2025-03-27 02:57:35] DEBUG: Executing ping command: ping -c 5 -s 64 -i 1.0 google.com
+[2025-03-27 02:57:39] DEBUG: Ping command exited with status 0
+[2025-03-27 02:57:39] DEBUG: Ping packets sent: 5
+[2025-03-27 02:57:39] DEBUG: Ping packets received: 5
+[2025-03-27 02:57:39] DEBUG: Ping packet loss: 0.0%
+[2025-03-27 02:57:39] DEBUG: Ping RTT min/avg/max: 34.791/123.638/246.379 ms
+[2025-03-27 02:57:39] DEBUG: Ping completed with status: 0
+[2025-03-27 02:57:39] DEBUG: Results: Sent=5, Received=5, Min=34.79, Avg=123.64, Max=246.38
+[2025-03-27 02:57:39] DEBUG: Freeing memory for 1 instructions
+[2025-03-27 02:57:39] DEBUG: Test program completed
