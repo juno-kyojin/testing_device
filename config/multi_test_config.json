@@ -29,7 +29,7 @@
     {
       "action": "speedtest",
       "input_params": {
-        "server": ""
+        "server": "speedtest.net"
       },
       "attributes": [
         {
@@ -47,12 +47,6 @@
         {
           "public_attr_name": "uploadSpeed",
           "private_attr_name": "UploadSpeed",
-          "attr_type": "float",
-          "attr_execute": "yes"
-        },
-        {
-          "public_attr_name": "latency",
-          "private_attr_name": "Latency",
           "attr_type": "float",
           "attr_execute": "yes"
         }

@@ -1,21 +1,21 @@
-CC = gcc
-CFLAGS = -Wall -Wextra -g -pthread
-LDFLAGS = -pthread -lz
+CC=gcc
+CFLAGS=-Wall -Iinclude
+LDFLAGS=-lpthread
+SRC_DIR=./src
+BUILD_DIR=./build
+SOURCES=$(wildcard $(SRC_DIR)/*.c)
+OBJECTS=$(patsubst $(SRC_DIR)/%.c, $(BUILD_DIR)/%.o, $(SOURCES))
+TARGET=testing_device
 
-SRC_DIR = src
-BUILD_DIR = build
-TARGET = test_program
+all: $(BUILD_DIR) $(TARGET)
 
-SOURCES = $(wildcard $(SRC_DIR)/*.c)
-OBJECTS = $(patsubst $(SRC_DIR)/%.c,$(BUILD_DIR)/%.o,$(SOURCES))
-
-all: $(TARGET)
+$(BUILD_DIR):
+	mkdir -p $(BUILD_DIR)
 
 $(TARGET): $(OBJECTS)
-	$(CC) $^ -o $@ $(LDFLAGS)
+	$(CC) -o $@ $^ $(LDFLAGS)
 
 $(BUILD_DIR)/%.o: $(SRC_DIR)/%.c
-	@mkdir -p $(BUILD_DIR)
 	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:

@@ -534,95 +534,192 @@ bool parse_json_instruction(const char *json_content, instruction_t **instructio
         return false;
     }
 
-    *count = 1; // Giả sử chỉ có 1 instruction
-    *instructions = (instruction_t *)malloc(*count * sizeof(instruction_t));
-    if (!(*instructions)) {
-        cJSON_Delete(root);
-        return false;
-    }
-    memset(*instructions, 0, *count * sizeof(instruction_t));
-    instruction_t *instr = &(*instructions)[0];
-
-    // Xử lý action
-    cJSON *action = cJSON_GetObjectItem(root, "action");
-    if (action && cJSON_IsString(action)) {
-        strncpy(instr->action, action->valuestring, sizeof(instr->action) - 1);
-    }
-
-    // Giá trị mặc định nếu không có đầy đủ thông tin
-    instr->type = ACTION_DIAGNOSTIC;
-    strcpy(instr->set_func, "tcapi_set");
-    strcpy(instr->get_func, "tcapi_get");
-    strcpy(instr->commit_func, "ai_diagnostic_commit");
-    strcpy(instr->save_func, "tcapi_save");
-    strcpy(instr->node_type, "single");
-    strcpy(instr->node_name, "Ping");
-    strcpy(instr->sub_node, "Entry");
-    instr->max_entry = 1;
-
-    // Nếu có attributes thì parse, không thì dùng mặc định
-    cJSON *attributes = cJSON_GetObjectItem(root, "attributes");
-    if (attributes && cJSON_IsArray(attributes)) {
-        instr->attr_count = cJSON_GetArraySize(attributes);
-        instr->attributes = (attribute_t *)malloc(instr->attr_count * sizeof(attribute_t));
-        if (!instr->attributes) {
-            free(*instructions);
-            *instructions = NULL;
+    // Kiểm tra xem có mảng test_cases không
+    cJSON *test_cases_array = cJSON_GetObjectItem(root, "test_cases");
+    if (test_cases_array && cJSON_IsArray(test_cases_array)) {
+        // Xử lý nhiều test cases
+        *count = cJSON_GetArraySize(test_cases_array);
+        if (*count <= 0) {
+            log_message(LOG_LVL_ERROR, "No test cases found in array");
             cJSON_Delete(root);
             return false;
         }
-        
-        // Parse attributes như trước
-        for (int j = 0; j < instr->attr_count; j++) {
-            cJSON *attr_json = cJSON_GetArrayItem(attributes, j);
-            attribute_t *attr = &instr->attributes[j];
-            
-            memset(attr, 0, sizeof(attribute_t));
-            
-            cJSON *public_name = cJSON_GetObjectItem(attr_json, "public_attr_name");
-            if (public_name && cJSON_IsString(public_name)) {
-                strncpy(attr->public_name, public_name->valuestring, sizeof(attr->public_name) - 1);
+
+        *instructions = (instruction_t *)malloc(*count * sizeof(instruction_t));
+        if (!(*instructions)) {
+            cJSON_Delete(root);
+            return false;
+        }
+        memset(*instructions, 0, *count * sizeof(instruction_t));
+
+        // Duyệt qua từng test case trong mảng
+        for (int i = 0; i < *count; i++) {
+            cJSON *test_case = cJSON_GetArrayItem(test_cases_array, i);
+            instruction_t *instr = &(*instructions)[i];
+
+            // Đặt các giá trị mặc định
+            instr->type = ACTION_DIAGNOSTIC;
+            strcpy(instr->set_func, "tcapi_set");
+            strcpy(instr->get_func, "tcapi_get");
+            strcpy(instr->commit_func, "ai_diagnostic_commit");
+            strcpy(instr->save_func, "tcapi_save");
+            strcpy(instr->node_type, "single");
+            strcpy(instr->sub_node, "Entry");
+            instr->max_entry = 1;
+
+            // Xử lý action
+            cJSON *action = cJSON_GetObjectItem(test_case, "action");
+            if (action && cJSON_IsString(action)) {
+                strncpy(instr->action, action->valuestring, sizeof(instr->action) - 1);
+                instr->action[sizeof(instr->action) - 1] = '\0';
+                
+                // Thiết lập node_name dựa trên action
+                if (strcmp(action->valuestring, "ping") == 0) {
+                    strcpy(instr->node_name, "Ping");
+                } else if (strcmp(action->valuestring, "throughput") == 0) {
+                    strcpy(instr->node_name, "Throughput");
+                } else if (strcmp(action->valuestring, "security") == 0) {
+                    strcpy(instr->node_name, "Security");
+                } else if (strcmp(action->valuestring, "speedtest") == 0) {
+                    strcpy(instr->node_name, "Speedtest");
+                } else {
+                    strcpy(instr->node_name, "Unknown");
+                }
             }
-            
-            cJSON *private_name = cJSON_GetObjectItem(attr_json, "private_attr_name");
-            if (private_name && cJSON_IsString(private_name)) {
-                strncpy(attr->private_name, private_name->valuestring, sizeof(attr->private_name) - 1);
-            }
-            
-            cJSON *attr_type = cJSON_GetObjectItem(attr_json, "attr_type");
-            if (attr_type && cJSON_IsString(attr_type)) {
-                strncpy(attr->attr_type, attr_type->valuestring, sizeof(attr->attr_type) - 1);
-            }
-            
-            cJSON *attr_execute = cJSON_GetObjectItem(attr_json, "attr_execute");
-            if (attr_execute && cJSON_IsString(attr_execute)) {
-                strncpy(attr->execute, attr_execute->valuestring, sizeof(attr->execute) - 1);
+
+            // Xử lý attributes
+            cJSON *attributes = cJSON_GetObjectItem(test_case, "attributes");
+            if (attributes && cJSON_IsArray(attributes)) {
+                instr->attr_count = cJSON_GetArraySize(attributes);
+                instr->attributes = (attribute_t *)malloc(instr->attr_count * sizeof(attribute_t));
+                if (!instr->attributes) {
+                    // Giải phóng bộ nhớ đã cấp phát
+                    for (int j = 0; j < i; j++) {
+                        if ((*instructions)[j].attributes) {
+                            free((*instructions)[j].attributes);
+                        }
+                    }
+                    free(*instructions);
+                    *instructions = NULL;
+                    cJSON_Delete(root);
+                    return false;
+                }
+                
+                // Parse thuộc tính cho test case này
+                for (int j = 0; j < instr->attr_count; j++) {
+                    cJSON *attr_json = cJSON_GetArrayItem(attributes, j);
+                    attribute_t *attr = &instr->attributes[j];
+                    
+                    memset(attr, 0, sizeof(attribute_t));
+                    
+                    cJSON *public_name = cJSON_GetObjectItem(attr_json, "public_attr_name");
+                    if (public_name && cJSON_IsString(public_name)) {
+                        strncpy(attr->public_name, public_name->valuestring, sizeof(attr->public_name) - 1);
+                    }
+                    
+                    cJSON *private_name = cJSON_GetObjectItem(attr_json, "private_attr_name");
+                    if (private_name && cJSON_IsString(private_name)) {
+                        strncpy(attr->private_name, private_name->valuestring, sizeof(attr->private_name) - 1);
+                    }
+                    
+                    cJSON *attr_type = cJSON_GetObjectItem(attr_json, "attr_type");
+                    if (attr_type && cJSON_IsString(attr_type)) {
+                        strncpy(attr->attr_type, attr_type->valuestring, sizeof(attr->attr_type) - 1);
+                    }
+                    
+                    cJSON *attr_execute = cJSON_GetObjectItem(attr_json, "attr_execute");
+                    if (attr_execute && cJSON_IsString(attr_execute)) {
+                        strncpy(attr->execute, attr_execute->valuestring, sizeof(attr->execute) - 1);
+                    }
+                }
             }
         }
     } else {
-        // Mặc định attributes cho ping
-        instr->attr_count = 8;
-        instr->attributes = (attribute_t *)malloc(instr->attr_count * sizeof(attribute_t));
-        if (!instr->attributes) {
-            free(*instructions);
-            *instructions = NULL;
+        // Xử lý một test case đơn (như cũ)
+        *count = 1;
+        *instructions = (instruction_t *)malloc(*count * sizeof(instruction_t));
+        if (!(*instructions)) {
             cJSON_Delete(root);
             return false;
         }
-        
-        memset(instr->attributes, 0, instr->attr_count * sizeof(attribute_t));
-        
-        strcpy(instr->attributes[0].public_name, "pingCode");
-        strcpy(instr->attributes[0].private_name, "Status");
-        strcpy(instr->attributes[0].attr_type, "int");
-        strcpy(instr->attributes[0].execute, "yes");
-        
-        strcpy(instr->attributes[1].public_name, "host");
-        strcpy(instr->attributes[1].private_name, "host");
-        strcpy(instr->attributes[1].attr_type, "string");
-        strcpy(instr->attributes[1].execute, "yes");
-        
-        // ... existing code for remaining attributes ...
+        memset(*instructions, 0, *count * sizeof(instruction_t));
+        instruction_t *instr = &(*instructions)[0];
+
+        // Đặt các giá trị mặc định
+        instr->type = ACTION_DIAGNOSTIC;
+        strcpy(instr->set_func, "tcapi_set");
+        strcpy(instr->get_func, "tcapi_get");
+        strcpy(instr->commit_func, "ai_diagnostic_commit");
+        strcpy(instr->save_func, "tcapi_save");
+        strcpy(instr->node_type, "single");
+        strcpy(instr->node_name, "Ping");
+        strcpy(instr->sub_node, "Entry");
+        instr->max_entry = 1;
+
+        // Nếu có attributes thì parse, không thì dùng mặc định
+        cJSON *attributes = cJSON_GetObjectItem(root, "attributes");
+        if (attributes && cJSON_IsArray(attributes)) {
+            instr->attr_count = cJSON_GetArraySize(attributes);
+            instr->attributes = (attribute_t *)malloc(instr->attr_count * sizeof(attribute_t));
+            if (!instr->attributes) {
+                free(*instructions);
+                *instructions = NULL;
+                cJSON_Delete(root);
+                return false;
+            }
+            
+            // Parse attributes như trước
+            for (int j = 0; j < instr->attr_count; j++) {
+                cJSON *attr_json = cJSON_GetArrayItem(attributes, j);
+                attribute_t *attr = &instr->attributes[j];
+                
+                memset(attr, 0, sizeof(attribute_t));
+                
+                cJSON *public_name = cJSON_GetObjectItem(attr_json, "public_attr_name");
+                if (public_name && cJSON_IsString(public_name)) {
+                    strncpy(attr->public_name, public_name->valuestring, sizeof(attr->public_name) - 1);
+                }
+                
+                cJSON *private_name = cJSON_GetObjectItem(attr_json, "private_attr_name");
+                if (private_name && cJSON_IsString(private_name)) {
+                    strncpy(attr->private_name, private_name->valuestring, sizeof(attr->private_name) - 1);
+                }
+                
+                cJSON *attr_type = cJSON_GetObjectItem(attr_json, "attr_type");
+                if (attr_type && cJSON_IsString(attr_type)) {
+                    strncpy(attr->attr_type, attr_type->valuestring, sizeof(attr->attr_type) - 1);
+                }
+                
+                cJSON *attr_execute = cJSON_GetObjectItem(attr_json, "attr_execute");
+                if (attr_execute && cJSON_IsString(attr_execute)) {
+                    strncpy(attr->execute, attr_execute->valuestring, sizeof(attr->execute) - 1);
+                }
+            }
+        } else {
+            // Mặc định attributes cho ping
+            instr->attr_count = 8;
+            instr->attributes = (attribute_t *)malloc(instr->attr_count * sizeof(attribute_t));
+            if (!instr->attributes) {
+                free(*instructions);
+                *instructions = NULL;
+                cJSON_Delete(root);
+                return false;
+            }
+            
+            memset(instr->attributes, 0, instr->attr_count * sizeof(attribute_t));
+            
+            strcpy(instr->attributes[0].public_name, "pingCode");
+            strcpy(instr->attributes[0].private_name, "Status");
+            strcpy(instr->attributes[0].attr_type, "int");
+            strcpy(instr->attributes[0].execute, "yes");
+            
+            strcpy(instr->attributes[1].public_name, "host");
+            strcpy(instr->attributes[1].private_name, "host");
+            strcpy(instr->attributes[1].attr_type, "string");
+            strcpy(instr->attributes[1].execute, "yes");
+            
+            // ... existing code for remaining attributes ...
+        }
     }
 
     cJSON_Delete(root);

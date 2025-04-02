@@ -1,5 +1,4 @@
-
- #ifndef TC_H
+#ifndef TC_H
  #define TC_H
  
  #include "parser_data.h"  // Để sử dụng cấu trúc test_case_t
@@ -46,6 +45,15 @@
  } security_result_t;
  
  /**
+  * @brief Kết quả chi tiết cho speedtest
+  */
+ typedef struct {
+     float download_speed;  /**< Tốc độ tải xuống (Mbps) */
+     float upload_speed;    /**< Tốc độ tải lên (Mbps) */
+     float latency;         /**< Độ trễ (ms) */
+ } speedtest_result_t;
+ 
+ /**
   * @brief Cấu trúc kết quả test
   */
  typedef struct {
@@ -62,6 +70,7 @@
          ping_result_t ping;             /**< Kết quả ping test */
          throughput_result_t throughput; /**< Kết quả throughput test */
          security_result_t security;     /**< Kết quả security test */
+         speedtest_result_t speedtest;   /**< Kết quả speedtest */
      } data;
  } test_result_info_t;
  
@@ -109,6 +118,15 @@
   * @return int 0 nếu thành công, -1 nếu thất bại
   */
  int execute_throughput_test(test_case_t *test_case, test_result_info_t *result);
+ 
+ /**
+  * @brief Thực thi speedtest test
+  * 
+  * @param test_case Con trỏ đến test case
+  * @param result Con trỏ đến biến lưu kết quả
+  * @return int 0 nếu thành công, -1 nếu thất bại
+  */
+ int execute_speedtest_test(test_case_t *test_case, test_result_info_t *result);
  
  /**
   * @brief Tạo báo cáo tổng hợp từ các kết quả test

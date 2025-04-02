@@ -20,6 +20,7 @@
      TEST_PING,             /**< Kiểm tra ping */
      TEST_THROUGHPUT,       /**< Kiểm tra throughput */
      TEST_SECURITY,         /**< Kiểm tra bảo mật */
+     TEST_SPEEDTEST,        /**< Kiểm tra tốc độ mạng */
      TEST_OTHER             /**< Các loại kiểm tra khác */
  } test_type_t;
  
@@ -54,6 +55,14 @@
  } security_params_t;
  
  /**
+  * @brief Cấu trúc cho các tham số speedtest
+  */
+ typedef struct {
+     int timeout;        /**< Thời gian timeout (giây) */
+     bool use_https;     /**< Sử dụng HTTPS */
+ } speedtest_params_t;
+ 
+ /**
   * @brief Cấu trúc lưu thông tin của một test case
   */
  typedef struct {
@@ -71,6 +80,7 @@
          ping_params_t ping;         /**< Tham số cho ping test */
          throughput_params_t throughput; /**< Tham số cho throughput test */
          security_params_t security;  /**< Tham số cho security test */
+         speedtest_params_t speedtest; /**< Tham số cho speedtest */
      } params;
      
      /* Dữ liệu bổ sung nếu cần */
