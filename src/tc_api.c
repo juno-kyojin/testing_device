@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <sys/time.h>
+#include <errno.h>  
 #include "parser_data.h"
 #include "cjson/cJSON.h"
 #include "tc.h"
@@ -294,130 +296,112 @@ int execute_speedtest_test(test_case_t *test_case, test_result_info_t *result) {
     log_message(LOG_LVL_DEBUG, "Starting speedtest with server target: %s", 
                 test_case->target[0] ? test_case->target : "default");
     
-    // Tạo file tạm để lưu kết quả JSON từ speedtest-cli
-    char temp_file[256];
-    snprintf(temp_file, sizeof(temp_file), "/tmp/speedtest_result_%d.json", getpid());
-    
     // Chuẩn bị lệnh speedtest-cli
     char command[512];
     
     // Không sử dụng target trực tiếp làm server ID, vì server phải là một ID số
     if (strcmp(test_case->target, "speedtest.net") == 0) {
         // Nếu là speedtest.net, sử dụng server gần nhất
-        snprintf(command, sizeof(command), "speedtest-cli --json > %s 2>/dev/null", temp_file);
+        snprintf(command, sizeof(command), "speedtest-cli --json --secure");
         log_message(LOG_LVL_DEBUG, "Using default server (nearest)");
     } else if (atoi(test_case->target) > 0) {
         // Nếu target là một số ID hợp lệ
-        snprintf(command, sizeof(command), "speedtest-cli --json --server %s > %s 2>/dev/null", 
-                 test_case->target, temp_file);
+        snprintf(command, sizeof(command), "speedtest-cli --json --server %s --secure", 
+                 test_case->target);
         log_message(LOG_LVL_DEBUG, "Using server ID: %s", test_case->target);
     } else if (test_case->target[0]) {
         // Thử tìm server gần nhất với host cụ thể (không chắc chắn sẽ hoạt động)
         log_message(LOG_LVL_WARN, "Server '%s' might not be a valid server ID, attempting to use anyway", test_case->target);
-        snprintf(command, sizeof(command), "speedtest-cli --json --server %s > %s 2>/dev/null", 
-                 test_case->target, temp_file);
+        snprintf(command, sizeof(command), "speedtest-cli --json --server %s --secure", 
+                 test_case->target);
     } else {
         // Không có server được chỉ định, sử dụng server gần nhất
-        snprintf(command, sizeof(command), "speedtest-cli --json > %s 2>/dev/null", temp_file);
+        snprintf(command, sizeof(command), "speedtest-cli --json --secure");
         log_message(LOG_LVL_DEBUG, "Using default server (nearest)");
     }
     
-    // Tạo một file debug để lưu stderr
-    char debug_file[256];
-    snprintf(debug_file, sizeof(debug_file), "/tmp/speedtest_debug_%d.txt", getpid());
-    
-    // Điều chỉnh lệnh để cũng ghi log stderr cho debug
-    char full_command[1024];
-    snprintf(full_command, sizeof(full_command), "%s 2> %s", command, debug_file);
-    
+    // Bắt đầu đo thời gian thực thi
+    struct timeval start_time, end_time;
+    gettimeofday(&start_time, NULL);
+
     // Ghi log
-    log_message(LOG_LVL_DEBUG, "Executing command: %s", full_command);
+    log_message(LOG_LVL_DEBUG, "Executing command: %s", command);
     
-    // Thực thi lệnh
-    int ret = system(full_command);
-    if (ret != 0) {
-        log_message(LOG_LVL_ERROR, "speedtest-cli execution failed with code %d", ret);
+    // Mở pipe để đọc output trực tiếp từ lệnh
+    FILE *pipe = popen(command, "r");
+    if (!pipe) {
+        log_message(LOG_LVL_ERROR, "Failed to open pipe for speedtest-cli");
+        snprintf(result->result_details, sizeof(result->result_details), 
+                "Failed to execute speedtest-cli command: %s", strerror(errno));
+        result->status = TEST_RESULT_ERROR;
+        return -1;
+    }
+    
+    // Đọc output trực tiếp từ pipe vào buffer
+    char json_buffer[8192] = {0};
+    size_t bytes_read = fread(json_buffer, 1, sizeof(json_buffer) - 1, pipe);
+    
+    // Đóng pipe và lấy exit code
+    int exit_status = pclose(pipe);
+    
+    // Dừng đo thời gian
+    gettimeofday(&end_time, NULL);
+    result->execution_time = (end_time.tv_sec - start_time.tv_sec) * 1000.0f + 
+                            (end_time.tv_usec - start_time.tv_usec) / 1000.0f;
+    
+    log_message(LOG_LVL_DEBUG, "Speedtest execution time: %.1f ms", result->execution_time);
+    
+    if (exit_status != 0) {
+        log_message(LOG_LVL_ERROR, "speedtest-cli execution failed with code %d", exit_status);
         
-        // Đọc file debug để có thêm thông tin
-        FILE *debug_fp = fopen(debug_file, "r");
-        if (debug_fp) {
-            char debug_info[1024] = {0};
-            size_t debug_bytes = fread(debug_info, 1, sizeof(debug_info) - 1, debug_fp);
-            fclose(debug_fp);
+        if (bytes_read > 0) {
+            // Có thể có thông báo lỗi trong output, giới hạn kích thước
+            char short_error[900] = {0};
+            strncpy(short_error, json_buffer, sizeof(short_error) - 1);
+            short_error[sizeof(short_error) - 1] = '\0';
             
-            if (debug_bytes > 0) {
-                log_message(LOG_LVL_ERROR, "Speedtest error details: %s", debug_info);
-                // Giới hạn kích thước thông tin debug để tránh tràn bộ đệm
-                char short_debug[900] = {0}; // Đảm bảo kích thước nhỏ hơn đích
-                strncpy(short_debug, debug_info, sizeof(short_debug) - 1);
-                short_debug[sizeof(short_debug) - 1] = '\0'; // Đảm bảo null-terminated
-                
-                snprintf(result->result_details, sizeof(result->result_details), 
-                        "Speedtest execution failed: %s", short_debug);
-            } else {
-                snprintf(result->result_details, sizeof(result->result_details), 
-                         "Speedtest execution failed with code %d", ret);
-            }
+            snprintf(result->result_details, sizeof(result->result_details), 
+                    "Speedtest execution failed: %s", short_error);
         } else {
             snprintf(result->result_details, sizeof(result->result_details), 
-                     "Speedtest execution failed with code %d", ret);
+                    "Speedtest execution failed with code %d", exit_status);
         }
         
-        // Xóa file debug
-        remove(debug_file);
         result->status = TEST_RESULT_ERROR;
         return -1;
     }
-    
-    // Xóa file debug nếu thành công
-    remove(debug_file);
-    
-    // Đọc kết quả từ file tạm
-    FILE *fp = fopen(temp_file, "r");
-    if (!fp) {
-        log_message(LOG_LVL_ERROR, "Failed to open speedtest result file");
-        snprintf(result->result_details, sizeof(result->result_details), 
-                "Failed to open speedtest result file");
-        result->status = TEST_RESULT_ERROR;
-        return -1;
-    }
-    
-    // Đọc toàn bộ nội dung file
-    char json_buffer[8192] = {0};  // Tăng kích thước buffer
-    size_t bytes_read = fread(json_buffer, 1, sizeof(json_buffer) - 1, fp);
-    fclose(fp);
-    
-    // Xóa file tạm
-    remove(temp_file);
     
     if (bytes_read == 0) {
         log_message(LOG_LVL_ERROR, "Empty result from speedtest");
         
-        // Thử chạy một lệnh đơn giản hơn để xem có hoạt động không
+        // Thử chạy một lệnh đơn giản hơn, và lấy kết quả trực tiếp
         log_message(LOG_LVL_DEBUG, "Attempting basic speedtest-cli command for diagnostic");
-        system("speedtest-cli --simple > /tmp/speedtest_simple.txt 2>&1");
         
-        // Đọc kết quả của lệnh đơn giản
-        FILE *simple_fp = fopen("/tmp/speedtest_simple.txt", "r");
-        if (simple_fp) {
+        FILE *simple_pipe = popen("speedtest-cli --simple", "r");
+        if (simple_pipe) {
             char simple_result[1024] = {0};
-            fread(simple_result, 1, sizeof(simple_result) - 1, simple_fp);
-            fclose(simple_fp);
-            log_message(LOG_LVL_DEBUG, "Simple speedtest result: %s", simple_result);
+            size_t simple_bytes = fread(simple_result, 1, sizeof(simple_result) - 1, simple_pipe);
+            pclose(simple_pipe);
             
-            // Giới hạn kích thước thông tin kết quả đơn giản để tránh tràn bộ đệm
-            char short_result[900] = {0};  // Đảm bảo kích thước nhỏ hơn đích
-            strncpy(short_result, simple_result, sizeof(short_result) - 1);
-            short_result[sizeof(short_result) - 1] = '\0'; // Đảm bảo null-terminated
-            
-            snprintf(result->result_details, sizeof(result->result_details), 
-                    "JSON result empty. Try running 'speedtest-cli' manually. Simple test: %s", short_result);
+            if (simple_bytes > 0) {
+                log_message(LOG_LVL_DEBUG, "Simple speedtest result: %s", simple_result);
+                
+                // Giới hạn kích thước thông tin kết quả đơn giản
+                char short_result[900] = {0};
+                strncpy(short_result, simple_result, sizeof(short_result) - 1);
+                short_result[sizeof(short_result) - 1] = '\0';
+                
+                snprintf(result->result_details, sizeof(result->result_details), 
+                        "JSON result empty. Try running 'speedtest-cli' manually. Simple test: %s", short_result);
+            } else {
+                snprintf(result->result_details, sizeof(result->result_details), 
+                        "Empty result from speedtest. Try running 'speedtest-cli' manually");
+            }
         } else {
             snprintf(result->result_details, sizeof(result->result_details), 
                     "Empty result from speedtest. Try running 'speedtest-cli' manually");
         }
         
-        remove("/tmp/speedtest_simple.txt");
         result->status = TEST_RESULT_ERROR;
         return -1;
     }
