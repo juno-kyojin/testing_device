@@ -1,0 +1,15 @@
+[Unit]
+Description=Testing Device Service
+After=network.target
+
+[Service]
+Type=simple
+User=tobie
+Group=tobie
+WorkingDirectory=/home/tobie/testing_device
+ExecStart=/home/tobie/testing_device/scripts/testing-service.sh
+Restart=on-failure
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
