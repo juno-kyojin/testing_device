@@ -83,6 +83,7 @@ int main(int argc, char *argv[]) {
         const char* action = instructions[i].action;
         const char* node_name = get_node_name_for_action(action);
         
+        // Ghi vào log thay vì ra stdout
         log_message(LOG_LVL_DEBUG, "Executing %s test", action);
 
         // Tạo JSON để lưu kết quả cho test case này
@@ -105,7 +106,7 @@ int main(int argc, char *argv[]) {
             }
         }
 
-        // Thực thi test case
+        // Thực thi test case - ghi thông báo thực thi vào log thay vì stdout
         execute_instruction(&instructions[i], input_params);
 
         // Lấy kết quả từ tcapi_get
@@ -125,6 +126,54 @@ int main(int argc, char *argv[]) {
             }
         }
 
+        // Thêm chi tiết bổ sung cho từng loại test
+        if (strcmp(action, "ping") == 0) {
+            // Lấy thông tin chi tiết về ping
+            char buffer[128];
+            
+            // Thêm packet loss
+            if (tcapi_get(node_name, instructions[i].sub_node, "packetLoss", buffer) == 0) {
+                cJSON_AddNumberToObject(attributes, "packetLoss", atof(buffer));
+            }
+            
+            // Thêm thông tin về số gói tin
+            if (tcapi_get(node_name, instructions[i].sub_node, "successCount", buffer) == 0) {
+                cJSON_AddNumberToObject(attributes, "successCount", atoi(buffer));
+            }
+            
+            if (tcapi_get(node_name, instructions[i].sub_node, "failureCount", buffer) == 0) {
+                cJSON_AddNumberToObject(attributes, "failureCount", atoi(buffer));
+            }
+            
+            // Thêm thông tin về RTT
+            if (tcapi_get(node_name, instructions[i].sub_node, "minimumResponseTime", buffer) == 0) {
+                cJSON_AddNumberToObject(attributes, "minRTT", atof(buffer));
+            }
+            
+            if (tcapi_get(node_name, instructions[i].sub_node, "maximumResponseTime", buffer) == 0) {
+                cJSON_AddNumberToObject(attributes, "maxRTT", atof(buffer));
+            }
+        } 
+        else if (strcmp(action, "speedtest") == 0) {
+            // Thêm chi tiết về server
+            char details[1024] = {0};
+            if (tcapi_get(node_name, instructions[i].sub_node, "ServerDetails", details) == 0 && strlen(details) > 0) {
+                cJSON_AddStringToObject(attributes, "serverInfo", details);
+            }
+            
+            // Thêm thời gian thực thi
+            char buffer[128];
+            if (tcapi_get(node_name, instructions[i].sub_node, "ExecutionTime", buffer) == 0) {
+                cJSON_AddNumberToObject(attributes, "executionTime", atof(buffer));
+            }
+        }
+
+        // Thêm status details cho tất cả các loại test
+        char details[1024] = {0};
+        if (tcapi_get(node_name, instructions[i].sub_node, "Details", details) == 0 && strlen(details) > 0) {
+            cJSON_AddStringToObject(attributes, "details", details);
+        }
+
         // Thêm kết quả của test case này vào mảng kết quả
         cJSON_AddItemToArray(test_results, result);
         
@@ -134,8 +183,8 @@ int main(int argc, char *argv[]) {
         }
     }
 
-    // In kết quả tổng hợp ra stdout
-    char *result_str = cJSON_PrintUnformatted(all_results);
+    // In kết quả tổng hợp ra stdout - CHỈ in JSON, không có thông báo khác
+    char *result_str = cJSON_Print(all_results);
     printf("%s\n", result_str);
     free(result_str);
 
@@ -145,6 +194,5 @@ int main(int argc, char *argv[]) {
     free(json_content);
     free_instructions(instructions, count);
 
-    log_message(LOG_LVL_DEBUG, "Test program completed");
     return 0;
 }

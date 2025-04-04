@@ -1,8 +1,8 @@
-
 #define _POSIX_C_SOURCE 200809L   /* Thêm để đảm bảo định nghĩa POSIX đầy đủ */
 
 #include "tc.h"
 #include "log.h"
+#include "file_process.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -511,27 +511,40 @@ int generate_summary_report(test_result_info_t *results, int count, const char *
     
     log_message(LOG_LVL_DEBUG, "Generating summary report to %s", filename);
     
-    FILE *file = fopen(filename, "w");
-    if (!file) {
-        log_message(LOG_LVL_ERROR, "Failed to open report file %s: %s", 
-                   filename, strerror(errno));
+    // Tạo chuỗi JSON báo cáo
+    char *json_content = NULL;
+    size_t content_size = 0;
+    
+    // Tính kích thước dự kiến cho buffer
+    content_size = 1024 + count * 256; // Ước tính kích thước cơ bản
+    json_content = (char *)malloc(content_size);
+    if (!json_content) {
+        log_message(LOG_LVL_ERROR, "Failed to allocate memory for report JSON");
         return -1;
     }
     
-    // Tạo báo cáo dạng JSON đơn giản
-    fprintf(file, "{\n  \"test_results\": [\n");
+    // Tạo báo cáo dạng JSON
+    int offset = 0;
+    offset += snprintf(json_content + offset, content_size - offset, "{\n  \"test_results\": [\n");
     
     for (int i = 0; i < count; i++) {
-        fprintf(file, "    {\n");
-        fprintf(file, "      \"test_id\": \"%s\",\n", results[i].test_id);
-        fprintf(file, "      \"status\": \"%s\",\n", test_result_status_to_string(results[i].status));
-        fprintf(file, "      \"details\": \"%s\"\n", results[i].result_details);
-        fprintf(file, "    }%s\n", (i < count - 1) ? "," : "");
+        offset += snprintf(json_content + offset, content_size - offset,
+                "    {\n      \"test_id\": \"%s\",\n      \"status\": \"%s\",\n      \"details\": \"%s\"\n    }%s\n", 
+                results[i].test_id, 
+                test_result_status_to_string(results[i].status), 
+                results[i].result_details,
+                (i < count - 1) ? "," : "");
     }
     
-    fprintf(file, "  ]\n}\n");
+    offset += snprintf(json_content + offset, content_size - offset, "  ]\n}\n");
     
-    fclose(file);
+    if (write_file(filename, json_content, offset) != 0) {
+        log_message(LOG_LVL_ERROR, "Failed to write report to file %s", filename);
+        free(json_content);
+        return -1;
+    }
+    
+    free(json_content);
     log_message(LOG_LVL_DEBUG, "Successfully generated report: %s", filename);
     
     return 0;

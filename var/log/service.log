@@ -1,0 +1,45 @@
+Starting testing device service...
+Starting testing device service...
+Starting testing device service...
+Processing config.json at 20250402_155331
+Processing config.json at 20250402_155633
+Starting testing device service...
+Processing config.json at 20250404_085511
+Starting testing device service...
+Starting testing device service...
+Starting testing device service...
+Starting testing device service...
+Processing config.json at 20250404_104049
+Processing config.json at 20250404_104051
+Starting testing device service...
+Starting testing device service...
+Processing config.json at 20250404_104428
+Processing config.json at 20250404_104952
+Starting testing device service at Fri Apr  4 10:53:13 +07 2025
+Processing config.json at 20250404_105341
+Running: /home/tobie/testing_device/bin/testing_device '/home/tobie/testing_device/var/input/config.json' > '/tmp/result_20250404_105341.json'
+Binary exit code: 0
+Error: Invalid JSON in /tmp/result_20250404_105341.json (failed python validation)
+Error: Invalid JSON output for config.json (exit code: 0)
+Content of invalid file (first 200 bytes):
+Executing instruction: ping
+Test result: SUCCESS
+Details: Ping to google.com completed. Packets: 5/5, Loss: 0.0%, RTT min/avg/max: 36.593/91.804/219.329 ms
+Executing instruction: speedtest
+Test result
+Processing config.json at 20250404_110236
+Running: /home/tobie/testing_device/bin/testing_device '/home/tobie/testing_device/var/input/config.json' > '/tmp/result_20250404_110236.json'
+Binary exit code: 0
+Valid JSON saved to /home/tobie/testing_device/var/results/config_20250404_110236.json
+Processing config.json at 20250404_111454
+Running: /home/tobie/testing_device/bin/testing_device '/home/tobie/testing_device/var/input/config.json' > '/tmp/result_20250404_111454.json'
+Binary exit code: 0
+Valid JSON saved to /home/tobie/testing_device/var/results/config_20250404_111454.json
+Processing config.json at 20250404_134450
+Running: /home/tobie/testing_device/bin/testing_device '/home/tobie/testing_device/var/input/config.json' > '/tmp/result_20250404_134450.json'
+Binary exit code: 0
+Valid JSON saved to /home/tobie/testing_device/var/results/config_20250404_134450.json
+Processing config.json at 20250404_143637
+Running: /home/tobie/testing_device/bin/testing_device '/home/tobie/testing_device/var/input/config.json' > '/tmp/result_20250404_143637.json'
+Binary exit code: 0
+Valid JSON saved to /home/tobie/testing_device/var/results/config_20250404_143637.json

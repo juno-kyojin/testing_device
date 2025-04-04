@@ -105,6 +105,10 @@ int tcapi_get(const char *node, const char *entry, const char *attribute, char *
             sprintf(value, "%.1f", test_result->result.data.ping.min_rtt);
         } else if (strcmp(attribute, "maximumResponseTime") == 0) {
             sprintf(value, "%.1f", test_result->result.data.ping.max_rtt);
+        } else if (strcmp(attribute, "packetLoss") == 0) {
+            sprintf(value, "%.1f", test_result->result.data.ping.packet_loss);
+        } else if (strcmp(attribute, "Details") == 0) {
+            strcpy(value, test_result->result.result_details);
         } else {
             return -1;
         }
@@ -136,6 +140,19 @@ int tcapi_get(const char *node, const char *entry, const char *attribute, char *
             sprintf(value, "%.2f", test_result->result.data.speedtest.upload_speed);
         } else if (strcmp(attribute, "Latency") == 0) {
             sprintf(value, "%.2f", test_result->result.data.speedtest.latency);
+        } else if (strcmp(attribute, "ServerDetails") == 0) {
+            // Trích xuất thông tin server từ result_details
+            char server_info[256] = "";
+            if (sscanf(test_result->result.result_details, 
+                    "Speedtest completed with server %255[^.]", server_info) == 1) {
+                strcpy(value, server_info);
+            } else {
+                strcpy(value, "Unknown server");
+            }
+        } else if (strcmp(attribute, "ExecutionTime") == 0) {
+            sprintf(value, "%.1f", test_result->result.execution_time);
+        } else if (strcmp(attribute, "Details") == 0) {
+            strcpy(value, test_result->result.result_details);
         } else {
             return -1;
         }
@@ -146,7 +163,7 @@ int tcapi_get(const char *node, const char *entry, const char *attribute, char *
 
 // Stub function cho tcapi_set - được giữ lại để ghi log
 int tcapi_set(const char *node, const char *entry, const char *attribute, const char *value) {
-    printf("Setting %s.%s.%s = %s\n", node, entry, attribute, value);
+    log_message(LOG_LVL_DEBUG, "Setting %s.%s.%s = %s", node, entry, attribute, value);
     
     // Xử lý thiết lập tham số cho từng loại test
     if (strcmp(node, "Ping") == 0) {
@@ -406,8 +423,7 @@ int execute_speedtest_test(test_case_t *test_case, test_result_info_t *result) {
         return -1;
     }
     
-    log_message(LOG_LVL_DEBUG, "Successfully read %lu bytes of JSON result", (unsigned long)bytes_read);
-    
+    log_message(LOG_LVL_DEBUG, "Successfully read %lu bytes of JSON result", (unsigned long)bytes_read);       
     // Parse JSON kết quả
     cJSON *json = cJSON_Parse(json_buffer);
     if (!json) {
@@ -501,7 +517,7 @@ int execute_speedtest_test(test_case_t *test_case, test_result_info_t *result) {
 int execute_instruction(const instruction_t *instruction, cJSON *input_params) {
     if (!instruction) return -1;
     
-    printf("Executing instruction: %s\n", instruction->action);
+    log_message(LOG_LVL_DEBUG, "Executing instruction: %s", instruction->action);
     
     // Reset kết quả trước khi thực thi
     num_test_results = 0;
@@ -540,31 +556,25 @@ int execute_instruction(const instruction_t *instruction, cJSON *input_params) {
                 test_result->executed = true;
             }
         } else {
-            log_message(LOG_LVL_WARN, "No valid host specified for ping, execution skipped");
+            log_message(LOG_LVL_WARN, "Ping skipped: No valid host specified");
             test_result->result.status = TEST_RESULT_ERROR;
             snprintf(test_result->result.result_details, sizeof(test_result->result.result_details), 
                     "No valid host specified for ping");
             test_result->executed = true;
-            printf("Ping skipped: No valid host specified\n");
         }
     } else if (strcmp(instruction->action, "throughput") == 0) {
-        // Phần này sẽ thực thi throughput test khi được triển khai
-        log_message(LOG_LVL_DEBUG, "Throughput test is not implemented yet");
+        log_message(LOG_LVL_WARN, "Throughput test skipped: Not implemented");
         test_result->result.status = TEST_RESULT_ERROR;
         snprintf(test_result->result.result_details, sizeof(test_result->result.result_details), 
                 "Throughput test is not implemented yet");
         test_result->executed = true;
-        printf("Throughput test skipped: Not implemented\n");
     } else if (strcmp(instruction->action, "security") == 0) {
-        // Phần này sẽ thực thi security test khi được triển khai
-        log_message(LOG_LVL_DEBUG, "Security test is not implemented yet");
+        log_message(LOG_LVL_WARN, "Security test skipped: Not implemented");
         test_result->result.status = TEST_RESULT_ERROR;
         snprintf(test_result->result.result_details, sizeof(test_result->result.result_details), 
                 "Security test is not implemented yet");
         test_result->executed = true;
-        printf("Security test skipped: Not implemented\n");
     } else if (strcmp(instruction->action, "speedtest") == 0) {
-        // Thực hiện speedtest thực tế thay vì giả lập
         log_message(LOG_LVL_DEBUG, "Executing speedtest with server %s", current_test_case.target);
         
         // Gọi hàm thực thi speedtest
@@ -579,30 +589,29 @@ int execute_instruction(const instruction_t *instruction, cJSON *input_params) {
             test_result->executed = true;
         }
     } else {
-        log_message(LOG_LVL_WARN, "Unknown action: %s", instruction->action);
+        log_message(LOG_LVL_WARN, "Execution skipped: Unknown action %s", instruction->action);
         test_result->result.status = TEST_RESULT_ERROR;
         snprintf(test_result->result.result_details, sizeof(test_result->result.result_details), 
                 "Unknown action: %s", instruction->action);
         test_result->executed = true;
-        printf("Execution skipped: Unknown action %s\n", instruction->action);
     }
     
-    // In kết quả thực thi
+    // In kết quả thực thi vào log thay vì stdout
     if (test_result->executed) {
-        printf("Test result: %s\n", test_result_status_to_string(test_result->result.status));
-        printf("Details: %s\n", test_result->result.result_details);
+        log_message(LOG_LVL_DEBUG, "Test result: %s", test_result_status_to_string(test_result->result.status));
+        log_message(LOG_LVL_DEBUG, "Details: %s", test_result->result.result_details);
     }
     
     return 0;
 }
 
-// Các stub functions khác không thay đổi
+// Các stub functions khác cũng sửa tương tự
 int tcapi_save() {
-    printf("Saving configuration\n");
+    log_message(LOG_LVL_DEBUG, "Saving configuration");
     return 0;
 }
 
 int ai_diagnostic_commit() {
-    printf("Committing diagnostics\n");
+    log_message(LOG_LVL_DEBUG, "Committing diagnostics");
     return 0;
 }
