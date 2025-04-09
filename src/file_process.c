@@ -1,6 +1,4 @@
-
-
- #include "file_process.h"
+#include "file_process.h"
  #include "log.h"
  #include <stdio.h>
  #include <stdlib.h>
@@ -45,7 +43,7 @@
      
      // Đọc nội dung file
      size_t bytes_read = fread(*buffer, 1, file_size, file);
-     if (bytes_read != file_size) {
+     if (bytes_read != (size_t)file_size) {
          log_message(LOG_LVL_ERROR, "Failed to read entire file %s: %s", file_path, strerror(errno));
          free(*buffer);
          *buffer = NULL;

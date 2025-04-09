@@ -22,7 +22,7 @@ static volatile int timeout_occurred = 0;
 /**
  * @brief Handler cho tín hiệu SIGALRM (dùng cho timeout)
  */
-static void timeout_handler(int signum) {
+static void timeout_handler(int __attribute__((unused)) signum) {
     timeout_occurred = 1;
 }
 

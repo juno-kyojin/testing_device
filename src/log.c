@@ -1,5 +1,4 @@
-
- #include "log.h"
+#include "log.h"
  #include <stdio.h>
  #include <stdlib.h>
  #include <string.h>
@@ -75,7 +74,7 @@
   int header_len = snprintf(log_buffer, sizeof(log_buffer), "[%s] %s: ", 
                            time_str, log_level_names[level]);
   
-  if (header_len < 0 || header_len >= sizeof(log_buffer)) {
+  if (header_len < 0 || (size_t)header_len >= sizeof(log_buffer)) {
       return; // Lỗi khi tạo header
   }
   

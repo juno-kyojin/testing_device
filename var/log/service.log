@@ -71,3 +71,7 @@ Processing config1.json at 20250409_165651
 Running: /home/tobie/testing_device/bin/testing_device '/home/tobie/testing_device/var/input/config1.json' > '/tmp/result_20250409_165651.json'
 Binary exit code: 0
 Valid JSON saved to /home/tobie/testing_device/var/results/config1_20250409_165651.json
+Processing config1.json at 20250409_170653
+Running: /home/tobie/testing_device/bin/testing_device '/home/tobie/testing_device/var/input/config1.json' > '/tmp/result_20250409_170653.json'
+Binary exit code: 0
+Valid JSON saved to /home/tobie/testing_device/var/results/config1_20250409_170653.json

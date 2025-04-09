@@ -44,8 +44,8 @@ static test_action_result_t* find_test_result(const char *action) {
     return NULL;
 }
 
-// Stub function cho tcapi_get - sử dụng kết quả thực tế
-int tcapi_get(const char *node, const char *entry, const char *attribute, char *value) {
+
+int tcapi_get(const char *node, const char *entry __attribute__((unused)), const char *attribute, char *value) {
     test_action_result_t *test_result = NULL;
     
     if (strcmp(node, "Ping") == 0) {
@@ -150,7 +150,7 @@ int tcapi_get(const char *node, const char *entry, const char *attribute, char *
     return 0;
 }
 
-// Stub function cho tcapi_set - được giữ lại để ghi log
+// function cho tcapi_set - ghi log
 int tcapi_set(const char *node, const char *entry, const char *attribute, const char *value) {
     log_message(LOG_LVL_DEBUG, "Setting %s.%s.%s = %s", node, entry, attribute, value);
     
@@ -792,7 +792,7 @@ int execute_instruction(const instruction_t *instruction, cJSON *input_params) {
     return 0;
 }
 
-// Các stub functions khác cũng sửa tương tự
+
 int tcapi_save() {
     log_message(LOG_LVL_DEBUG, "Saving configuration");
     return 0;
