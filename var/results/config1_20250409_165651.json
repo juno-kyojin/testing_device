@@ -1,0 +1,27 @@
+{
+	"test_results":	[{
+			"action":	"ping",
+			"results":	{
+				"pingCode":	0,
+				"host":	"google.com",
+				"averageResponseTime":	84.8,
+				"packetLoss":	0,
+				"successCount":	5,
+				"failureCount":	0,
+				"minRTT":	57.4,
+				"maxRTT":	165.9,
+				"details":	"Ping to google.com completed. Packets: 5/5, Loss: 0.0%, RTT min/avg/max: 57.441/84.812/165.850 ms"
+			}
+		}, {
+			"action":	"speedtest",
+			"results":	{
+				"speedtestCode":	0,
+				"downloadSpeed":	256.36,
+				"uploadSpeed":	132.06,
+				"latency":	34.74,
+				"serverInfo":	"Ha Noi (speedtest2",
+				"executionTime":	25382.8,
+				"details":	"Speedtest completed with server Ha Noi (speedtest2.vtn.com.vn:8080, Vietnam) [ID: 17757]. Download: 256.36 Mbps, Upload: 132.06 Mbps, Latency: 34.74 ms"
+			}
+		}]
+}

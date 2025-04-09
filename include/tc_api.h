@@ -1,9 +1,46 @@
-#ifndef TC_STUBS_H
-#define TC_STUBS_H
+#ifndef TC_API_H
+#define TC_API_H
 
 #include "parser_data.h"
 #include "tc.h"
 #include <cjson/cJSON.h>
+
+/**
+ * @brief Thực thi test case
+ * 
+ * @param test_case Con trỏ đến test case
+ * @param result Con trỏ đến biến lưu kết quả
+ * @return int 0 nếu thành công, -1 nếu thất bại
+ */
+int execute_test_case(test_case_t *test_case, test_result_info_t *result);
+
+/**
+ * @brief Thực thi ping test
+ * 
+ * @param test_case Con trỏ đến test case
+ * @param result Con trỏ đến biến lưu kết quả
+ * @return int 0 nếu thành công, -1 nếu thất bại
+ */
+int execute_ping_test(test_case_t *test_case, test_result_info_t *result);
+
+/**
+ * @brief Thực thi speedtest test
+ * 
+ * @param test_case Con trỏ đến test case
+ * @param result Con trỏ đến biến lưu kết quả
+ * @return int 0 nếu thành công, -1 nếu thất bại
+ */
+int execute_speedtest_test(test_case_t *test_case, test_result_info_t *result);
+
+/**
+ * @brief Thực thi test case dựa trên loại mạng
+ * 
+ * @param test_case Con trỏ đến test case
+ * @param network_type Loại mạng để thực thi (LAN hoặc WAN)
+ * @param result Con trỏ đến biến lưu kết quả
+ * @return int 0 nếu thành công, -1 nếu thất bại
+ */
+int execute_test_case_by_network(test_case_t *test_case, network_type_t network_type, test_result_info_t *result);
 
 /**
  * @brief Thực thi instruction dựa trên input parameters
@@ -50,4 +87,4 @@ int tcapi_save(void);
  */
 int ai_diagnostic_commit(void);
 
-#endif /* TC_STUBS_H */
+#endif /* TC_API_H */

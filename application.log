@@ -1,261 +1,501 @@
-[2025-04-02 10:27:20] DEBUG: Starting test program with config: config/config.json
-[2025-04-02 10:27:20] DEBUG: Successfully read 1517 bytes from file config/config.json
-[2025-04-02 10:27:20] DEBUG: Parsed 2 instructions from config/config.json
-[2025-04-02 10:27:20] DEBUG: Executing ping test
-[2025-04-02 10:27:20] DEBUG: Executing ping test to google.com
-[2025-04-02 10:27:20] DEBUG: Executing ping command: ping -c 5 -s 64 -i 1.0 google.com
-[2025-04-02 10:27:24] DEBUG: Ping command exited with status 0
-[2025-04-02 10:27:24] DEBUG: Ping packets sent: 5
-[2025-04-02 10:27:24] DEBUG: Ping packets received: 5
-[2025-04-02 10:27:24] DEBUG: Ping packet loss: 0.0%
-[2025-04-02 10:27:24] DEBUG: Ping RTT min/avg/max: 26.475/33.615/49.206 ms
-[2025-04-02 10:27:24] DEBUG: Ping completed with status: 0
-[2025-04-02 10:27:24] DEBUG: Executing speedtest test
-[2025-04-02 10:27:24] DEBUG: Executing speedtest with server speedtest.net
-[2025-04-02 10:27:24] DEBUG: Starting speedtest with server target: speedtest.net
-[2025-04-02 10:27:24] DEBUG: Using default server (nearest)
-[2025-04-02 10:27:24] DEBUG: Executing command: speedtest-cli --json > /tmp/speedtest_result_16742.json 2>/dev/null 2> /tmp/speedtest_debug_16742.txt
-[2025-04-02 10:27:50] DEBUG: Successfully read 673 bytes of JSON result
-[2025-04-02 10:27:50] DEBUG: Server ID for future reference: 63521
-[2025-04-02 10:27:50] DEBUG: Speedtest completed successfully: Download=220.66 Mbps, Upload=108.12 Mbps, Latency=58.54 ms
-[2025-04-02 10:27:50] DEBUG: Speedtest completed with status: 0
-[2025-04-02 10:27:50] DEBUG: Freeing memory for 2 instructions
-[2025-04-02 10:27:50] DEBUG: Test program completed
-[2025-04-02 10:44:16] DEBUG: Starting test program with config: config/config.json
-[2025-04-02 10:44:16] DEBUG: Successfully read 1521 bytes from file config/config.json
-[2025-04-02 10:44:16] DEBUG: Parsed 2 instructions from config/config.json
-[2025-04-02 10:44:16] DEBUG: Executing ping test
-[2025-04-02 10:44:16] DEBUG: Executing ping test to google.com
-[2025-04-02 10:44:16] DEBUG: Executing ping command: ping -c 5 -s 64 -i 1.0 google.com
-[2025-04-02 10:44:20] DEBUG: Ping command exited with status 0
-[2025-04-02 10:44:20] DEBUG: Ping packets sent: 5
-[2025-04-02 10:44:20] DEBUG: Ping packets received: 5
-[2025-04-02 10:44:20] DEBUG: Ping packet loss: 0.0%
-[2025-04-02 10:44:20] DEBUG: Ping RTT min/avg/max: 29.357/66.518/131.350 ms
-[2025-04-02 10:44:20] DEBUG: Ping completed with status: 0
-[2025-04-02 10:44:20] DEBUG: Executing speedtest test
-[2025-04-02 10:44:20] DEBUG: Executing speedtest with server 9903
-[2025-04-02 10:44:20] DEBUG: Starting speedtest with server target: 9903
-[2025-04-02 10:44:20] DEBUG: Using server ID: 9903
-[2025-04-02 10:44:20] DEBUG: Executing command: speedtest-cli --json --server 9903 > /tmp/speedtest_result_20084.json 2>/dev/null 2> /tmp/speedtest_debug_20084.txt
-[2025-04-02 10:44:44] DEBUG: Successfully read 684 bytes of JSON result
-[2025-04-02 10:44:44] DEBUG: Server ID for future reference: 9903
-[2025-04-02 10:44:44] DEBUG: Speedtest completed successfully: Download=275.78 Mbps, Upload=130.47 Mbps, Latency=141.44 ms
-[2025-04-02 10:44:44] DEBUG: Speedtest completed with status: 0
-[2025-04-02 10:44:44] DEBUG: Freeing memory for 2 instructions
-[2025-04-02 10:44:44] DEBUG: Test program completed
-[2025-04-02 11:02:07] DEBUG: Starting test program with config: config/config.json
-[2025-04-02 11:02:07] DEBUG: Successfully read 1521 bytes from file config/config.json
-[2025-04-02 11:02:07] DEBUG: Parsed 2 instructions from config/config.json
-[2025-04-02 11:02:07] DEBUG: Executing ping test
-[2025-04-02 11:02:07] DEBUG: Executing ping test to google.com
-[2025-04-02 11:02:07] DEBUG: Executing ping command: ping -c 5 -s 64 -i 1.0 google.com
-[2025-04-02 11:02:11] DEBUG: Ping command exited with status 0
-[2025-04-02 11:02:11] DEBUG: Ping packets sent: 5
-[2025-04-02 11:02:11] DEBUG: Ping packets received: 5
-[2025-04-02 11:02:11] DEBUG: Ping packet loss: 0.0%
-[2025-04-02 11:02:11] DEBUG: Ping RTT min/avg/max: 28.186/30.676/34.356 ms
-[2025-04-02 11:02:11] DEBUG: Ping completed with status: 0
-[2025-04-02 11:02:11] DEBUG: Executing speedtest test
-[2025-04-02 11:02:11] DEBUG: Executing speedtest with server 9903
-[2025-04-02 11:02:11] DEBUG: Starting speedtest with server target: 9903
-[2025-04-02 11:02:11] DEBUG: Using server ID: 9903
-[2025-04-02 11:02:11] DEBUG: Executing command: speedtest-cli --json --server 9903 > /tmp/speedtest_result_23218.json 2> /tmp/speedtest_debug_23218.txt
-[2025-04-02 11:02:12] ERROR: speedtest-cli execution failed with code 256
-[2025-04-02 11:02:12] ERROR: Speedtest error details: Cannot retrieve speedtest configuration
-ERROR: HTTP Error 403: Forbidden
-[2025-04-02 11:02:12] ERROR: Speedtest execution failed
-[2025-04-02 11:02:12] DEBUG: Freeing memory for 2 instructions
-[2025-04-02 11:02:12] DEBUG: Test program completed
-[2025-04-02 11:02:38] DEBUG: Starting test program with config: config/config.json
-[2025-04-02 11:02:38] DEBUG: Successfully read 1521 bytes from file config/config.json
-[2025-04-02 11:02:38] DEBUG: Parsed 2 instructions from config/config.json
-[2025-04-02 11:02:38] DEBUG: Executing ping test
-[2025-04-02 11:02:38] DEBUG: Executing ping test to google.com
-[2025-04-02 11:02:38] DEBUG: Executing ping command: ping -c 5 -s 64 -i 1.0 google.com
-[2025-04-02 11:02:42] DEBUG: Ping command exited with status 0
-[2025-04-02 11:02:42] DEBUG: Ping packets sent: 5
-[2025-04-02 11:02:42] DEBUG: Ping packets received: 5
-[2025-04-02 11:02:42] DEBUG: Ping packet loss: 0.0%
-[2025-04-02 11:02:42] DEBUG: Ping RTT min/avg/max: 28.221/30.107/33.616 ms
-[2025-04-02 11:02:42] DEBUG: Ping completed with status: 0
-[2025-04-02 11:02:42] DEBUG: Executing speedtest test
-[2025-04-02 11:02:42] DEBUG: Executing speedtest with server 9903
-[2025-04-02 11:02:42] DEBUG: Starting speedtest with server target: 9903
-[2025-04-02 11:02:42] DEBUG: Using server ID: 9903
-[2025-04-02 11:02:42] DEBUG: Executing command: speedtest-cli --json --server 9903 > /tmp/speedtest_result_23375.json 2> /tmp/speedtest_debug_23375.txt
-[2025-04-02 11:02:42] ERROR: speedtest-cli execution failed with code 256
-[2025-04-02 11:02:42] ERROR: Speedtest error details: Cannot retrieve speedtest configuration
-ERROR: HTTP Error 403: Forbidden
-[2025-04-02 11:02:42] ERROR: Speedtest execution failed
-[2025-04-02 11:02:42] DEBUG: Freeing memory for 2 instructions
-[2025-04-02 11:02:42] DEBUG: Test program completed
-[2025-04-02 11:02:55] DEBUG: Starting test program with config: config/config.json
-[2025-04-02 11:02:55] DEBUG: Successfully read 1521 bytes from file config/config.json
-[2025-04-02 11:02:55] DEBUG: Parsed 2 instructions from config/config.json
-[2025-04-02 11:02:55] DEBUG: Executing ping test
-[2025-04-02 11:02:55] DEBUG: Executing ping test to google.com
-[2025-04-02 11:02:55] DEBUG: Executing ping command: ping -c 5 -s 64 -i 1.0 google.com
-[2025-04-02 11:03:02] DEBUG: Ping command exited with status 0
-[2025-04-02 11:03:02] DEBUG: Ping packets sent: 5
-[2025-04-02 11:03:02] DEBUG: Ping packets received: 5
-[2025-04-02 11:03:02] DEBUG: Ping packet loss: 0.0%
-[2025-04-02 11:03:02] DEBUG: Ping RTT min/avg/max: 31.077/37.618/54.314 ms
-[2025-04-02 11:03:02] DEBUG: Ping completed with status: 0
-[2025-04-02 11:03:02] DEBUG: Executing speedtest test
-[2025-04-02 11:03:02] DEBUG: Executing speedtest with server 9903
-[2025-04-02 11:03:02] DEBUG: Starting speedtest with server target: 9903
-[2025-04-02 11:03:02] DEBUG: Using server ID: 9903
-[2025-04-02 11:03:02] DEBUG: Executing command: speedtest-cli --json --server 9903 > /tmp/speedtest_result_23527.json 2>/dev/null 2> /tmp/speedtest_debug_23527.txt
-[2025-04-02 11:03:02] ERROR: speedtest-cli execution failed with code 256
-[2025-04-02 11:03:02] ERROR: Speedtest error details: Cannot retrieve speedtest configuration
-ERROR: HTTP Error 403: Forbidden
-[2025-04-02 11:03:02] ERROR: Speedtest execution failed
-[2025-04-02 11:03:02] DEBUG: Freeing memory for 2 instructions
-[2025-04-02 11:03:02] DEBUG: Test program completed
-[2025-04-02 11:03:37] DEBUG: Starting test program with config: config/config.json
-[2025-04-02 11:03:37] DEBUG: Successfully read 1517 bytes from file config/config.json
-[2025-04-02 11:03:37] DEBUG: Parsed 2 instructions from config/config.json
-[2025-04-02 11:03:37] DEBUG: Executing ping test
-[2025-04-02 11:03:37] DEBUG: Executing ping test to google.com
-[2025-04-02 11:03:37] DEBUG: Executing ping command: ping -c 5 -s 64 -i 1.0 google.com
-[2025-04-02 11:03:41] DEBUG: Ping command exited with status 0
-[2025-04-02 11:03:41] DEBUG: Ping packets sent: 5
-[2025-04-02 11:03:41] DEBUG: Ping packets received: 5
-[2025-04-02 11:03:41] DEBUG: Ping packet loss: 0.0%
-[2025-04-02 11:03:41] DEBUG: Ping RTT min/avg/max: 27.259/33.635/47.985 ms
-[2025-04-02 11:03:41] DEBUG: Ping completed with status: 0
-[2025-04-02 11:03:41] DEBUG: Executing speedtest test
-[2025-04-02 11:03:41] DEBUG: Executing speedtest with server speedtest.net
-[2025-04-02 11:03:41] DEBUG: Starting speedtest with server target: speedtest.net
-[2025-04-02 11:03:41] DEBUG: Using default server (nearest)
-[2025-04-02 11:03:41] DEBUG: Executing command: speedtest-cli --json > /tmp/speedtest_result_23724.json 2>/dev/null 2> /tmp/speedtest_debug_23724.txt
-[2025-04-02 11:03:42] ERROR: speedtest-cli execution failed with code 256
-[2025-04-02 11:03:42] ERROR: Speedtest error details: Cannot retrieve speedtest configuration
-ERROR: HTTP Error 403: Forbidden
-[2025-04-02 11:03:42] ERROR: Speedtest execution failed
-[2025-04-02 11:03:42] DEBUG: Freeing memory for 2 instructions
-[2025-04-02 11:03:42] DEBUG: Test program completed
-[2025-04-02 11:05:56] DEBUG: Starting test program with config: config/config.json
-[2025-04-02 11:05:56] DEBUG: Successfully read 1517 bytes from file config/config.json
-[2025-04-02 11:05:56] DEBUG: Parsed 2 instructions from config/config.json
-[2025-04-02 11:05:56] DEBUG: Executing ping test
-[2025-04-02 11:05:56] DEBUG: Executing ping test to google.com
-[2025-04-02 11:05:56] DEBUG: Executing ping command: ping -c 5 -s 64 -i 1.0 google.com
-[2025-04-02 11:06:00] DEBUG: Ping command exited with status 0
-[2025-04-02 11:06:00] DEBUG: Ping packets sent: 5
-[2025-04-02 11:06:00] DEBUG: Ping packets received: 5
-[2025-04-02 11:06:00] DEBUG: Ping packet loss: 0.0%
-[2025-04-02 11:06:00] DEBUG: Ping RTT min/avg/max: 26.429/27.636/30.800 ms
-[2025-04-02 11:06:00] DEBUG: Ping completed with status: 0
-[2025-04-02 11:06:00] DEBUG: Executing speedtest test
-[2025-04-02 11:06:00] DEBUG: Executing speedtest with server speedtest.net
-[2025-04-02 11:06:00] DEBUG: Starting speedtest with server target: speedtest.net
-[2025-04-02 11:06:00] DEBUG: Using default server (nearest)
-[2025-04-02 11:06:00] DEBUG: Executing command: speedtest-cli --json --secure > /tmp/speedtest_result_24316.json 2>/dev/null 2> /tmp/speedtest_debug_24316.txt
-[2025-04-02 11:06:25] DEBUG: Successfully read 657 bytes of JSON result
-[2025-04-02 11:06:25] DEBUG: Server ID for future reference: 55434
-[2025-04-02 11:06:25] DEBUG: Speedtest completed successfully: Download=251.01 Mbps, Upload=180.06 Mbps, Latency=58.33 ms
-[2025-04-02 11:06:25] DEBUG: Speedtest completed with status: 0
-[2025-04-02 11:06:25] DEBUG: Freeing memory for 2 instructions
-[2025-04-02 11:06:25] DEBUG: Test program completed
-[2025-04-02 11:07:24] DEBUG: Starting test program with config: config/config.json
-[2025-04-02 11:07:24] DEBUG: Successfully read 1517 bytes from file config/config.json
-[2025-04-02 11:07:24] DEBUG: Parsed 2 instructions from config/config.json
-[2025-04-02 11:07:24] DEBUG: Executing ping test
-[2025-04-02 11:07:24] DEBUG: Executing ping test to google.com
-[2025-04-02 11:07:24] DEBUG: Executing ping command: ping -c 5 -s 64 -i 1.0 google.com
-[2025-04-02 11:07:28] DEBUG: Ping command exited with status 0
-[2025-04-02 11:07:28] DEBUG: Ping packets sent: 5
-[2025-04-02 11:07:28] DEBUG: Ping packets received: 5
-[2025-04-02 11:07:28] DEBUG: Ping packet loss: 0.0%
-[2025-04-02 11:07:28] DEBUG: Ping RTT min/avg/max: 26.504/28.951/32.260 ms
-[2025-04-02 11:07:28] DEBUG: Ping completed with status: 0
-[2025-04-02 11:07:28] DEBUG: Executing speedtest test
-[2025-04-02 11:07:28] DEBUG: Executing speedtest with server speedtest.net
-[2025-04-02 11:07:28] DEBUG: Starting speedtest with server target: speedtest.net
-[2025-04-02 11:07:28] DEBUG: Using default server (nearest)
-[2025-04-02 11:07:28] DEBUG: Executing command: speedtest-cli --json --secure > /tmp/speedtest_result_24802.json 2> /tmp/speedtest_debug_24802.txt
-[2025-04-02 11:07:48] DEBUG: Successfully read 680 bytes of JSON result
-[2025-04-02 11:07:48] DEBUG: Server ID for future reference: 9903
-[2025-04-02 11:07:48] DEBUG: Speedtest completed successfully: Download=292.97 Mbps, Upload=165.38 Mbps, Latency=49.24 ms
-[2025-04-02 11:07:48] DEBUG: Speedtest completed with status: 0
-[2025-04-02 11:07:48] DEBUG: Freeing memory for 2 instructions
-[2025-04-02 11:07:48] DEBUG: Test program completed
-[2025-04-02 11:16:16] DEBUG: Starting test program with config: config/config.json
-[2025-04-02 11:16:16] DEBUG: Successfully read 1517 bytes from file config/config.json
-[2025-04-02 11:16:16] DEBUG: Parsed 2 instructions from config/config.json
-[2025-04-02 11:16:16] DEBUG: Executing ping test
-[2025-04-02 11:16:16] DEBUG: Executing ping test to google.com
-[2025-04-02 11:16:16] DEBUG: Executing ping command: ping -c 5 -s 64 -i 1.0 google.com
-[2025-04-02 11:16:19] DEBUG: Starting test program with config: config/config.json
-[2025-04-02 11:16:19] DEBUG: Successfully read 1517 bytes from file config/config.json
-[2025-04-02 11:16:19] DEBUG: Parsed 2 instructions from config/config.json
-[2025-04-02 11:16:19] DEBUG: Executing ping test
-[2025-04-02 11:16:19] DEBUG: Executing ping test to google.com
-[2025-04-02 11:16:19] DEBUG: Executing ping command: ping -c 5 -s 64 -i 1.0 google.com
-[2025-04-02 11:16:24] DEBUG: Ping command exited with status 0
-[2025-04-02 11:16:24] DEBUG: Ping packets sent: 5
-[2025-04-02 11:16:24] DEBUG: Ping packets received: 5
-[2025-04-02 11:16:24] DEBUG: Ping packet loss: 0.0%
-[2025-04-02 11:16:24] DEBUG: Ping RTT min/avg/max: 34.295/50.124/63.622 ms
-[2025-04-02 11:16:24] DEBUG: Ping completed with status: 0
-[2025-04-02 11:16:24] DEBUG: Executing speedtest test
-[2025-04-02 11:16:24] DEBUG: Executing speedtest with server speedtest.net
-[2025-04-02 11:16:24] DEBUG: Starting speedtest with server target: speedtest.net
-[2025-04-02 11:16:24] DEBUG: Using default server (nearest)
-[2025-04-02 11:16:24] DEBUG: Executing command: speedtest-cli --json --secure
-[2025-04-02 11:16:48] DEBUG: Successfully read 681 bytes of JSON result
-[2025-04-02 11:16:48] DEBUG: Server ID for future reference: 9903
-[2025-04-02 11:16:48] DEBUG: Speedtest completed successfully: Download=391.42 Mbps, Upload=141.26 Mbps, Latency=95.67 ms
-[2025-04-02 11:16:48] DEBUG: Speedtest completed with status: 0
-[2025-04-02 11:16:48] DEBUG: Freeing memory for 2 instructions
-[2025-04-02 11:16:48] DEBUG: Test program completed
-[2025-04-02 11:20:55] DEBUG: Starting test program with config: config/config.json
-[2025-04-02 11:20:55] DEBUG: Successfully read 1517 bytes from file config/config.json
-[2025-04-02 11:20:55] DEBUG: Parsed 2 instructions from config/config.json
-[2025-04-02 11:20:55] DEBUG: Executing ping test
-[2025-04-02 11:20:55] DEBUG: Executing ping test to google.com
-[2025-04-02 11:20:55] DEBUG: Executing ping command: ping -c 5 -s 64 -i 1.0 google.com
-[2025-04-02 11:20:59] DEBUG: Ping command exited with status 0
-[2025-04-02 11:20:59] DEBUG: Ping packets sent: 5
-[2025-04-02 11:20:59] DEBUG: Ping packets received: 5
-[2025-04-02 11:20:59] DEBUG: Ping packet loss: 0.0%
-[2025-04-02 11:20:59] DEBUG: Ping RTT min/avg/max: 26.815/27.428/28.692 ms
-[2025-04-02 11:20:59] DEBUG: Ping completed with status: 0
-[2025-04-02 11:20:59] DEBUG: Executing speedtest test
-[2025-04-02 11:20:59] DEBUG: Executing speedtest with server speedtest.net
-[2025-04-02 11:20:59] DEBUG: Starting speedtest with server target: speedtest.net
-[2025-04-02 11:20:59] DEBUG: Using default server (nearest)
-[2025-04-02 11:20:59] DEBUG: Executing command: speedtest-cli --json --secure
-[2025-04-02 11:21:20] DEBUG: Speedtest execution time: 20196.0 ms
-[2025-04-02 11:21:20] DEBUG: Successfully read 681 bytes of JSON result
-[2025-04-02 11:21:20] DEBUG: Server ID for future reference: 9903
-[2025-04-02 11:21:20] DEBUG: Speedtest completed successfully: Download=282.71 Mbps, Upload=174.23 Mbps, Latency=57.32 ms
-[2025-04-02 11:21:20] DEBUG: Speedtest completed with status: 0
-[2025-04-02 11:21:20] DEBUG: Freeing memory for 2 instructions
-[2025-04-02 11:21:20] DEBUG: Test program completed
-[2025-04-02 14:12:04] DEBUG: Starting test program with config: config/config.json
-[2025-04-02 14:12:04] DEBUG: Successfully read 1517 bytes from file config/config.json
-[2025-04-02 14:12:04] DEBUG: Parsed 2 instructions from config/config.json
-[2025-04-02 14:12:04] DEBUG: Executing ping test
-[2025-04-02 14:12:04] DEBUG: Executing ping test to google.com
-[2025-04-02 14:12:04] DEBUG: Executing ping command: ping -c 5 -s 64 -i 1.0 google.com
-[2025-04-02 14:12:08] DEBUG: Ping command exited with status 0
-[2025-04-02 14:12:08] DEBUG: Ping packets sent: 5
-[2025-04-02 14:12:08] DEBUG: Ping packets received: 5
-[2025-04-02 14:12:08] DEBUG: Ping packet loss: 0.0%
-[2025-04-02 14:12:08] DEBUG: Ping RTT min/avg/max: 27.514/83.288/169.750 ms
-[2025-04-02 14:12:08] DEBUG: Ping completed with status: 0
-[2025-04-02 14:12:08] DEBUG: Executing speedtest test
-[2025-04-02 14:12:08] DEBUG: Executing speedtest with server speedtest.net
-[2025-04-02 14:12:08] DEBUG: Starting speedtest with server target: speedtest.net
-[2025-04-02 14:12:08] DEBUG: Using default server (nearest)
-[2025-04-02 14:12:08] DEBUG: Executing command: speedtest-cli --json --secure
-[2025-04-02 14:12:31] DEBUG: Speedtest execution time: 22801.3 ms
-[2025-04-02 14:12:31] DEBUG: Successfully read 670 bytes of JSON result
-[2025-04-02 14:12:31] DEBUG: Server ID for future reference: 17757
-[2025-04-02 14:12:31] DEBUG: Speedtest completed successfully: Download=135.97 Mbps, Upload=152.71 Mbps, Latency=81.34 ms
-[2025-04-02 14:12:31] DEBUG: Speedtest completed with status: 0
-[2025-04-02 14:12:31] DEBUG: Freeing memory for 2 instructions
-[2025-04-02 14:12:31] DEBUG: Test program completed
+[2025-04-02 15:44:08] DEBUG: Starting test program with config: config/config.json
+[2025-04-02 15:44:08] DEBUG: Successfully read 1517 bytes from file config/config.json
+[2025-04-02 15:44:08] DEBUG: Parsed 2 instructions from config/config.json
+[2025-04-02 15:44:08] DEBUG: Executing ping test
+[2025-04-02 15:44:08] DEBUG: Executing ping test to google.com
+[2025-04-02 15:44:08] DEBUG: Executing ping command: ping -c 5 -s 64 -i 1.0 google.com
+[2025-04-02 15:44:12] DEBUG: Ping command exited with status 0
+[2025-04-02 15:44:12] DEBUG: Ping packets sent: 5
+[2025-04-02 15:44:12] DEBUG: Ping packets received: 5
+[2025-04-02 15:44:12] DEBUG: Ping packet loss: 0.0%
+[2025-04-02 15:44:12] DEBUG: Ping RTT min/avg/max: 25.811/27.994/31.580 ms
+[2025-04-02 15:44:12] DEBUG: Ping completed with status: 0
+[2025-04-02 15:44:12] DEBUG: Executing speedtest test
+[2025-04-02 15:44:12] DEBUG: Executing speedtest with server speedtest.net
+[2025-04-02 15:44:12] DEBUG: Starting speedtest with server target: speedtest.net
+[2025-04-02 15:44:12] DEBUG: Using default server (nearest)
+[2025-04-02 15:44:12] DEBUG: Executing command: speedtest-cli --json --secure
+[2025-04-02 15:44:38] DEBUG: Speedtest execution time: 26001.8 ms
+[2025-04-02 15:44:38] DEBUG: Successfully read 679 bytes of JSON result
+[2025-04-02 15:44:38] DEBUG: Server ID for future reference: 54467
+[2025-04-02 15:44:38] DEBUG: Speedtest completed successfully: Download=364.53 Mbps, Upload=150.02 Mbps, Latency=111.30 ms
+[2025-04-02 15:44:38] DEBUG: Speedtest completed with status: 0
+[2025-04-02 15:44:38] DEBUG: Freeing memory for 2 instructions
+[2025-04-02 15:44:38] DEBUG: Test program completed
+[2025-04-02 15:53:31] DEBUG: Starting test program with config: /home/tobie/testing_device/var/input/config.json
+[2025-04-02 15:53:31] DEBUG: Successfully read 1517 bytes from file /home/tobie/testing_device/var/input/config.json
+[2025-04-02 15:53:31] DEBUG: Parsed 2 instructions from /home/tobie/testing_device/var/input/config.json
+[2025-04-02 15:53:31] DEBUG: Executing ping test
+[2025-04-02 15:53:31] DEBUG: Executing ping test to google.com
+[2025-04-02 15:53:31] DEBUG: Executing ping command: ping -c 5 -s 64 -i 1.0 google.com
+[2025-04-02 15:53:35] DEBUG: Ping command exited with status 0
+[2025-04-02 15:53:35] DEBUG: Ping packets sent: 5
+[2025-04-02 15:53:35] DEBUG: Ping packets received: 5
+[2025-04-02 15:53:35] DEBUG: Ping packet loss: 0.0%
+[2025-04-02 15:53:35] DEBUG: Ping RTT min/avg/max: 24.098/26.163/27.518 ms
+[2025-04-02 15:53:35] DEBUG: Ping completed with status: 0
+[2025-04-02 15:53:35] DEBUG: Executing speedtest test
+[2025-04-02 15:53:35] DEBUG: Executing speedtest with server speedtest.net
+[2025-04-02 15:53:35] DEBUG: Starting speedtest with server target: speedtest.net
+[2025-04-02 15:53:35] DEBUG: Using default server (nearest)
+[2025-04-02 15:53:35] DEBUG: Executing command: speedtest-cli --json --secure
+[2025-04-02 15:53:59] DEBUG: Speedtest execution time: 23905.8 ms
+[2025-04-02 15:53:59] DEBUG: Successfully read 677 bytes of JSON result
+[2025-04-02 15:53:59] DEBUG: Server ID for future reference: 54467
+[2025-04-02 15:53:59] DEBUG: Speedtest completed successfully: Download=368.60 Mbps, Upload=177.77 Mbps, Latency=62.88 ms
+[2025-04-02 15:53:59] DEBUG: Speedtest completed with status: 0
+[2025-04-02 15:53:59] DEBUG: Freeing memory for 2 instructions
+[2025-04-02 15:53:59] DEBUG: Test program completed
+[2025-04-02 15:56:33] DEBUG: Starting test program with config: /home/tobie/testing_device/var/input/config.json
+[2025-04-02 15:56:33] DEBUG: Successfully read 1517 bytes from file /home/tobie/testing_device/var/input/config.json
+[2025-04-02 15:56:33] DEBUG: Parsed 2 instructions from /home/tobie/testing_device/var/input/config.json
+[2025-04-02 15:56:33] DEBUG: Executing ping test
+[2025-04-02 15:56:33] DEBUG: Executing ping test to google.com
+[2025-04-02 15:56:33] DEBUG: Executing ping command: ping -c 5 -s 64 -i 1.0 google.com
+[2025-04-02 15:56:37] DEBUG: Ping command exited with status 0
+[2025-04-02 15:56:37] DEBUG: Ping packets sent: 5
+[2025-04-02 15:56:37] DEBUG: Ping packets received: 5
+[2025-04-02 15:56:37] DEBUG: Ping packet loss: 0.0%
+[2025-04-02 15:56:37] DEBUG: Ping RTT min/avg/max: 22.947/23.638/24.571 ms
+[2025-04-02 15:56:37] DEBUG: Ping completed with status: 0
+[2025-04-02 15:56:37] DEBUG: Executing speedtest test
+[2025-04-02 15:56:37] DEBUG: Executing speedtest with server speedtest.net
+[2025-04-02 15:56:37] DEBUG: Starting speedtest with server target: speedtest.net
+[2025-04-02 15:56:37] DEBUG: Using default server (nearest)
+[2025-04-02 15:56:37] DEBUG: Executing command: speedtest-cli --json --secure
+[2025-04-02 15:57:04] DEBUG: Speedtest execution time: 27218.3 ms
+[2025-04-02 15:57:04] DEBUG: Successfully read 692 bytes of JSON result
+[2025-04-02 15:57:04] DEBUG: Server ID for future reference: 59932
+[2025-04-02 15:57:04] DEBUG: Speedtest completed successfully: Download=313.76 Mbps, Upload=120.70 Mbps, Latency=37.53 ms
+[2025-04-02 15:57:04] DEBUG: Speedtest completed with status: 0
+[2025-04-02 15:57:04] DEBUG: Freeing memory for 2 instructions
+[2025-04-02 15:57:04] DEBUG: Test program completed
+[2025-04-04 08:55:11] DEBUG: Starting test program with config: /home/tobie/testing_device/var/input/config.json
+[2025-04-04 08:55:11] DEBUG: Successfully read 1517 bytes from file /home/tobie/testing_device/var/input/config.json
+[2025-04-04 08:55:11] DEBUG: Parsed 2 instructions from /home/tobie/testing_device/var/input/config.json
+[2025-04-04 08:55:11] DEBUG: Executing ping test
+[2025-04-04 08:55:11] DEBUG: Executing ping test to google.com
+[2025-04-04 08:55:11] DEBUG: Executing ping command: ping -c 5 -s 64 -i 1.0 google.com
+[2025-04-04 08:55:15] DEBUG: Ping command exited with status 0
+[2025-04-04 08:55:15] DEBUG: Ping packets sent: 5
+[2025-04-04 08:55:15] DEBUG: Ping packets received: 5
+[2025-04-04 08:55:15] DEBUG: Ping packet loss: 0.0%
+[2025-04-04 08:55:15] DEBUG: Ping RTT min/avg/max: 36.796/43.011/64.911 ms
+[2025-04-04 08:55:15] DEBUG: Ping completed with status: 0
+[2025-04-04 08:55:15] DEBUG: Executing speedtest test
+[2025-04-04 08:55:15] DEBUG: Executing speedtest with server speedtest.net
+[2025-04-04 08:55:15] DEBUG: Starting speedtest with server target: speedtest.net
+[2025-04-04 08:55:15] DEBUG: Using default server (nearest)
+[2025-04-04 08:55:15] DEBUG: Executing command: speedtest-cli --json --secure
+[2025-04-04 08:55:39] DEBUG: Speedtest execution time: 23573.0 ms
+[2025-04-04 08:55:39] DEBUG: Successfully read 672 bytes of JSON result
+[2025-04-04 08:55:39] DEBUG: Server ID for future reference: 63521
+[2025-04-04 08:55:39] DEBUG: Speedtest completed successfully: Download=241.38 Mbps, Upload=118.97 Mbps, Latency=77.23 ms
+[2025-04-04 08:55:39] DEBUG: Speedtest completed with status: 0
+[2025-04-04 08:55:39] DEBUG: Freeing memory for 2 instructions
+[2025-04-04 08:55:39] DEBUG: Test program completed
+[2025-04-04 10:40:10] DEBUG: Starting test program with config: config/config.json
+[2025-04-04 10:40:10] DEBUG: Successfully read 1517 bytes from file config/config.json
+[2025-04-04 10:40:10] DEBUG: Parsed 2 instructions from config/config.json
+[2025-04-04 10:40:10] DEBUG: Executing ping test
+[2025-04-04 10:40:10] DEBUG: Executing ping test to google.com
+[2025-04-04 10:40:10] DEBUG: Executing ping command: ping -c 5 -s 64 -i 1.0 google.com
+[2025-04-04 10:40:14] DEBUG: Ping command exited with status 0
+[2025-04-04 10:40:14] DEBUG: Ping packets sent: 5
+[2025-04-04 10:40:14] DEBUG: Ping packets received: 5
+[2025-04-04 10:40:14] DEBUG: Ping packet loss: 0.0%
+[2025-04-04 10:40:14] DEBUG: Ping RTT min/avg/max: 22.929/33.457/70.304 ms
+[2025-04-04 10:40:14] DEBUG: Ping completed with status: 0
+[2025-04-04 10:40:14] DEBUG: Executing speedtest test
+[2025-04-04 10:40:14] DEBUG: Executing speedtest with server speedtest.net
+[2025-04-04 10:40:14] DEBUG: Starting speedtest with server target: speedtest.net
+[2025-04-04 10:40:14] DEBUG: Using default server (nearest)
+[2025-04-04 10:40:14] DEBUG: Executing command: speedtest-cli --json --secure
+[2025-04-04 10:40:38] DEBUG: Speedtest execution time: 23250.6 ms
+[2025-04-04 10:40:38] DEBUG: Successfully read 692 bytes of JSON result
+[2025-04-04 10:40:38] DEBUG: Server ID for future reference: 2496
+[2025-04-04 10:40:38] DEBUG: Speedtest completed successfully: Download=267.58 Mbps, Upload=127.52 Mbps, Latency=64.09 ms
+[2025-04-04 10:40:38] DEBUG: Speedtest completed with status: 0
+[2025-04-04 10:40:38] DEBUG: Freeing memory for 2 instructions
+[2025-04-04 10:40:38] DEBUG: Test program completed
+[2025-04-04 10:40:49] DEBUG: Starting test program with config: /home/tobie/testing_device/var/input/config.json
+[2025-04-04 10:40:49] DEBUG: Successfully read 1517 bytes from file /home/tobie/testing_device/var/input/config.json
+[2025-04-04 10:40:49] DEBUG: Parsed 2 instructions from /home/tobie/testing_device/var/input/config.json
+[2025-04-04 10:40:49] DEBUG: Executing ping test
+[2025-04-04 10:40:49] DEBUG: Executing ping test to google.com
+[2025-04-04 10:40:49] DEBUG: Executing ping command: ping -c 5 -s 64 -i 1.0 google.com
+[2025-04-04 10:40:51] DEBUG: Starting test program with config: /home/tobie/testing_device/var/input/config.json
+[2025-04-04 10:40:51] DEBUG: Successfully read 1517 bytes from file /home/tobie/testing_device/var/input/config.json
+[2025-04-04 10:40:51] DEBUG: Parsed 2 instructions from /home/tobie/testing_device/var/input/config.json
+[2025-04-04 10:40:51] DEBUG: Executing ping test
+[2025-04-04 10:40:51] DEBUG: Executing ping test to google.com
+[2025-04-04 10:40:51] DEBUG: Executing ping command: ping -c 5 -s 64 -i 1.0 google.com
+[2025-04-04 10:40:53] DEBUG: Ping command exited with status 0
+[2025-04-04 10:40:53] DEBUG: Ping packets sent: 5
+[2025-04-04 10:40:53] DEBUG: Ping packets received: 5
+[2025-04-04 10:40:53] DEBUG: Ping packet loss: 0.0%
+[2025-04-04 10:40:53] DEBUG: Ping RTT min/avg/max: 23.817/44.430/73.219 ms
+[2025-04-04 10:40:53] DEBUG: Ping completed with status: 0
+[2025-04-04 10:40:53] DEBUG: Executing speedtest test
+[2025-04-04 10:40:53] DEBUG: Executing speedtest with server speedtest.net
+[2025-04-04 10:40:53] DEBUG: Starting speedtest with server target: speedtest.net
+[2025-04-04 10:40:53] DEBUG: Using default server (nearest)
+[2025-04-04 10:40:53] DEBUG: Executing command: speedtest-cli --json --secure
+[2025-04-04 10:40:56] DEBUG: Ping command exited with status 0
+[2025-04-04 10:40:56] DEBUG: Ping packets sent: 5
+[2025-04-04 10:40:56] DEBUG: Ping packets received: 5
+[2025-04-04 10:40:56] DEBUG: Ping packet loss: 0.0%
+[2025-04-04 10:40:56] DEBUG: Ping RTT min/avg/max: 27.662/40.225/54.302 ms
+[2025-04-04 10:40:56] DEBUG: Ping completed with status: 0
+[2025-04-04 10:40:56] DEBUG: Executing speedtest test
+[2025-04-04 10:40:56] DEBUG: Executing speedtest with server speedtest.net
+[2025-04-04 10:40:56] DEBUG: Starting speedtest with server target: speedtest.net
+[2025-04-04 10:40:56] DEBUG: Using default server (nearest)
+[2025-04-04 10:40:56] DEBUG: Executing command: speedtest-cli --json --secure
+[2025-04-04 10:41:20] DEBUG: Speedtest execution time: 27300.3 ms
+[2025-04-04 10:41:20] DEBUG: Successfully read 668 bytes of JSON result
+[2025-04-04 10:41:20] DEBUG: Server ID for future reference: 17757
+[2025-04-04 10:41:20] DEBUG: Speedtest completed successfully: Download=157.56 Mbps, Upload=60.20 Mbps, Latency=54.37 ms
+[2025-04-04 10:41:20] DEBUG: Speedtest completed with status: 0
+[2025-04-04 10:41:20] DEBUG: Freeing memory for 2 instructions
+[2025-04-04 10:41:20] DEBUG: Test program completed
+[2025-04-04 10:41:23] DEBUG: Speedtest execution time: 27390.2 ms
+[2025-04-04 10:41:23] DEBUG: Successfully read 668 bytes of JSON result
+[2025-04-04 10:41:23] DEBUG: Server ID for future reference: 17757
+[2025-04-04 10:41:23] DEBUG: Speedtest completed successfully: Download=50.94 Mbps, Upload=98.53 Mbps, Latency=66.31 ms
+[2025-04-04 10:41:23] DEBUG: Speedtest completed with status: 0
+[2025-04-04 10:41:23] DEBUG: Freeing memory for 2 instructions
+[2025-04-04 10:41:23] DEBUG: Test program completed
+[2025-04-04 10:44:28] DEBUG: Starting test program with config: /home/tobie/testing_device/var/input/config.json
+[2025-04-04 10:44:28] DEBUG: Successfully read 1517 bytes from file /home/tobie/testing_device/var/input/config.json
+[2025-04-04 10:44:28] DEBUG: Parsed 2 instructions from /home/tobie/testing_device/var/input/config.json
+[2025-04-04 10:44:28] DEBUG: Executing ping test
+[2025-04-04 10:44:28] DEBUG: Executing ping test to google.com
+[2025-04-04 10:44:28] DEBUG: Executing ping command: ping -c 5 -s 64 -i 1.0 google.com
+[2025-04-04 10:44:33] DEBUG: Ping command exited with status 0
+[2025-04-04 10:44:33] DEBUG: Ping packets sent: 5
+[2025-04-04 10:44:33] DEBUG: Ping packets received: 5
+[2025-04-04 10:44:33] DEBUG: Ping packet loss: 0.0%
+[2025-04-04 10:44:33] DEBUG: Ping RTT min/avg/max: 35.048/42.508/60.426 ms
+[2025-04-04 10:44:33] DEBUG: Ping completed with status: 0
+[2025-04-04 10:44:33] DEBUG: Executing speedtest test
+[2025-04-04 10:44:33] DEBUG: Executing speedtest with server speedtest.net
+[2025-04-04 10:44:33] DEBUG: Starting speedtest with server target: speedtest.net
+[2025-04-04 10:44:33] DEBUG: Using default server (nearest)
+[2025-04-04 10:44:33] DEBUG: Executing command: speedtest-cli --json --secure
+[2025-04-04 10:44:59] DEBUG: Speedtest execution time: 26202.4 ms
+[2025-04-04 10:44:59] DEBUG: Successfully read 693 bytes of JSON result
+[2025-04-04 10:44:59] DEBUG: Server ID for future reference: 2496
+[2025-04-04 10:44:59] DEBUG: Speedtest completed successfully: Download=232.19 Mbps, Upload=128.39 Mbps, Latency=52.74 ms
+[2025-04-04 10:44:59] DEBUG: Speedtest completed with status: 0
+[2025-04-04 10:44:59] DEBUG: Freeing memory for 2 instructions
+[2025-04-04 10:44:59] DEBUG: Test program completed
+[2025-04-04 10:49:52] DEBUG: Starting test program with config: /home/tobie/testing_device/var/input/config.json
+[2025-04-04 10:49:52] DEBUG: Successfully read 1517 bytes from file /home/tobie/testing_device/var/input/config.json
+[2025-04-04 10:49:52] DEBUG: Parsed 2 instructions from /home/tobie/testing_device/var/input/config.json
+[2025-04-04 10:49:52] DEBUG: Executing ping test
+[2025-04-04 10:49:52] DEBUG: Executing ping test to google.com
+[2025-04-04 10:49:52] DEBUG: Executing ping command: ping -c 5 -s 64 -i 1.0 google.com
+[2025-04-04 10:49:56] DEBUG: Ping command exited with status 0
+[2025-04-04 10:49:56] DEBUG: Ping packets sent: 5
+[2025-04-04 10:49:56] DEBUG: Ping packets received: 5
+[2025-04-04 10:49:56] DEBUG: Ping packet loss: 0.0%
+[2025-04-04 10:49:56] DEBUG: Ping RTT min/avg/max: 35.857/46.232/63.345 ms
+[2025-04-04 10:49:56] DEBUG: Ping completed with status: 0
+[2025-04-04 10:49:56] DEBUG: Executing speedtest test
+[2025-04-04 10:49:56] DEBUG: Executing speedtest with server speedtest.net
+[2025-04-04 10:49:56] DEBUG: Starting speedtest with server target: speedtest.net
+[2025-04-04 10:49:56] DEBUG: Using default server (nearest)
+[2025-04-04 10:49:56] DEBUG: Executing command: speedtest-cli --json --secure
+[2025-04-04 10:50:24] DEBUG: Speedtest execution time: 27458.4 ms
+[2025-04-04 10:50:24] DEBUG: Successfully read 672 bytes of JSON result
+[2025-04-04 10:50:24] DEBUG: Server ID for future reference: 63521
+[2025-04-04 10:50:24] DEBUG: Speedtest completed successfully: Download=182.63 Mbps, Upload=90.17 Mbps, Latency=84.27 ms
+[2025-04-04 10:50:24] DEBUG: Speedtest completed with status: 0
+[2025-04-04 10:50:24] DEBUG: Freeing memory for 2 instructions
+[2025-04-04 10:50:24] DEBUG: Test program completed
+[2025-04-04 10:53:41] DEBUG: Starting test program with config: /home/tobie/testing_device/var/input/config.json
+[2025-04-04 10:53:41] DEBUG: Successfully read 1517 bytes from file /home/tobie/testing_device/var/input/config.json
+[2025-04-04 10:53:41] DEBUG: Parsed 2 instructions from /home/tobie/testing_device/var/input/config.json
+[2025-04-04 10:53:41] DEBUG: Executing ping test
+[2025-04-04 10:53:41] DEBUG: Executing ping test to google.com
+[2025-04-04 10:53:41] DEBUG: Executing ping command: ping -c 5 -s 64 -i 1.0 google.com
+[2025-04-04 10:53:46] DEBUG: Ping command exited with status 0
+[2025-04-04 10:53:46] DEBUG: Ping packets sent: 5
+[2025-04-04 10:53:46] DEBUG: Ping packets received: 5
+[2025-04-04 10:53:46] DEBUG: Ping packet loss: 0.0%
+[2025-04-04 10:53:46] DEBUG: Ping RTT min/avg/max: 36.593/91.804/219.329 ms
+[2025-04-04 10:53:46] DEBUG: Ping completed with status: 0
+[2025-04-04 10:53:46] DEBUG: Executing speedtest test
+[2025-04-04 10:53:46] DEBUG: Executing speedtest with server speedtest.net
+[2025-04-04 10:53:46] DEBUG: Starting speedtest with server target: speedtest.net
+[2025-04-04 10:53:46] DEBUG: Using default server (nearest)
+[2025-04-04 10:53:46] DEBUG: Executing command: speedtest-cli --json --secure
+[2025-04-04 10:54:11] DEBUG: Speedtest execution time: 25512.7 ms
+[2025-04-04 10:54:11] DEBUG: Successfully read 672 bytes of JSON result
+[2025-04-04 10:54:11] DEBUG: Server ID for future reference: 63521
+[2025-04-04 10:54:11] DEBUG: Speedtest completed successfully: Download=229.21 Mbps, Upload=93.75 Mbps, Latency=80.24 ms
+[2025-04-04 10:54:11] DEBUG: Speedtest completed with status: 0
+[2025-04-04 10:54:11] DEBUG: Freeing memory for 2 instructions
+[2025-04-04 10:54:11] DEBUG: Test program completed
+[2025-04-04 11:02:36] DEBUG: Starting test program with config: /home/tobie/testing_device/var/input/config.json
+[2025-04-04 11:02:36] DEBUG: Successfully read 1517 bytes from file /home/tobie/testing_device/var/input/config.json
+[2025-04-04 11:02:36] DEBUG: Parsed 2 instructions from /home/tobie/testing_device/var/input/config.json
+[2025-04-04 11:02:36] DEBUG: Executing ping test
+[2025-04-04 11:02:36] DEBUG: Executing instruction: ping
+[2025-04-04 11:02:36] DEBUG: Executing ping test to google.com
+[2025-04-04 11:02:36] DEBUG: Executing ping command: ping -c 5 -s 64 -i 1.0 google.com
+[2025-04-04 11:02:40] DEBUG: Ping command exited with status 0
+[2025-04-04 11:02:40] DEBUG: Ping packets sent: 5
+[2025-04-04 11:02:40] DEBUG: Ping packets received: 5
+[2025-04-04 11:02:40] DEBUG: Ping packet loss: 0.0%
+[2025-04-04 11:02:40] DEBUG: Ping RTT min/avg/max: 34.305/67.316/126.215 ms
+[2025-04-04 11:02:40] DEBUG: Ping completed with status: 0
+[2025-04-04 11:02:40] DEBUG: Test result: SUCCESS
+[2025-04-04 11:02:40] DEBUG: Details: Ping to google.com completed. Packets: 5/5, Loss: 0.0%, RTT min/avg/max: 34.305/67.316/126.215 ms
+[2025-04-04 11:02:40] DEBUG: Executing speedtest test
+[2025-04-04 11:02:40] DEBUG: Executing instruction: speedtest
+[2025-04-04 11:02:40] DEBUG: Executing speedtest with server speedtest.net
+[2025-04-04 11:02:40] DEBUG: Starting speedtest with server target: speedtest.net
+[2025-04-04 11:02:40] DEBUG: Using default server (nearest)
+[2025-04-04 11:02:40] DEBUG: Executing command: speedtest-cli --json --secure
+[2025-04-04 11:03:05] DEBUG: Speedtest execution time: 25771.3 ms
+[2025-04-04 11:03:05] DEBUG: Successfully read 681 bytes of JSON result
+[2025-04-04 11:03:05] DEBUG: Server ID for future reference: 9903
+[2025-04-04 11:03:05] DEBUG: Speedtest completed successfully: Download=349.09 Mbps, Upload=125.23 Mbps, Latency=64.14 ms
+[2025-04-04 11:03:05] DEBUG: Speedtest completed with status: 0
+[2025-04-04 11:03:05] DEBUG: Test result: SUCCESS
+[2025-04-04 11:03:05] DEBUG: Details: Speedtest completed with server Ha Noi (speedtestkv1a.viettel.vn:8080, Vietnam) [ID: 9903]. Download: 349.09 Mbps, Upload: 125.23 Mbps, Latency: 64.14 ms
+[2025-04-04 11:03:05] DEBUG: Freeing memory for 2 instructions
+[2025-04-04 11:14:54] DEBUG: Starting test program with config: /home/tobie/testing_device/var/input/config.json
+[2025-04-04 11:14:54] DEBUG: Successfully read 1517 bytes from file /home/tobie/testing_device/var/input/config.json
+[2025-04-04 11:14:54] DEBUG: Parsed 2 instructions from /home/tobie/testing_device/var/input/config.json
+[2025-04-04 11:14:54] DEBUG: Executing ping test
+[2025-04-04 11:14:54] DEBUG: Executing instruction: ping
+[2025-04-04 11:14:54] DEBUG: Executing ping test to google.com
+[2025-04-04 11:14:54] DEBUG: Executing ping command: ping -c 5 -s 64 -i 1.0 google.com
+[2025-04-04 11:14:59] DEBUG: Ping command exited with status 0
+[2025-04-04 11:14:59] DEBUG: Ping packets sent: 5
+[2025-04-04 11:14:59] DEBUG: Ping packets received: 5
+[2025-04-04 11:14:59] DEBUG: Ping packet loss: 0.0%
+[2025-04-04 11:14:59] DEBUG: Ping RTT min/avg/max: 23.536/49.441/112.680 ms
+[2025-04-04 11:14:59] DEBUG: Ping completed with status: 0
+[2025-04-04 11:14:59] DEBUG: Test result: SUCCESS
+[2025-04-04 11:14:59] DEBUG: Details: Ping to google.com completed. Packets: 5/5, Loss: 0.0%, RTT min/avg/max: 23.536/49.441/112.680 ms
+[2025-04-04 11:14:59] DEBUG: Executing speedtest test
+[2025-04-04 11:14:59] DEBUG: Executing instruction: speedtest
+[2025-04-04 11:14:59] DEBUG: Executing speedtest with server speedtest.net
+[2025-04-04 11:14:59] DEBUG: Starting speedtest with server target: speedtest.net
+[2025-04-04 11:14:59] DEBUG: Using default server (nearest)
+[2025-04-04 11:14:59] DEBUG: Executing command: speedtest-cli --json --secure
+[2025-04-04 11:15:30] DEBUG: Speedtest execution time: 30904.7 ms
+[2025-04-04 11:15:30] DEBUG: Successfully read 673 bytes of JSON result
+[2025-04-04 11:15:30] DEBUG: Server ID for future reference: 63521
+[2025-04-04 11:15:30] DEBUG: Speedtest completed successfully: Download=245.88 Mbps, Upload=115.99 Mbps, Latency=68.07 ms
+[2025-04-04 11:15:30] DEBUG: Speedtest completed with status: 0
+[2025-04-04 11:15:30] DEBUG: Test result: SUCCESS
+[2025-04-04 11:15:30] DEBUG: Details: Speedtest completed with server Hanoi (speedtest.vtconline.vn:8080, Vietnam) [ID: 63521]. Download: 245.88 Mbps, Upload: 115.99 Mbps, Latency: 68.07 ms
+[2025-04-04 11:15:30] DEBUG: Freeing memory for 2 instructions
+[2025-04-04 13:44:50] DEBUG: Starting test program with config: /home/tobie/testing_device/var/input/config.json
+[2025-04-04 13:44:50] DEBUG: Successfully read 1517 bytes from file /home/tobie/testing_device/var/input/config.json
+[2025-04-04 13:44:50] DEBUG: Parsed 2 instructions from /home/tobie/testing_device/var/input/config.json
+[2025-04-04 13:44:50] DEBUG: Executing ping test
+[2025-04-04 13:44:50] DEBUG: Executing instruction: ping
+[2025-04-04 13:44:50] DEBUG: Executing ping test to google.com
+[2025-04-04 13:44:50] DEBUG: Executing ping command: ping -c 5 -s 64 -i 1.0 google.com
+[2025-04-04 13:44:54] DEBUG: Ping command exited with status 0
+[2025-04-04 13:44:54] DEBUG: Ping packets sent: 5
+[2025-04-04 13:44:54] DEBUG: Ping packets received: 5
+[2025-04-04 13:44:54] DEBUG: Ping packet loss: 0.0%
+[2025-04-04 13:44:54] DEBUG: Ping RTT min/avg/max: 52.119/53.997/57.702 ms
+[2025-04-04 13:44:54] DEBUG: Ping completed with status: 0
+[2025-04-04 13:44:54] DEBUG: Test result: SUCCESS
+[2025-04-04 13:44:54] DEBUG: Details: Ping to google.com completed. Packets: 5/5, Loss: 0.0%, RTT min/avg/max: 52.119/53.997/57.702 ms
+[2025-04-04 13:44:54] DEBUG: Executing speedtest test
+[2025-04-04 13:44:54] DEBUG: Executing instruction: speedtest
+[2025-04-04 13:44:54] DEBUG: Executing speedtest with server speedtest.net
+[2025-04-04 13:44:54] DEBUG: Starting speedtest with server target: speedtest.net
+[2025-04-04 13:44:54] DEBUG: Using default server (nearest)
+[2025-04-04 13:44:54] DEBUG: Executing command: speedtest-cli --json --secure
+[2025-04-04 13:45:19] DEBUG: Speedtest execution time: 24940.9 ms
+[2025-04-04 13:45:19] DEBUG: Successfully read 657 bytes of JSON result
+[2025-04-04 13:45:19] DEBUG: Server ID for future reference: 55528
+[2025-04-04 13:45:19] DEBUG: Speedtest completed successfully: Download=202.04 Mbps, Upload=126.97 Mbps, Latency=12.47 ms
+[2025-04-04 13:45:19] DEBUG: Speedtest completed with status: 0
+[2025-04-04 13:45:19] DEBUG: Test result: SUCCESS
+[2025-04-04 13:45:19] DEBUG: Details: Speedtest completed with server Hai Phong (hp2.mobifone.vn:8080, Vietnam) [ID: 55528]. Download: 202.04 Mbps, Upload: 126.97 Mbps, Latency: 12.47 ms
+[2025-04-04 13:45:19] DEBUG: Freeing memory for 2 instructions
+[2025-04-04 14:36:37] DEBUG: Starting test program with config: /home/tobie/testing_device/var/input/config.json
+[2025-04-04 14:36:37] DEBUG: Successfully read 1517 bytes from file /home/tobie/testing_device/var/input/config.json
+[2025-04-04 14:36:37] DEBUG: Parsed 2 instructions from /home/tobie/testing_device/var/input/config.json
+[2025-04-04 14:36:37] DEBUG: Executing ping test
+[2025-04-04 14:36:37] DEBUG: Executing instruction: ping
+[2025-04-04 14:36:37] DEBUG: Executing ping test to google.com
+[2025-04-04 14:36:37] DEBUG: Executing ping command: ping -c 5 -s 64 -i 1.0 google.com
+[2025-04-04 14:36:41] DEBUG: Ping command exited with status 0
+[2025-04-04 14:36:41] DEBUG: Ping packets sent: 5
+[2025-04-04 14:36:41] DEBUG: Ping packets received: 5
+[2025-04-04 14:36:41] DEBUG: Ping packet loss: 0.0%
+[2025-04-04 14:36:41] DEBUG: Ping RTT min/avg/max: 53.494/69.008/106.694 ms
+[2025-04-04 14:36:41] DEBUG: Ping completed with status: 0
+[2025-04-04 14:36:41] DEBUG: Test result: SUCCESS
+[2025-04-04 14:36:41] DEBUG: Details: Ping to google.com completed. Packets: 5/5, Loss: 0.0%, RTT min/avg/max: 53.494/69.008/106.694 ms
+[2025-04-04 14:36:41] DEBUG: Executing speedtest test
+[2025-04-04 14:36:41] DEBUG: Executing instruction: speedtest
+[2025-04-04 14:36:41] DEBUG: Executing speedtest with server speedtest.net
+[2025-04-04 14:36:41] DEBUG: Starting speedtest with server target: speedtest.net
+[2025-04-04 14:36:41] DEBUG: Using default server (nearest)
+[2025-04-04 14:36:41] DEBUG: Executing command: speedtest-cli --json --secure
+[2025-04-04 14:36:59] DEBUG: Speedtest execution time: 18261.6 ms
+[2025-04-04 14:36:59] DEBUG: Successfully read 692 bytes of JSON result
+[2025-04-04 14:36:59] DEBUG: Server ID for future reference: 2496
+[2025-04-04 14:36:59] DEBUG: Speedtest completed successfully: Download=261.78 Mbps, Upload=171.89 Mbps, Latency=11.43 ms
+[2025-04-04 14:36:59] DEBUG: Speedtest completed with status: 0
+[2025-04-04 14:36:59] DEBUG: Test result: SUCCESS
+[2025-04-04 14:36:59] DEBUG: Details: Speedtest completed with server Hà Nội (speedtest.vpsttt.com:8080, Vietnam) [ID: 2496]. Download: 261.78 Mbps, Upload: 171.89 Mbps, Latency: 11.43 ms
+[2025-04-04 14:36:59] DEBUG: Freeing memory for 2 instructions
+[2025-04-04 16:31:49] DEBUG: Starting test program with config: /home/tobie/testing_device/var/input/config.json
+[2025-04-04 16:31:49] DEBUG: Successfully read 1517 bytes from file /home/tobie/testing_device/var/input/config.json
+[2025-04-04 16:31:49] DEBUG: Parsed 2 instructions from /home/tobie/testing_device/var/input/config.json
+[2025-04-04 16:31:49] DEBUG: Executing ping test
+[2025-04-04 16:31:49] DEBUG: Executing instruction: ping
+[2025-04-04 16:31:49] DEBUG: Executing ping test to google.com
+[2025-04-04 16:31:49] DEBUG: Executing ping command: ping -c 5 -s 64 -i 1.0 google.com
+[2025-04-04 16:31:53] DEBUG: Ping command exited with status 0
+[2025-04-04 16:31:53] DEBUG: Ping packets sent: 5
+[2025-04-04 16:31:53] DEBUG: Ping packets received: 5
+[2025-04-04 16:31:53] DEBUG: Ping packet loss: 0.0%
+[2025-04-04 16:31:53] DEBUG: Ping RTT min/avg/max: 53.837/56.728/63.205 ms
+[2025-04-04 16:31:53] DEBUG: Ping completed with status: 0
+[2025-04-04 16:31:53] DEBUG: Test result: SUCCESS
+[2025-04-04 16:31:53] DEBUG: Details: Ping to google.com completed. Packets: 5/5, Loss: 0.0%, RTT min/avg/max: 53.837/56.728/63.205 ms
+[2025-04-04 16:31:53] DEBUG: Executing speedtest test
+[2025-04-04 16:31:53] DEBUG: Executing instruction: speedtest
+[2025-04-04 16:31:53] DEBUG: Executing speedtest with server speedtest.net
+[2025-04-04 16:31:53] DEBUG: Starting speedtest with server target: speedtest.net
+[2025-04-04 16:31:53] DEBUG: Using default server (nearest)
+[2025-04-04 16:31:53] DEBUG: Executing command: speedtest-cli --json --secure
+[2025-04-04 16:32:15] DEBUG: Speedtest execution time: 22265.3 ms
+[2025-04-04 16:32:15] DEBUG: Successfully read 680 bytes of JSON result
+[2025-04-04 16:32:15] DEBUG: Server ID for future reference: 6342
+[2025-04-04 16:32:15] DEBUG: Speedtest completed successfully: Download=201.37 Mbps, Upload=162.48 Mbps, Latency=11.82 ms
+[2025-04-04 16:32:15] DEBUG: Speedtest completed with status: 0
+[2025-04-04 16:32:15] DEBUG: Test result: SUCCESS
+[2025-04-04 16:32:15] DEBUG: Details: Speedtest completed with server Ha Noi (hnispeedtest.cmctelecom.vn:8080, Vietnam) [ID: 6342]. Download: 201.37 Mbps, Upload: 162.48 Mbps, Latency: 11.82 ms
+[2025-04-04 16:32:15] DEBUG: Freeing memory for 2 instructions
+[2025-04-09 14:24:33] DEBUG: Starting test program with config: /home/tobie/testing_device/var/input/config.json
+[2025-04-09 14:24:33] DEBUG: Successfully read 1517 bytes from file /home/tobie/testing_device/var/input/config.json
+[2025-04-09 14:24:33] DEBUG: Parsed 2 instructions from /home/tobie/testing_device/var/input/config.json
+[2025-04-09 14:24:33] DEBUG: Executing ping test
+[2025-04-09 14:24:33] DEBUG: Executing instruction: ping
+[2025-04-09 14:24:33] DEBUG: Executing ping test to google.com
+[2025-04-09 14:24:33] DEBUG: Executing ping command: ping -c 5 -s 64 -i 1.0 google.com
+[2025-04-09 14:24:37] DEBUG: Ping command exited with status 0
+[2025-04-09 14:24:37] DEBUG: Ping packets sent: 5
+[2025-04-09 14:24:37] DEBUG: Ping packets received: 5
+[2025-04-09 14:24:37] DEBUG: Ping packet loss: 0.0%
+[2025-04-09 14:24:37] DEBUG: Ping RTT min/avg/max: 54.587/55.507/57.150 ms
+[2025-04-09 14:24:37] DEBUG: Ping completed with status: 0
+[2025-04-09 14:24:37] DEBUG: Test result: SUCCESS
+[2025-04-09 14:24:37] DEBUG: Details: Ping to google.com completed. Packets: 5/5, Loss: 0.0%, RTT min/avg/max: 54.587/55.507/57.150 ms
+[2025-04-09 14:24:37] DEBUG: Executing speedtest test
+[2025-04-09 14:24:37] DEBUG: Executing instruction: speedtest
+[2025-04-09 14:24:37] DEBUG: Executing speedtest with server speedtest.net
+[2025-04-09 14:24:37] DEBUG: Starting speedtest with server target: speedtest.net
+[2025-04-09 14:24:37] DEBUG: Using default server (nearest)
+[2025-04-09 14:24:37] DEBUG: Executing command: speedtest-cli --json --secure
+[2025-04-09 14:24:58] DEBUG: Speedtest execution time: 20735.9 ms
+[2025-04-09 14:24:58] DEBUG: Successfully read 678 bytes of JSON result
+[2025-04-09 14:24:58] DEBUG: Server ID for future reference: 9903
+[2025-04-09 14:24:58] DEBUG: Speedtest completed successfully: Download=379.51 Mbps, Upload=180.02 Mbps, Latency=44.10 ms
+[2025-04-09 14:24:58] DEBUG: Speedtest completed with status: 0
+[2025-04-09 14:24:58] DEBUG: Test result: SUCCESS
+[2025-04-09 14:24:58] DEBUG: Details: Speedtest completed with server Ha Noi (speedtestkv1a.viettel.vn:8080, Vietnam) [ID: 9903]. Download: 379.51 Mbps, Upload: 180.02 Mbps, Latency: 44.10 ms
+[2025-04-09 14:24:58] DEBUG: Freeing memory for 2 instructions
+[2025-04-09 15:09:24] DEBUG: Starting test program with config: /home/tobie/testing_device/var/input/config1.json
+[2025-04-09 15:09:24] DEBUG: Successfully read 1517 bytes from file /home/tobie/testing_device/var/input/config1.json
+[2025-04-09 15:09:24] DEBUG: Parsed 2 instructions from /home/tobie/testing_device/var/input/config1.json
+[2025-04-09 15:09:24] DEBUG: Executing ping test
+[2025-04-09 15:09:24] DEBUG: Executing instruction: ping
+[2025-04-09 15:09:24] DEBUG: Executing ping test to google.com
+[2025-04-09 15:09:24] DEBUG: Executing ping command: ping -c 5 -s 64 -i 1.0 google.com
+[2025-04-09 15:09:31] DEBUG: Ping command exited with status 0
+[2025-04-09 15:09:31] DEBUG: Ping packets sent: 5
+[2025-04-09 15:09:31] DEBUG: Ping packets received: 5
+[2025-04-09 15:09:31] DEBUG: Ping packet loss: 0.0%
+[2025-04-09 15:09:31] DEBUG: Ping RTT min/avg/max: 58.103/99.072/251.618 ms
+[2025-04-09 15:09:31] DEBUG: Ping completed with status: 0
+[2025-04-09 15:09:31] DEBUG: Test result: SUCCESS
+[2025-04-09 15:09:31] DEBUG: Details: Ping to google.com completed. Packets: 5/5, Loss: 0.0%, RTT min/avg/max: 58.103/99.072/251.618 ms
+[2025-04-09 15:09:31] DEBUG: Executing speedtest test
+[2025-04-09 15:09:31] DEBUG: Executing instruction: speedtest
+[2025-04-09 15:09:31] DEBUG: Executing speedtest with server speedtest.net
+[2025-04-09 15:09:31] DEBUG: Starting speedtest with server target: speedtest.net
+[2025-04-09 15:09:31] DEBUG: Using default server (nearest)
+[2025-04-09 15:09:31] DEBUG: Executing command: speedtest-cli --json --secure
+[2025-04-09 15:09:50] DEBUG: Speedtest execution time: 19566.7 ms
+[2025-04-09 15:09:50] DEBUG: Successfully read 657 bytes of JSON result
+[2025-04-09 15:09:50] DEBUG: Server ID for future reference: 55434
+[2025-04-09 15:09:50] DEBUG: Speedtest completed successfully: Download=221.90 Mbps, Upload=168.42 Mbps, Latency=43.06 ms
+[2025-04-09 15:09:50] DEBUG: Speedtest completed with status: 0
+[2025-04-09 15:09:50] DEBUG: Test result: SUCCESS
+[2025-04-09 15:09:50] DEBUG: Details: Speedtest completed with server Ha Noi (hn1.mobifone.vn:8080, Vietnam) [ID: 55434]. Download: 221.90 Mbps, Upload: 168.42 Mbps, Latency: 43.06 ms
+[2025-04-09 15:09:50] DEBUG: Freeing memory for 2 instructions
+[2025-04-09 15:20:40] DEBUG: Starting test program with config: /home/tobie/testing_device/var/input/config1.json
+[2025-04-09 15:20:40] DEBUG: Successfully read 1517 bytes from file /home/tobie/testing_device/var/input/config1.json
+[2025-04-09 15:20:40] DEBUG: Parsed 2 instructions from /home/tobie/testing_device/var/input/config1.json
+[2025-04-09 15:20:40] DEBUG: Executing ping test
+[2025-04-09 15:20:40] DEBUG: Executing instruction: ping
+[2025-04-09 15:20:40] DEBUG: Executing ping test to google.com
+[2025-04-09 15:20:40] DEBUG: Executing ping command: ping -c 5 -s 64 -i 1.0 google.com
+[2025-04-09 15:20:48] DEBUG: Ping command exited with status 0
+[2025-04-09 15:20:48] DEBUG: Ping packets sent: 5
+[2025-04-09 15:20:48] DEBUG: Ping packets received: 5
+[2025-04-09 15:20:48] DEBUG: Ping packet loss: 0.0%
+[2025-04-09 15:20:48] DEBUG: Ping RTT min/avg/max: 60.542/189.894/521.802 ms
+[2025-04-09 15:20:48] DEBUG: Ping completed with status: 0
+[2025-04-09 15:20:48] DEBUG: Test result: SUCCESS
+[2025-04-09 15:20:48] DEBUG: Details: Ping to google.com completed. Packets: 5/5, Loss: 0.0%, RTT min/avg/max: 60.542/189.894/521.802 ms
+[2025-04-09 15:20:48] DEBUG: Executing speedtest test
+[2025-04-09 15:20:48] DEBUG: Executing instruction: speedtest
+[2025-04-09 15:20:48] DEBUG: Executing speedtest with server speedtest.net
+[2025-04-09 15:20:48] DEBUG: Starting speedtest with server target: speedtest.net
+[2025-04-09 15:20:48] DEBUG: Using default server (nearest)
+[2025-04-09 15:20:48] DEBUG: Executing command: speedtest-cli --json --secure
+[2025-04-09 15:21:15] DEBUG: Speedtest execution time: 27417.5 ms
+[2025-04-09 15:21:15] DEBUG: Successfully read 677 bytes of JSON result
+[2025-04-09 15:21:15] DEBUG: Server ID for future reference: 9903
+[2025-04-09 15:21:15] DEBUG: Speedtest completed successfully: Download=307.45 Mbps, Upload=138.65 Mbps, Latency=53.31 ms
+[2025-04-09 15:21:15] DEBUG: Speedtest completed with status: 0
+[2025-04-09 15:21:15] DEBUG: Test result: SUCCESS
+[2025-04-09 15:21:15] DEBUG: Details: Speedtest completed with server Ha Noi (speedtestkv1a.viettel.vn:8080, Vietnam) [ID: 9903]. Download: 307.45 Mbps, Upload: 138.65 Mbps, Latency: 53.31 ms
+[2025-04-09 15:21:15] DEBUG: Freeing memory for 2 instructions
+[2025-04-09 16:56:51] DEBUG: Starting test program with config: /home/tobie/testing_device/var/input/config1.json
+[2025-04-09 16:56:51] DEBUG: Successfully read 1517 bytes from file /home/tobie/testing_device/var/input/config1.json
+[2025-04-09 16:56:51] DEBUG: Parsed 2 instructions from /home/tobie/testing_device/var/input/config1.json
+[2025-04-09 16:56:51] DEBUG: Executing ping test
+[2025-04-09 16:56:51] DEBUG: Executing instruction: ping
+[2025-04-09 16:56:51] DEBUG: Executing ping test to google.com
+[2025-04-09 16:56:51] DEBUG: Executing ping command: ping -c 5 -s 64 -i 1.0 google.com
+[2025-04-09 16:56:55] DEBUG: Ping command exited with status 0
+[2025-04-09 16:56:55] DEBUG: Ping packets sent: 5
+[2025-04-09 16:56:55] DEBUG: Ping packets received: 5
+[2025-04-09 16:56:55] DEBUG: Ping packet loss: 0.0%
+[2025-04-09 16:56:55] DEBUG: Ping RTT min/avg/max: 57.441/84.812/165.850 ms
+[2025-04-09 16:56:55] DEBUG: Ping completed with status: 0
+[2025-04-09 16:56:55] DEBUG: Test result: SUCCESS
+[2025-04-09 16:56:55] DEBUG: Details: Ping to google.com completed. Packets: 5/5, Loss: 0.0%, RTT min/avg/max: 57.441/84.812/165.850 ms
+[2025-04-09 16:56:55] DEBUG: Executing speedtest test
+[2025-04-09 16:56:55] DEBUG: Executing instruction: speedtest
+[2025-04-09 16:56:55] DEBUG: Executing speedtest with server speedtest.net
+[2025-04-09 16:56:55] DEBUG: Starting speedtest with server target: speedtest.net
+[2025-04-09 16:56:55] DEBUG: Using default server (nearest)
+[2025-04-09 16:56:55] DEBUG: Executing command: speedtest-cli --json --secure
+[2025-04-09 16:57:21] DEBUG: Speedtest execution time: 25382.8 ms
+[2025-04-09 16:57:21] DEBUG: Successfully read 667 bytes of JSON result
+[2025-04-09 16:57:21] DEBUG: Server ID for future reference: 17757
+[2025-04-09 16:57:21] DEBUG: Speedtest completed successfully: Download=256.36 Mbps, Upload=132.06 Mbps, Latency=34.74 ms
+[2025-04-09 16:57:21] DEBUG: Speedtest completed with status: 0
+[2025-04-09 16:57:21] DEBUG: Test result: SUCCESS
+[2025-04-09 16:57:21] DEBUG: Details: Speedtest completed with server Ha Noi (speedtest2.vtn.com.vn:8080, Vietnam) [ID: 17757]. Download: 256.36 Mbps, Upload: 132.06 Mbps, Latency: 34.74 ms
+[2025-04-09 16:57:21] DEBUG: Freeing memory for 2 instructions

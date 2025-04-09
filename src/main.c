@@ -168,7 +168,7 @@ int main(int argc, char *argv[]) {
             }
         }
 
-        // Thêm status details cho tất cả các loại test
+        // status details cho tất cả các loại test
         char details[1024] = {0};
         if (tcapi_get(node_name, instructions[i].sub_node, "Details", details) == 0 && strlen(details) > 0) {
             cJSON_AddStringToObject(attributes, "details", details);

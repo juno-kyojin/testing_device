@@ -6,13 +6,15 @@
                 "${workspaceFolder}/**",
                 "/usr/include",
                 "/usr/local/include",
-                "/usr/include/c++/11", // Adjust the version number as needed
+                "/usr/include/c++",
                 "/usr/include/x86_64-linux-gnu"
             ],
-            "defines": [],
+            "defines": [
+                "_GNU_SOURCE" 
+            ],
             "compilerPath": "/usr/bin/gcc",
-            "cStandard": "c11",
-            "cppStandard": "c++17",
+            "cStandard": "c17",
+            "cppStandard": "c++20",
             "intelliSenseMode": "gcc-x64"
         }
     ],

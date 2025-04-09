@@ -43,3 +43,31 @@ Processing config.json at 20250404_143637
 Running: /home/tobie/testing_device/bin/testing_device '/home/tobie/testing_device/var/input/config.json' > '/tmp/result_20250404_143637.json'
 Binary exit code: 0
 Valid JSON saved to /home/tobie/testing_device/var/results/config_20250404_143637.json
+Processing config.json at 20250404_153444
+Running: /home/tobie/testing_device/bin/testing_device '/home/tobie/testing_device/var/input/config.json' > '/tmp/result_20250404_153444.json'
+/home/tobie/testing_device/scripts/testing-service.sh: line 92: /home/tobie/testing_device/bin/testing_device: No such file or directory
+Binary exit code: 127
+Error: Empty result file
+Processing config.json at 20250404_163149
+Running: /home/tobie/testing_device/bin/testing_device '/home/tobie/testing_device/var/input/config.json' > '/tmp/result_20250404_163149.json'
+Binary exit code: 0
+Valid JSON saved to /home/tobie/testing_device/var/results/config_20250404_163149.json
+Starting testing device service at Tue Apr  8 20:42:36 +07 2025
+Starting testing device service at Wed Apr  9 02:22:01 +07 2025
+Starting testing device service at Wed Apr  9 13:59:00 +07 2025
+Processing config.json at 20250409_142433
+Running: /home/tobie/testing_device/bin/testing_device '/home/tobie/testing_device/var/input/config.json' > '/tmp/result_20250409_142433.json'
+Binary exit code: 0
+Valid JSON saved to /home/tobie/testing_device/var/results/config_20250409_142433.json
+Processing config1.json at 20250409_150923
+Running: /home/tobie/testing_device/bin/testing_device '/home/tobie/testing_device/var/input/config1.json' > '/tmp/result_20250409_150923.json'
+Binary exit code: 0
+Valid JSON saved to /home/tobie/testing_device/var/results/config1_20250409_150923.json
+Processing config1.json at 20250409_152040
+Running: /home/tobie/testing_device/bin/testing_device '/home/tobie/testing_device/var/input/config1.json' > '/tmp/result_20250409_152040.json'
+Binary exit code: 0
+Valid JSON saved to /home/tobie/testing_device/var/results/config1_20250409_152040.json
+Processing config1.json at 20250409_165651
+Running: /home/tobie/testing_device/bin/testing_device '/home/tobie/testing_device/var/input/config1.json' > '/tmp/result_20250409_165651.json'
+Binary exit code: 0
+Valid JSON saved to /home/tobie/testing_device/var/results/config1_20250409_165651.json
