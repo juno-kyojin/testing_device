@@ -528,3 +528,218 @@
 [2025-04-09 17:07:25] DEBUG: Test result: SUCCESS
 [2025-04-09 17:07:25] DEBUG: Details: Speedtest completed with server Ha Noi (hnispeedtest.cmctelecom.vn:8080, Vietnam) [ID: 6342]. Download: 216.32 Mbps, Upload: 116.68 Mbps, Latency: 58.03 ms
 [2025-04-09 17:07:25] DEBUG: Freeing memory for 2 instructions
+[2025-04-11 09:53:27] DEBUG: Starting test program with config: /home/tobie/testing_device/var/input/config1.json
+[2025-04-11 09:53:27] DEBUG: Successfully read 1517 bytes from file /home/tobie/testing_device/var/input/config1.json
+[2025-04-11 09:53:27] DEBUG: Parsed 2 instructions from /home/tobie/testing_device/var/input/config1.json
+[2025-04-11 09:53:27] DEBUG: Executing ping test
+[2025-04-11 09:53:27] DEBUG: Executing instruction: ping
+[2025-04-11 09:53:27] DEBUG: Executing ping test to google.com
+[2025-04-11 09:53:27] DEBUG: Executing ping command: ping -c 5 -s 64 -i 1.0 google.com
+[2025-04-11 09:53:34] DEBUG: Ping command exited with status 0
+[2025-04-11 09:53:34] DEBUG: Ping packets sent: 5
+[2025-04-11 09:53:34] DEBUG: Ping packets received: 5
+[2025-04-11 09:53:34] DEBUG: Ping packet loss: 0.0%
+[2025-04-11 09:53:34] DEBUG: Ping RTT min/avg/max: 52.000/116.787/374.309 ms
+[2025-04-11 09:53:34] DEBUG: Ping completed with status: 0
+[2025-04-11 09:53:34] DEBUG: Test result: SUCCESS
+[2025-04-11 09:53:34] DEBUG: Details: Ping to google.com completed. Packets: 5/5, Loss: 0.0%, RTT min/avg/max: 52.000/116.787/374.309 ms
+[2025-04-11 09:53:34] DEBUG: Executing speedtest test
+[2025-04-11 09:53:34] DEBUG: Executing instruction: speedtest
+[2025-04-11 09:53:34] DEBUG: Executing speedtest with server speedtest.net
+[2025-04-11 09:53:34] DEBUG: Starting speedtest with server target: speedtest.net
+[2025-04-11 09:53:34] DEBUG: Using default server (nearest)
+[2025-04-11 09:53:34] DEBUG: Executing command: speedtest-cli --json --secure
+[2025-04-11 09:53:57] DEBUG: Speedtest execution time: 22827.0 ms
+[2025-04-11 09:53:57] DEBUG: Successfully read 678 bytes of JSON result
+[2025-04-11 09:53:57] DEBUG: Server ID for future reference: 27598
+[2025-04-11 09:53:57] DEBUG: Speedtest completed successfully: Download=341.69 Mbps, Upload=167.26 Mbps, Latency=63.37 ms
+[2025-04-11 09:53:57] DEBUG: Speedtest completed with status: 0
+[2025-04-11 09:53:57] DEBUG: Test result: SUCCESS
+[2025-04-11 09:53:57] DEBUG: Details: Speedtest completed with server Phu Ly (speedtestkv1dp1.viettel.vn:8080, Vietnam) [ID: 27598]. Download: 341.69 Mbps, Upload: 167.26 Mbps, Latency: 63.37 ms
+[2025-04-11 09:53:57] DEBUG: Freeing memory for 2 instructions
+[2025-04-11 15:29:16] DEBUG: Initializing plugin manager
+[2025-04-11 15:29:16] DEBUG: Discovering plugins in '/home/tobie/testing_device/plugins'
+[2025-04-11 15:29:16] INFO: Loaded plugin 'ping_test' version 1.0.0 by Testing Device Team
+[2025-04-11 15:29:16] INFO: Loaded plugin 'speedtest_plugin' version 1.0.0 by Testing Device Team
+[2025-04-11 15:29:16] INFO: Discovered 2 plugins in '/home/tobie/testing_device/plugins'
+[2025-04-11 15:29:16] INFO: Loaded 2 plugins
+[2025-04-11 15:29:16] DEBUG: Starting test program with config: config/config1.json
+[2025-04-11 15:29:16] DEBUG: Successfully read 1517 bytes from file config/config1.json
+[2025-04-11 15:29:16] DEBUG: Parsed 2 instructions from config/config1.json
+[2025-04-11 15:29:16] DEBUG: Executing ping test
+[2025-04-11 15:29:16] DEBUG: Executing plugin 'ping_test' for action 'ping'
+[2025-04-11 15:29:20] DEBUG: Plugin execution for ping completed successfully
+[2025-04-11 15:29:20] DEBUG: Executing speedtest test
+[2025-04-11 15:29:20] DEBUG: Executing plugin 'speedtest_plugin' for action 'speedtest'
+[2025-04-11 15:29:20] ERROR: Failed to execute plugin for action speedtest
+[2025-04-11 15:29:20] DEBUG: Freeing memory for 2 instructions
+[2025-04-11 15:29:20] DEBUG: Cleaning up plugin manager
+[2025-04-11 15:29:48] DEBUG: Initializing plugin manager
+[2025-04-11 15:29:48] DEBUG: Discovering plugins in '/home/tobie/testing_device/plugins'
+[2025-04-11 15:29:48] INFO: Loaded plugin 'ping_test' version 1.0.0 by Testing Device Team
+[2025-04-11 15:29:48] INFO: Loaded plugin 'speedtest_plugin' version 1.0.0 by Testing Device Team
+[2025-04-11 15:29:48] INFO: Discovered 2 plugins in '/home/tobie/testing_device/plugins'
+[2025-04-11 15:29:48] INFO: Loaded 2 plugins
+[2025-04-11 15:29:48] DEBUG: Starting test program with config: /home/tobie/testing_device/var/input/config1.json
+[2025-04-11 15:29:48] DEBUG: Successfully read 1517 bytes from file /home/tobie/testing_device/var/input/config1.json
+[2025-04-11 15:29:48] DEBUG: Parsed 2 instructions from /home/tobie/testing_device/var/input/config1.json
+[2025-04-11 15:29:48] DEBUG: Executing ping test
+[2025-04-11 15:29:48] DEBUG: Executing plugin 'ping_test' for action 'ping'
+[2025-04-11 15:29:52] DEBUG: Plugin execution for ping completed successfully
+[2025-04-11 15:29:52] DEBUG: Executing speedtest test
+[2025-04-11 15:29:52] DEBUG: Executing plugin 'speedtest_plugin' for action 'speedtest'
+[2025-04-11 15:29:52] ERROR: Failed to execute plugin for action speedtest
+[2025-04-11 15:29:52] DEBUG: Freeing memory for 2 instructions
+[2025-04-11 15:29:52] DEBUG: Cleaning up plugin manager
+[2025-04-11 15:38:12] DEBUG: Initializing plugin manager
+[2025-04-11 15:38:12] DEBUG: Discovering plugins in '/home/tobie/testing_device/plugins'
+[2025-04-11 15:38:12] INFO: Loaded plugin 'ping_test' version 1.0.0 by Testing Device Team
+[2025-04-11 15:38:12] INFO: Loaded plugin 'speedtest_plugin' version 1.0.0 by Testing Device Team
+[2025-04-11 15:38:12] INFO: Discovered 2 plugins in '/home/tobie/testing_device/plugins'
+[2025-04-11 15:38:12] INFO: Loaded 2 plugins
+[2025-04-11 15:38:12] DEBUG: Starting test program with config: /home/tobie/testing_device/var/input/config1.json
+[2025-04-11 15:38:12] DEBUG: Successfully read 1517 bytes from file /home/tobie/testing_device/var/input/config1.json
+[2025-04-11 15:38:12] DEBUG: Parsed 2 instructions from /home/tobie/testing_device/var/input/config1.json
+[2025-04-11 15:38:12] DEBUG: Executing ping test
+[2025-04-11 15:38:12] DEBUG: Executing plugin 'ping_test' for action 'ping'
+[2025-04-11 15:38:16] DEBUG: Ping command exited with status 0
+[2025-04-11 15:38:16] DEBUG: Ping output preview: PING google.com (142.250.76.14) 64(92) bytes of data.
+72 bytes from nchkga-ac-in-f14.1e100.net (142....
+[2025-04-11 15:38:16] DEBUG: Ping raw output: PING google.com (142.250.76.14) 64(92) bytes of data.
+72 bytes from nchkga-ac-in-f14.1e100.net (142.250.76.14): icmp_seq=1 ttl=113 time=55.1 ms
+72 bytes from nchkga-ac-in-f14.1e100.net (142.250.76.14): icmp_seq=2 ttl=113 time=54.9 ms
+72 bytes from nchkga-ac-in-f14.1e100.net (142.250.76.14): icmp_seq=3 ttl=113 time=54.7 ms
+72 bytes from nchkga-ac-in-f14.1e100.net (142.250.76.14): icmp_seq=4 ttl=113 time=54.5 ms
+72 bytes from nchkga-ac-in-f14.1e100.net (142.250.76.14): icmp_seq=5 ttl=113 time=55.4 ms
+
+--- google.com ping statistics ---
+5 packets transmitted, 5 received, 0% packet loss, time 4416ms
+rtt min/avg/max/mdev = 54.522/54.925/55.360/0.288 ms
+[2025-04-11 15:38:16] ERROR: Failed to find packet information in ping output
+[2025-04-11 15:38:16] WARN: Ping command succeeded but parsing failed, treating as partial success
+[2025-04-11 15:38:16] DEBUG: Plugin execution for ping completed successfully
+[2025-04-11 15:38:16] DEBUG: Executing speedtest test
+[2025-04-11 15:38:16] DEBUG: Executing plugin 'speedtest_plugin' for action 'speedtest'
+[2025-04-11 15:38:16] DEBUG: Using default server (nearest)
+[2025-04-11 15:38:16] DEBUG: Executing command: speedtest --json --secure
+    [2025-04-11 15:38:41] DEBUG: Speedtest execution time: 24517.4 ms
+[2025-04-11 15:38:41] DEBUG: Successfully read 689 bytes of JSON result
+[2025-04-11 15:38:41] DEBUG: Server ID for future reference: 59915
+[2025-04-11 15:38:41] DEBUG: Speedtest completed successfully: Download=357.92 Mbps, Upload=155.19 Mbps, Latency=69.18 ms
+[2025-04-11 15:38:41] DEBUG: Plugin execution for speedtest completed successfully
+[2025-04-11 15:38:41] DEBUG: Freeing memory for 2 instructions
+[2025-04-11 15:38:41] DEBUG: Cleaning up plugin manager
+[2025-04-11 15:46:57] DEBUG: Initializing plugin manager
+[2025-04-11 15:46:57] DEBUG: Discovering plugins in '/home/tobie/testing_device/plugins'
+[2025-04-11 15:46:57] INFO: Loaded plugin 'ping_test' version 1.0.0 by Testing Device Team
+[2025-04-11 15:46:57] INFO: Loaded plugin 'speedtest_plugin' version 1.0.0 by Testing Device Team
+[2025-04-11 15:46:57] INFO: Discovered 2 plugins in '/home/tobie/testing_device/plugins'
+[2025-04-11 15:46:57] INFO: Loaded 2 plugins
+[2025-04-11 15:46:57] DEBUG: Starting test program with config: /home/tobie/testing_device/var/input/config1.json
+[2025-04-11 15:46:57] DEBUG: Successfully read 1517 bytes from file /home/tobie/testing_device/var/input/config1.json
+[2025-04-11 15:46:57] DEBUG: Parsed 2 instructions from /home/tobie/testing_device/var/input/config1.json
+[2025-04-11 15:46:57] DEBUG: Executing ping test
+[2025-04-11 15:46:57] DEBUG: Executing plugin 'ping_test' for action 'ping'
+[2025-04-11 15:47:01] DEBUG: Ping command exited with status 0
+[2025-04-11 15:47:01] DEBUG: Ping output preview: PING google.com (142.250.198.142) 64(92) bytes of data.
+72 bytes from nchkgb-aj-in-f14.1e100.net (14...
+[2025-04-11 15:47:01] DEBUG: Ping raw output: PING google.com (142.250.198.142) 64(92) bytes of data.
+72 bytes from nchkgb-aj-in-f14.1e100.net (142.250.198.142): icmp_seq=1 ttl=113 time=56.9 ms
+72 bytes from nchkgb-aj-in-f14.1e100.net (142.250.198.142): icmp_seq=2 ttl=113 time=56.6 ms
+72 bytes from nchkgb-aj-in-f14.1e100.net (142.250.198.142): icmp_seq=3 ttl=113 time=58.1 ms
+72 bytes from nchkgb-aj-in-f14.1e100.net (142.250.198.142): icmp_seq=4 ttl=113 time=57.2 ms
+72 bytes from nchkgb-aj-in-f14.1e100.net (142.250.198.142): icmp_seq=5 ttl=113 time=60.6 ms
+
+--- google.com ping statistics ---
+5 packets transmitted, 5 received, 0% packet loss, time 4414ms
+rtt min/avg/max/mdev = 56.620/57.877/60.620/1.457 ms
+[2025-04-11 15:47:01] WARN: Failed to match packets sent/received pattern (got 0 matches)
+[2025-04-11 15:47:01] DEBUG: Parsed RTT values: min=56.620, avg=57.877, max=60.620
+[2025-04-11 15:47:01] DEBUG: Plugin execution for ping completed successfully
+[2025-04-11 15:47:01] DEBUG: Executing speedtest test
+[2025-04-11 15:47:01] DEBUG: Executing plugin 'speedtest_plugin' for action 'speedtest'
+[2025-04-11 15:47:01] DEBUG: Using default server (nearest)
+[2025-04-11 15:47:01] DEBUG: Executing command: speedtest --json --secure
+[2025-04-11 15:47:24] DEBUG: Speedtest execution time: 22262.0 ms
+[2025-04-11 15:47:24] DEBUG: Successfully read 671 bytes of JSON result
+[2025-04-11 15:47:24] DEBUG: Server ID for future reference: 17758
+[2025-04-11 15:47:24] DEBUG: Speedtest completed successfully: Download=186.72 Mbps, Upload=161.65 Mbps, Latency=68.87 ms
+[2025-04-11 15:47:24] DEBUG: Plugin execution for speedtest completed successfully
+[2025-04-11 15:47:24] DEBUG: Freeing memory for 2 instructions
+[2025-04-11 15:47:24] DEBUG: Cleaning up plugin manager
+[2025-04-11 15:51:34] DEBUG: Initializing plugin manager
+[2025-04-11 15:51:34] DEBUG: Discovering plugins in '/home/tobie/testing_device/plugins'
+[2025-04-11 15:51:34] INFO: Loaded plugin 'ping_test' version 1.0.0 by Testing Device Team
+[2025-04-11 15:51:34] INFO: Loaded plugin 'speedtest_plugin' version 1.0.0 by Testing Device Team
+[2025-04-11 15:51:34] INFO: Discovered 2 plugins in '/home/tobie/testing_device/plugins'
+[2025-04-11 15:51:34] INFO: Loaded 2 plugins
+[2025-04-11 15:51:34] DEBUG: Starting test program with config: /home/tobie/testing_device/var/input/config1.json
+[2025-04-11 15:51:34] DEBUG: Successfully read 1517 bytes from file /home/tobie/testing_device/var/input/config1.json
+[2025-04-11 15:51:34] DEBUG: Parsed 2 instructions from /home/tobie/testing_device/var/input/config1.json
+[2025-04-11 15:51:34] DEBUG: Executing ping test
+[2025-04-11 15:51:34] DEBUG: Executing plugin 'ping_test' for action 'ping'
+[2025-04-11 15:51:41] DEBUG: Ping command exited with status 0
+[2025-04-11 15:51:41] DEBUG: Ping output preview: PING google.com (142.250.198.142) 64(92) bytes of data.
+72 bytes from nchkgb-aj-in-f14.1e100.net (14...
+[2025-04-11 15:51:41] DEBUG: Ping raw output: PING google.com (142.250.198.142) 64(92) bytes of data.
+72 bytes from nchkgb-aj-in-f14.1e100.net (142.250.198.142): icmp_seq=1 ttl=113 time=56.0 ms
+72 bytes from nchkgb-aj-in-f14.1e100.net (142.250.198.142): icmp_seq=2 ttl=113 time=56.1 ms
+72 bytes from nchkgb-aj-in-f14.1e100.net (142.250.198.142): icmp_seq=3 ttl=113 time=57.0 ms
+72 bytes from nchkgb-aj-in-f14.1e100.net (142.250.198.142): icmp_seq=4 ttl=113 time=57.0 ms
+72 bytes from nchkgb-aj-in-f14.1e100.net (142.250.198.142): icmp_seq=5 ttl=113 time=55.7 ms
+
+--- google.com ping statistics ---
+5 packets transmitted, 5 received, 0% packet loss, time 4417ms
+rtt min/avg/max/mdev = 55.748/56.374/57.016/0.528 ms
+[2025-04-11 15:51:41] DEBUG: Successfully parsed packets: sent=5, received=5, loss=0.0%
+[2025-04-11 15:51:41] DEBUG: Parsed RTT values: min=55.748, avg=56.374, max=57.016
+[2025-04-11 15:51:41] DEBUG: Plugin execution for ping completed successfully
+[2025-04-11 15:51:41] DEBUG: Executing speedtest test
+[2025-04-11 15:51:41] DEBUG: Executing plugin 'speedtest_plugin' for action 'speedtest'
+[2025-04-11 15:51:41] DEBUG: Using default server (nearest)
+[2025-04-11 15:51:41] DEBUG: Executing command: speedtest --json --secure
+[2025-04-11 15:52:01] DEBUG: Speedtest execution time: 19738.1 ms
+[2025-04-11 15:52:01] DEBUG: Successfully read 656 bytes of JSON result
+[2025-04-11 15:52:01] DEBUG: Server ID for future reference: 55434
+[2025-04-11 15:52:01] DEBUG: Speedtest completed successfully: Download=305.60 Mbps, Upload=199.12 Mbps, Latency=48.10 ms
+[2025-04-11 15:52:01] DEBUG: Plugin execution for speedtest completed successfully
+[2025-04-11 15:52:01] DEBUG: Freeing memory for 2 instructions
+[2025-04-11 15:52:01] DEBUG: Cleaning up plugin manager
+[2025-04-11 16:29:28] DEBUG: Initializing plugin manager
+[2025-04-11 16:29:28] DEBUG: Discovering plugins in '/home/tobie/testing_device/plugins'
+[2025-04-11 16:29:28] INFO: Loaded plugin 'ping_test' version 1.0.0 by Testing Device Team
+[2025-04-11 16:29:28] INFO: Loaded plugin 'speedtest_plugin' version 1.0.0 by Testing Device Team
+[2025-04-11 16:29:28] INFO: Discovered 2 plugins in '/home/tobie/testing_device/plugins'
+[2025-04-11 16:29:28] INFO: Loaded 2 plugins
+[2025-04-11 16:29:28] DEBUG: Starting test program with config: /home/tobie/testing_device/var/input/config1.json
+[2025-04-11 16:29:28] DEBUG: Successfully read 1517 bytes from file /home/tobie/testing_device/var/input/config1.json
+[2025-04-11 16:29:28] DEBUG: Parsed 2 instructions from /home/tobie/testing_device/var/input/config1.json
+[2025-04-11 16:29:28] DEBUG: Executing ping test
+[2025-04-11 16:29:28] DEBUG: Executing plugin 'ping_test' for action 'ping'
+[2025-04-11 16:29:32] DEBUG: Ping command exited with status 0
+[2025-04-11 16:29:32] DEBUG: Ping output preview: PING google.com (142.250.196.238) 64(92) bytes of data.
+72 bytes from nchkga-ae-in-f14.1e100.net (14...
+[2025-04-11 16:29:32] DEBUG: Ping raw output: PING google.com (142.250.196.238) 64(92) bytes of data.
+72 bytes from nchkga-ae-in-f14.1e100.net (142.250.196.238): icmp_seq=1 ttl=57 time=51.9 ms
+72 bytes from nchkga-ae-in-f14.1e100.net (142.250.196.238): icmp_seq=2 ttl=57 time=52.6 ms
+72 bytes from nchkga-ae-in-f14.1e100.net (142.250.196.238): icmp_seq=3 ttl=57 time=52.6 ms
+72 bytes from nchkga-ae-in-f14.1e100.net (142.250.196.238): icmp_seq=4 ttl=57 time=52.5 ms
+72 bytes from nchkga-ae-in-f14.1e100.net (142.250.196.238): icmp_seq=5 ttl=57 time=52.1 ms
+
+--- google.com ping statistics ---
+5 packets transmitted, 5 received, 0% packet loss, time 4419ms
+rtt min/avg/max/mdev = 51.868/52.332/52.615/0.282 ms
+[2025-04-11 16:29:32] DEBUG: Successfully parsed packets: sent=5, received=5, loss=0.0%
+[2025-04-11 16:29:32] DEBUG: Parsed RTT values: min=51.868, avg=52.332, max=52.615
+[2025-04-11 16:29:32] DEBUG: Plugin execution for ping completed successfully
+[2025-04-11 16:29:32] DEBUG: Executing speedtest test
+[2025-04-11 16:29:32] DEBUG: Executing plugin 'speedtest_plugin' for action 'speedtest'
+[2025-04-11 16:29:32] DEBUG: Using default server (nearest)
+[2025-04-11 16:29:32] DEBUG: Executing command: speedtest --json --secure
+[2025-04-11 16:29:55] DEBUG: Speedtest execution time: 23258.3 ms
+[2025-04-11 16:29:55] DEBUG: Successfully read 680 bytes of JSON result
+[2025-04-11 16:29:55] DEBUG: Server ID for future reference: 6342
+[2025-04-11 16:29:55] DEBUG: Speedtest completed successfully: Download=322.45 Mbps, Upload=196.61 Mbps, Latency=40.22 ms
+[2025-04-11 16:29:55] DEBUG: Plugin execution for speedtest completed successfully
+[2025-04-11 16:29:55] DEBUG: Freeing memory for 2 instructions
+[2025-04-11 16:29:55] DEBUG: Cleaning up plugin manager

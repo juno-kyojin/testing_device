@@ -1,43 +1,51 @@
 CC=gcc
-CFLAGS=-I./include -Wall -Wextra -g
-LDFLAGS=-pthread -lcjson
+CFLAGS=-I./include -Wall -Wextra -g -fPIC
+LDFLAGS=-pthread -lcjson -ldl
 OBJDIR=obj
 BINDIR=bin
+PLUGINDIR=plugins
 TARGET=$(BINDIR)/testing_device
 
-# Source files và object files
+# Source files and object files
 SRC=$(wildcard src/*.c)
 OBJ=$(patsubst src/%.c,$(OBJDIR)/%.o,$(SRC))
 
-# Tạo thư mục
-$(shell mkdir -p $(OBJDIR) $(BINDIR))
+# Plugin source files and shared objects
+PLUGIN_SRC=$(wildcard plugins/*.c)
+PLUGIN_SO=$(patsubst plugins/%.c,$(PLUGINDIR)/%.so,$(PLUGIN_SRC))
 
-# Build chính
-all: $(TARGET)
+# Create directories
+$(shell mkdir -p $(OBJDIR) $(BINDIR) $(PLUGINDIR))
 
-# Link bản thực thi cuối cùng
+# Build everything
+all: $(TARGET) $(PLUGIN_SO)
+
+# Link main executable
 $(TARGET): $(OBJ)
 	$(CC) -o $@ $^ $(LDFLAGS)
 
-# Biên dịch từng file source thành file object
+# Compile core sources
 $(OBJDIR)/%.o: src/%.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
-# Tạo cấu trúc thư mục config và mẫu cấu hình
-install: $(TARGET)
+# Build plugins as shared libraries
+$(PLUGINDIR)/%.so: plugins/%.c
+	$(CC) $(CFLAGS) -shared -o $@ $< -Wl,-soname,$@
+
+# Create test structure
+install: $(TARGET) $(PLUGIN_SO)
 	mkdir -p config var/input var/results var/log
 	@if [ ! -f config/config.json ]; then \
 		echo "Creating sample config file..."; \
 		echo '{"test_cases": [{"action": "ping", "attributes": [{"public_attr_name": "host", "private_attr_name": "host", "attr_type": "string", "attr_execute": "yes"}], "input_params": {"host": "8.8.8.8"}}]}' > config/config.json; \
 	fi
 
-# Dọn dẹp các file tạm
+# Clean objects
 clean:
-	rm -rf $(OBJDIR)/*.o $(TARGET)
+	rm -rf $(OBJDIR)/*.o
 
-# Xóa hoàn toàn build
+# Clean everything
 distclean: clean
-	rm -rf $(OBJDIR) $(BINDIR)
+	rm -rf $(TARGET) $(PLUGIN_SO)
 
-# Phần .PHONY giúp make biết các targets này không phải là tên file
 .PHONY: all clean distclean install

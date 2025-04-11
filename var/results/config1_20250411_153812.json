@@ -1,0 +1,20 @@
+{
+	"test_results":	[{
+			"action":	"ping",
+			"results":	{
+				"pingCode":	0,
+				"host":	"google.com",
+				"averageResponseTime":	0,
+				"details":	"Ping to google.com completed but results couldn't be fully parsed."
+			}
+		}, {
+			"action":	"speedtest",
+			"results":	{
+				"speedtestCode":	0,
+				"downloadSpeed":	357.92,
+				"uploadSpeed":	155.19,
+				"latency":	69.18,
+				"details":	"Speedtest completed with server Dong Nai (dni-speedtest.viettelidc.com.vn:8080, Vietnam) [ID: 59915]. Download: 357.92 Mbps, Upload: 155.19 Mbps, Latency: 69.18 ms"
+			}
+		}]
+}

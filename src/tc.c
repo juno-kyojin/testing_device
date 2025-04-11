@@ -92,9 +92,9 @@ void clear_timeout() {
 /**
  * @brief Kiểm tra xem timeout đã xảy ra chưa
  * 
- * @return int 1 nếu timeout đã xảy ra, 0 nếu chưa
+ * @return bool true nếu timeout đã xảy ra, false nếu chưa
  */
-int is_timeout_occurred() {
+bool is_timeout_occurred(void) {
     return timeout_occurred;
 }
 
@@ -105,13 +105,13 @@ int is_timeout_occurred() {
  * @param result Con trỏ đến biến lưu kết quả
  * @return int 0 nếu thành công, -1 nếu thất bại
  */
-int parse_ping_result(const char *output, ping_result_t *result) {
+int parse_ping_result(const char *output, ping_data_t *result) {
     if (!output || !result) {
         return -1;
     }
     
     // Khởi tạo kết quả mặc định
-    memset(result, 0, sizeof(ping_result_t));
+    memset(result, 0, sizeof(ping_data_t));
     result->min_rtt = -1;
     result->avg_rtt = -1;
     result->max_rtt = -1;

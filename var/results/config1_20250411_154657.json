@@ -1,0 +1,20 @@
+{
+	"test_results":	[{
+			"action":	"ping",
+			"results":	{
+				"pingCode":	0,
+				"host":	"google.com",
+				"averageResponseTime":	57.9,
+				"details":	"Ping to google.com completed. Packets: 0/0, Loss: 0.0%, RTT min/avg/max: 56.620/57.877/60.620 ms"
+			}
+		}, {
+			"action":	"speedtest",
+			"results":	{
+				"speedtestCode":	0,
+				"downloadSpeed":	186.72,
+				"uploadSpeed":	161.65,
+				"latency":	68.87,
+				"details":	"Speedtest completed with server Ho Chi Minh (speedtest3.vtn.com.vn:8080, Vietnam) [ID: 17758]. Download: 186.72 Mbps, Upload: 161.65 Mbps, Latency: 68.87 ms"
+			}
+		}]
+}

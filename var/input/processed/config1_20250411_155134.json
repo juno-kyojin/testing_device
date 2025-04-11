@@ -1,0 +1,63 @@
+{
+  "test_cases": [
+    {
+      "action": "ping",
+      "input_params": {
+        "host": "google.com"
+      },
+      "attributes": [
+        {
+          "public_attr_name": "pingCode",
+          "private_attr_name": "Status",
+          "attr_type": "int",
+          "attr_execute": "yes"
+        },
+        {
+          "public_attr_name": "host",
+          "private_attr_name": "host",
+          "attr_type": "string",
+          "attr_execute": "yes"
+        },
+        {
+          "public_attr_name": "averageResponseTime",
+          "private_attr_name": "averageResponseTime",
+          "attr_type": "float",
+          "attr_execute": "yes"
+        }
+      ]
+    },
+    {
+      "action": "speedtest",
+      "input_params": {
+        "server": ""
+      },
+      "attributes": [
+        {
+          "public_attr_name": "speedtestCode",
+          "private_attr_name": "Status",
+          "attr_type": "int",
+          "attr_execute": "yes"
+        },
+        {
+          "public_attr_name": "downloadSpeed",
+          "private_attr_name": "DownloadSpeed",
+          "attr_type": "float",
+          "attr_execute": "yes"
+        },
+        {
+          "public_attr_name": "uploadSpeed",
+          "private_attr_name": "UploadSpeed",
+          "attr_type": "float",
+          "attr_execute": "yes"
+        },
+        {
+          "public_attr_name": "latency",
+          "private_attr_name": "Latency",
+          "attr_type": "float",
+          "attr_execute": "yes"
+        }
+      ]
+    }
+  ],
+  "execute_all": true
+}

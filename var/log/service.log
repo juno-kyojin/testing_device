@@ -80,3 +80,27 @@ Starting testing device service at Thu Apr 10 02:58:26 +07 2025
 Starting testing device service at Thu Apr 10 11:37:06 +07 2025
 Starting testing device service at Thu Apr 10 13:58:55 +07 2025
 Starting testing device service at Fri Apr 11 08:50:16 +07 2025
+Processing config1.json at 20250411_095327
+Running: /home/tobie/testing_device/bin/testing_device '/home/tobie/testing_device/var/input/config1.json' > '/tmp/result_20250411_095327.json'
+Binary exit code: 0
+Valid JSON saved to /home/tobie/testing_device/var/results/config1_20250411_095327.json
+Processing config1.json at 20250411_152947
+Running: /home/tobie/testing_device/bin/testing_device '/home/tobie/testing_device/var/input/config1.json' > '/tmp/result_20250411_152947.json'
+Binary exit code: 0
+Valid JSON saved to /home/tobie/testing_device/var/results/config1_20250411_152947.json
+Processing config1.json at 20250411_153812
+Running: /home/tobie/testing_device/bin/testing_device '/home/tobie/testing_device/var/input/config1.json' > '/tmp/result_20250411_153812.json'
+Binary exit code: 0
+Valid JSON saved to /home/tobie/testing_device/var/results/config1_20250411_153812.json
+Processing config1.json at 20250411_154657
+Running: /home/tobie/testing_device/bin/testing_device '/home/tobie/testing_device/var/input/config1.json' > '/tmp/result_20250411_154657.json'
+Binary exit code: 0
+Valid JSON saved to /home/tobie/testing_device/var/results/config1_20250411_154657.json
+Processing config1.json at 20250411_155134
+Running: /home/tobie/testing_device/bin/testing_device '/home/tobie/testing_device/var/input/config1.json' > '/tmp/result_20250411_155134.json'
+Binary exit code: 0
+Valid JSON saved to /home/tobie/testing_device/var/results/config1_20250411_155134.json
+Processing config1.json at 20250411_162927
+Running: /home/tobie/testing_device/bin/testing_device '/home/tobie/testing_device/var/input/config1.json' > '/tmp/result_20250411_162927.json'
+Binary exit code: 0
+Valid JSON saved to /home/tobie/testing_device/var/results/config1_20250411_162927.json

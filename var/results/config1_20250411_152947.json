@@ -1,0 +1,17 @@
+{
+	"test_results":	[{
+			"action":	"ping",
+			"results":	{
+				"pingCode":	1,
+				"host":	"google.com",
+				"averageResponseTime":	61,
+				"details":	"Ping to google.com failed. All packets lost."
+			}
+		}, {
+			"action":	"speedtest",
+			"results":	{
+				"status":	3,
+				"details":	"Plugin execution failed"
+			}
+		}]
+}
