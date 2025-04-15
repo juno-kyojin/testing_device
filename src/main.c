@@ -7,7 +7,6 @@
 #include "cjson/cJSON.h"
 #include "log.h"
 #include "file_process.h"
-#include "plugin_manager.h"
 
 // Cho phép chọn file config thông qua biến môi trường hoặc tham số dòng lệnh
 #define DEFAULT_CONFIG_PATH "config/config.json"
@@ -28,25 +27,6 @@ const char* get_node_name_for_action(const char* action) {
 int main(int argc, char *argv[]) {
     instruction_t *instructions = NULL;
     int count = 0;
-    
-    // Initialize plugin manager
-    if (plugin_manager_init() != 0) {
-        log_message(LOG_LVL_ERROR, "Failed to initialize plugin manager");
-        return -1;
-    }
-    
-    // Discover plugins in plugins directory
-    const char *plugins_dir = getenv("PLUGINS_DIR");
-    if (!plugins_dir) {
-        plugins_dir = "/home/tobie/testing_device/plugins";
-    }
-    
-    int plugins_loaded = plugin_discover(plugins_dir);
-    if (plugins_loaded <= 0) {
-        log_message(LOG_LVL_WARN, "No plugins found in %s", plugins_dir);
-    } else {
-        log_message(LOG_LVL_INFO, "Loaded %d plugins", plugins_loaded);
-    }
     
     // Xác định đường dẫn config file
     const char* config_path = DEFAULT_CONFIG_PATH;
@@ -70,7 +50,6 @@ int main(int argc, char *argv[]) {
     if (read_file(config_path, &json_content, &content_size) != 0) {
         log_message(LOG_LVL_ERROR, "Failed to read JSON file %s", config_path);
         printf("{\"error\": \"Failed to load config\"}\n");
-        plugin_manager_cleanup();
         return -1;
     }
 
@@ -78,7 +57,6 @@ int main(int argc, char *argv[]) {
     if (!parse_json_instruction(json_content, &instructions, &count)) {
         log_message(LOG_LVL_ERROR, "Failed to parse JSON content from %s", config_path);
         free(json_content);
-        plugin_manager_cleanup();
         printf("{\"error\": \"Failed to load config\"}\n");
         return -1;
     }
@@ -103,8 +81,7 @@ int main(int argc, char *argv[]) {
     // Thực thi các instruction
     for (int i = 0; i < count; i++) {
         const char* action = instructions[i].action;
-        // Remove the unused variable or comment it out
-        // const char* node_name = get_node_name_for_action(action);
+        const char* node_name = get_node_name_for_action(action);
         
         // Ghi vào log thay vì ra stdout
         log_message(LOG_LVL_DEBUG, "Executing %s test", action);
@@ -129,58 +106,15 @@ int main(int argc, char *argv[]) {
             }
         }
 
-        // Execute test using plugin system instead of directly calling execute_instruction
-        test_result_info_t test_result;
-        memset(&test_result, 0, sizeof(test_result_info_t));
-        
-        if (plugin_execute_by_action(action, input_params, &test_result) == 0) {
-            // Process the test results
-            log_message(LOG_LVL_DEBUG, "Plugin execution for %s completed successfully", action);
-            
-            // Add results to JSON based on test_result
-            for (int j = 0; j < instructions[i].attr_count; j++) {
-                attribute_t *attr = &instructions[i].attributes[j];
-                if (strcmp(attr->execute, "yes") == 0) {
-                    char buffer[128];
-                    
-                    // Get value from test_result based on attribute name
-                    if (strcmp(attr->private_name, "Status") == 0) {
-                        sprintf(buffer, "%d", test_result.status);
-                    } 
-                    else if (strcmp(action, "ping") == 0) {
-                        if (strcmp(attr->private_name, "host") == 0) {
-                            // Extract host from input_params or result
-                            if (input_params) {
-                                cJSON *host = cJSON_GetObjectItem(input_params, "host");
-                                if (host && cJSON_IsString(host)) {
-                                    strncpy(buffer, host->valuestring, sizeof(buffer)-1);
-                                    buffer[sizeof(buffer)-1] = '\0';
-                                } else {
-                                    strcpy(buffer, "unknown");
-                                }
-                            } else {
-                                strcpy(buffer, "unknown");
-                            }
-                        }
-                        else if (strcmp(attr->private_name, "averageResponseTime") == 0) {
-                            sprintf(buffer, "%.1f", test_result.data.ping.avg_rtt);
-                        }
-                        // Add more ping attributes as needed
-                    }
-                    else if (strcmp(action, "speedtest") == 0) {
-                        if (strcmp(attr->private_name, "DownloadSpeed") == 0) {
-                            sprintf(buffer, "%.2f", test_result.data.speedtest.download_speed);
-                        }
-                        else if (strcmp(attr->private_name, "UploadSpeed") == 0) {
-                            sprintf(buffer, "%.2f", test_result.data.speedtest.upload_speed);
-                        }
-                        else if (strcmp(attr->private_name, "Latency") == 0) {
-                            sprintf(buffer, "%.2f", test_result.data.speedtest.latency);
-                        }
-                        // Add more speedtest attributes as needed
-                    }
-                    
-                    // Add to JSON results
+        // Thực thi test case - ghi thông báo thực thi vào log thay vì stdout
+        execute_instruction(&instructions[i], input_params);
+
+        // Lấy kết quả từ tcapi_get
+        for (int j = 0; j < instructions[i].attr_count; j++) {
+            attribute_t *attr = &instructions[i].attributes[j];
+            if (strcmp(attr->execute, "yes") == 0) {
+                char buffer[128];
+                if (tcapi_get(node_name, instructions[i].sub_node, attr->private_name, buffer) == 0) {
                     if (strcmp(attr->attr_type, "int") == 0) {
                         cJSON_AddNumberToObject(attributes, attr->public_name, atoi(buffer));
                     } else if (strcmp(attr->attr_type, "float") == 0) {
@@ -190,13 +124,54 @@ int main(int argc, char *argv[]) {
                     }
                 }
             }
+        }
+
+        // Thêm chi tiết bổ sung cho từng loại test
+        if (strcmp(action, "ping") == 0) {
+            // Lấy thông tin chi tiết về ping
+            char buffer[128];
             
-            // Add details to JSON
-            cJSON_AddStringToObject(attributes, "details", test_result.result_details);
-        } else {
-            log_message(LOG_LVL_ERROR, "Failed to execute plugin for action %s", action);
-            cJSON_AddNumberToObject(attributes, "status", 3); // ERROR
-            cJSON_AddStringToObject(attributes, "details", "Plugin execution failed");
+            // Thêm packet loss
+            if (tcapi_get(node_name, instructions[i].sub_node, "packetLoss", buffer) == 0) {
+                cJSON_AddNumberToObject(attributes, "packetLoss", atof(buffer));
+            }
+            
+            // Thêm thông tin về số gói tin
+            if (tcapi_get(node_name, instructions[i].sub_node, "successCount", buffer) == 0) {
+                cJSON_AddNumberToObject(attributes, "successCount", atoi(buffer));
+            }
+            
+            if (tcapi_get(node_name, instructions[i].sub_node, "failureCount", buffer) == 0) {
+                cJSON_AddNumberToObject(attributes, "failureCount", atoi(buffer));
+            }
+            
+            // Thêm thông tin về RTT
+            if (tcapi_get(node_name, instructions[i].sub_node, "minimumResponseTime", buffer) == 0) {
+                cJSON_AddNumberToObject(attributes, "minRTT", atof(buffer));
+            }
+            
+            if (tcapi_get(node_name, instructions[i].sub_node, "maximumResponseTime", buffer) == 0) {
+                cJSON_AddNumberToObject(attributes, "maxRTT", atof(buffer));
+            }
+        } 
+        else if (strcmp(action, "speedtest") == 0) {
+            // Thêm chi tiết về server
+            char details[1024] = {0};
+            if (tcapi_get(node_name, instructions[i].sub_node, "ServerDetails", details) == 0 && strlen(details) > 0) {
+                cJSON_AddStringToObject(attributes, "serverInfo", details);
+            }
+            
+            // Thêm thời gian thực thi
+            char buffer[128];
+            if (tcapi_get(node_name, instructions[i].sub_node, "ExecutionTime", buffer) == 0) {
+                cJSON_AddNumberToObject(attributes, "executionTime", atof(buffer));
+            }
+        }
+
+        // status details cho tất cả các loại test
+        char details[1024] = {0};
+        if (tcapi_get(node_name, instructions[i].sub_node, "Details", details) == 0 && strlen(details) > 0) {
+            cJSON_AddStringToObject(attributes, "details", details);
         }
 
         // Thêm kết quả của test case này vào mảng kết quả
@@ -218,9 +193,6 @@ int main(int argc, char *argv[]) {
     if (root) cJSON_Delete(root);
     free(json_content);
     free_instructions(instructions, count);
-    
-    // Clean up plugin manager
-    plugin_manager_cleanup();
 
     return 0;
 }

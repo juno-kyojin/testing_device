@@ -1,0 +1,27 @@
+{
+	"test_results":	[{
+			"action":	"ping",
+			"results":	{
+				"pingCode":	0,
+				"host":	"google.com",
+				"averageResponseTime":	51.8,
+				"packetLoss":	0,
+				"successCount":	5,
+				"failureCount":	0,
+				"minRTT":	50.8,
+				"maxRTT":	52.6,
+				"details":	"Ping to google.com completed. Packets: 5/5, Loss: 0.0%, RTT min/avg/max: 50.815/51.758/52.566 ms"
+			}
+		}, {
+			"action":	"speedtest",
+			"results":	{
+				"speedtestCode":	0,
+				"downloadSpeed":	322.49,
+				"uploadSpeed":	171.25,
+				"latency":	42.07,
+				"serverInfo":	"Phu Ly (speedtestkv1dp1",
+				"executionTime":	19573.1,
+				"details":	"Speedtest completed with server Phu Ly (speedtestkv1dp1.viettel.vn:8080, Vietnam) [ID: 27598]. Download: 322.49 Mbps, Upload: 171.25 Mbps, Latency: 42.07 ms"
+			}
+		}]
+}

@@ -106,3 +106,7 @@ Binary exit code: 0
 Valid JSON saved to /home/tobie/testing_device/var/results/config1_20250411_162927.json
 Starting testing device service at Mon Apr 14 01:04:18 +07 2025
 Starting testing device service at Tue Apr 15 08:56:41 +07 2025
+Processing config1.json at 20250415_100929
+Running: /home/tobie/testing_device/bin/testing_device '/home/tobie/testing_device/var/input/config1.json' > '/tmp/result_20250415_100929.json'
+Binary exit code: 0
+Valid JSON saved to /home/tobie/testing_device/var/results/config1_20250415_100929.json

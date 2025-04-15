@@ -9,7 +9,6 @@ enum {
     LOG_LVL_NONE = 0,
     LOG_LVL_ERROR,
     LOG_LVL_WARN,
-    LOG_LVL_INFO,   // Added INFO level
     LOG_LVL_DEBUG
 };
 
@@ -25,6 +24,5 @@ void cleanup_logger(void);
 void set_log_level(int level);
 void set_log_file(const char *file_path);
 void log_message(int level, const char *format, ...);
-int log_message_v(int level, const char *format, va_list args);
 
 #endif
