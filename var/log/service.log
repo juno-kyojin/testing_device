@@ -1,112 +1,43 @@
-Starting testing device service...
-Starting testing device service...
-Starting testing device service...
-Processing config.json at 20250402_155331
-Processing config.json at 20250402_155633
-Starting testing device service...
-Processing config.json at 20250404_085511
-Starting testing device service...
-Starting testing device service...
-Starting testing device service...
-Starting testing device service...
-Processing config.json at 20250404_104049
-Processing config.json at 20250404_104051
-Starting testing device service...
-Starting testing device service...
-Processing config.json at 20250404_104428
-Processing config.json at 20250404_104952
-Starting testing device service at Fri Apr  4 10:53:13 +07 2025
-Processing config.json at 20250404_105341
-Running: /home/tobie/testing_device/bin/testing_device '/home/tobie/testing_device/var/input/config.json' > '/tmp/result_20250404_105341.json'
+Processing config1.json at 20250415_150047
+Running: /home/tobie/testing_device/bin/testing_device '/home/tobie/testing_device/var/input/config1.json' > '/tmp/result_20250415_150047.json'
 Binary exit code: 0
-Error: Invalid JSON in /tmp/result_20250404_105341.json (failed python validation)
-Error: Invalid JSON output for config.json (exit code: 0)
-Content of invalid file (first 200 bytes):
-Executing instruction: ping
-Test result: SUCCESS
-Details: Ping to google.com completed. Packets: 5/5, Loss: 0.0%, RTT min/avg/max: 36.593/91.804/219.329 ms
-Executing instruction: speedtest
-Test result
-Processing config.json at 20250404_110236
-Running: /home/tobie/testing_device/bin/testing_device '/home/tobie/testing_device/var/input/config.json' > '/tmp/result_20250404_110236.json'
+Valid JSON saved to /home/tobie/testing_device/var/results/config1_20250415_150047.json
+Processing config1.json at 20250415_151247
+Running: /home/tobie/testing_device/bin/testing_device '/home/tobie/testing_device/var/input/config1.json' > '/tmp/result_20250415_151247.json'
 Binary exit code: 0
-Valid JSON saved to /home/tobie/testing_device/var/results/config_20250404_110236.json
-Processing config.json at 20250404_111454
-Running: /home/tobie/testing_device/bin/testing_device '/home/tobie/testing_device/var/input/config.json' > '/tmp/result_20250404_111454.json'
+Valid JSON saved to /home/tobie/testing_device/var/results/config1_20250415_151247.json
+Processing config1.json at 20250415_151930
+Running: /home/tobie/testing_device/bin/testing_device '/home/tobie/testing_device/var/input/config1.json' > '/tmp/result_20250415_151930.json'
 Binary exit code: 0
-Valid JSON saved to /home/tobie/testing_device/var/results/config_20250404_111454.json
-Processing config.json at 20250404_134450
-Running: /home/tobie/testing_device/bin/testing_device '/home/tobie/testing_device/var/input/config.json' > '/tmp/result_20250404_134450.json'
+Valid JSON saved to /home/tobie/testing_device/var/results/config1_20250415_151930.json
+Processing config1.json at 20250415_152122
+Running: /home/tobie/testing_device/bin/testing_device '/home/tobie/testing_device/var/input/config1.json' > '/tmp/result_20250415_152122.json'
 Binary exit code: 0
-Valid JSON saved to /home/tobie/testing_device/var/results/config_20250404_134450.json
-Processing config.json at 20250404_143637
-Running: /home/tobie/testing_device/bin/testing_device '/home/tobie/testing_device/var/input/config.json' > '/tmp/result_20250404_143637.json'
+Valid JSON saved to /home/tobie/testing_device/var/results/config1_20250415_152122.json
+Processing config1.json at 20250415_153354
+Running: /home/tobie/testing_device/bin/testing_device '/home/tobie/testing_device/var/input/config1.json' > '/tmp/result_20250415_153354.json'
 Binary exit code: 0
-Valid JSON saved to /home/tobie/testing_device/var/results/config_20250404_143637.json
-Processing config.json at 20250404_153444
-Running: /home/tobie/testing_device/bin/testing_device '/home/tobie/testing_device/var/input/config.json' > '/tmp/result_20250404_153444.json'
-/home/tobie/testing_device/scripts/testing-service.sh: line 92: /home/tobie/testing_device/bin/testing_device: No such file or directory
-Binary exit code: 127
+Valid JSON saved to /home/tobie/testing_device/var/results/config1_20250415_153354.json
+Processing config1.json at 20250415_154153
+Running: /home/tobie/testing_device/bin/testing_device '/home/tobie/testing_device/var/input/config1.json' > '/tmp/result_20250415_154153.json'
+Binary exit code: 139
 Error: Empty result file
-Processing config.json at 20250404_163149
-Running: /home/tobie/testing_device/bin/testing_device '/home/tobie/testing_device/var/input/config.json' > '/tmp/result_20250404_163149.json'
+Processing config1.json at 20250415_154428
+Running: /home/tobie/testing_device/bin/testing_device '/home/tobie/testing_device/var/input/config1.json' > '/tmp/result_20250415_154428.json'
 Binary exit code: 0
-Valid JSON saved to /home/tobie/testing_device/var/results/config_20250404_163149.json
-Starting testing device service at Tue Apr  8 20:42:36 +07 2025
-Starting testing device service at Wed Apr  9 02:22:01 +07 2025
-Starting testing device service at Wed Apr  9 13:59:00 +07 2025
-Processing config.json at 20250409_142433
-Running: /home/tobie/testing_device/bin/testing_device '/home/tobie/testing_device/var/input/config.json' > '/tmp/result_20250409_142433.json'
+Valid JSON saved to /home/tobie/testing_device/var/results/config1_20250415_154428.json
+Starting testing device service at Tue Apr 15 15:56:06 +07 2025
+Processing config1.json at 20250415_162717
+Running: /home/tobie/testing_device/bin/testing_device '/home/tobie/testing_device/var/input/config1.json' > '/tmp/result_20250415_162717.json'
 Binary exit code: 0
-Valid JSON saved to /home/tobie/testing_device/var/results/config_20250409_142433.json
-Processing config1.json at 20250409_150923
-Running: /home/tobie/testing_device/bin/testing_device '/home/tobie/testing_device/var/input/config1.json' > '/tmp/result_20250409_150923.json'
+Valid JSON saved to /home/tobie/testing_device/var/results/config1_20250415_162717.json
+Processing config1.json at 20250415_171919
+Running: /home/tobie/testing_device/bin/testing_device '/home/tobie/testing_device/var/input/config1.json' > '/tmp/result_20250415_171919.json'
 Binary exit code: 0
-Valid JSON saved to /home/tobie/testing_device/var/results/config1_20250409_150923.json
-Processing config1.json at 20250409_152040
-Running: /home/tobie/testing_device/bin/testing_device '/home/tobie/testing_device/var/input/config1.json' > '/tmp/result_20250409_152040.json'
+Valid JSON saved to /home/tobie/testing_device/var/results/config1_20250415_171919.json
+Processing config1.json at 20250415_172627
+Running: /home/tobie/testing_device/bin/testing_device '/home/tobie/testing_device/var/input/config1.json' > '/tmp/result_20250415_172627.json'
 Binary exit code: 0
-Valid JSON saved to /home/tobie/testing_device/var/results/config1_20250409_152040.json
-Processing config1.json at 20250409_165651
-Running: /home/tobie/testing_device/bin/testing_device '/home/tobie/testing_device/var/input/config1.json' > '/tmp/result_20250409_165651.json'
-Binary exit code: 0
-Valid JSON saved to /home/tobie/testing_device/var/results/config1_20250409_165651.json
-Processing config1.json at 20250409_170653
-Running: /home/tobie/testing_device/bin/testing_device '/home/tobie/testing_device/var/input/config1.json' > '/tmp/result_20250409_170653.json'
-Binary exit code: 0
-Valid JSON saved to /home/tobie/testing_device/var/results/config1_20250409_170653.json
-Starting testing device service at Wed Apr  9 20:28:25 +07 2025
-Starting testing device service at Thu Apr 10 02:58:26 +07 2025
-Starting testing device service at Thu Apr 10 11:37:06 +07 2025
-Starting testing device service at Thu Apr 10 13:58:55 +07 2025
-Starting testing device service at Fri Apr 11 08:50:16 +07 2025
-Processing config1.json at 20250411_095327
-Running: /home/tobie/testing_device/bin/testing_device '/home/tobie/testing_device/var/input/config1.json' > '/tmp/result_20250411_095327.json'
-Binary exit code: 0
-Valid JSON saved to /home/tobie/testing_device/var/results/config1_20250411_095327.json
-Processing config1.json at 20250411_152947
-Running: /home/tobie/testing_device/bin/testing_device '/home/tobie/testing_device/var/input/config1.json' > '/tmp/result_20250411_152947.json'
-Binary exit code: 0
-Valid JSON saved to /home/tobie/testing_device/var/results/config1_20250411_152947.json
-Processing config1.json at 20250411_153812
-Running: /home/tobie/testing_device/bin/testing_device '/home/tobie/testing_device/var/input/config1.json' > '/tmp/result_20250411_153812.json'
-Binary exit code: 0
-Valid JSON saved to /home/tobie/testing_device/var/results/config1_20250411_153812.json
-Processing config1.json at 20250411_154657
-Running: /home/tobie/testing_device/bin/testing_device '/home/tobie/testing_device/var/input/config1.json' > '/tmp/result_20250411_154657.json'
-Binary exit code: 0
-Valid JSON saved to /home/tobie/testing_device/var/results/config1_20250411_154657.json
-Processing config1.json at 20250411_155134
-Running: /home/tobie/testing_device/bin/testing_device '/home/tobie/testing_device/var/input/config1.json' > '/tmp/result_20250411_155134.json'
-Binary exit code: 0
-Valid JSON saved to /home/tobie/testing_device/var/results/config1_20250411_155134.json
-Processing config1.json at 20250411_162927
-Running: /home/tobie/testing_device/bin/testing_device '/home/tobie/testing_device/var/input/config1.json' > '/tmp/result_20250411_162927.json'
-Binary exit code: 0
-Valid JSON saved to /home/tobie/testing_device/var/results/config1_20250411_162927.json
-Starting testing device service at Mon Apr 14 01:04:18 +07 2025
-Starting testing device service at Tue Apr 15 08:56:41 +07 2025
-Processing config1.json at 20250415_100929
-Running: /home/tobie/testing_device/bin/testing_device '/home/tobie/testing_device/var/input/config1.json' > '/tmp/result_20250415_100929.json'
-Binary exit code: 0
-Valid JSON saved to /home/tobie/testing_device/var/results/config1_20250415_100929.json
+Valid JSON saved to /home/tobie/testing_device/var/results/config1_20250415_172627.json
+Starting testing device service at Tue Apr 15 21:53:27 +07 2025
+Starting testing device service at Wed Apr 16 09:18:13 +07 2025

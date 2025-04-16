@@ -1,0 +1,27 @@
+{
+	"test_results":	[{
+			"action":	"ping",
+			"results":	{
+				"pingCode":	0,
+				"host":	"google.com",
+				"averageResponseTime":	15,
+				"packetLoss":	0,
+				"successCount":	4,
+				"failureCount":	0,
+				"minRTT":	10,
+				"maxRTT":	20,
+				"details":	"Debug ping test completed successfully"
+			}
+		}, {
+			"action":	"speedtest",
+			"results":	{
+				"speedtestCode":	0,
+				"downloadSpeed":	69.29,
+				"uploadSpeed":	155.29,
+				"latency":	42.64,
+				"serverInfo":	"Hanoi (speedtest",
+				"executionTime":	24635.4,
+				"details":	"Speedtest completed with server Hanoi (speedtest.vnanet.vn:8080, Vietnam) [ID: 65075]. Download: 69.29 Mbps, Upload: 155.29 Mbps, Latency: 42.64 ms"
+			}
+		}]
+}

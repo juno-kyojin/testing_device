@@ -7,6 +7,7 @@
 #include "cjson/cJSON.h"
 #include "log.h"
 #include "file_process.h"
+#include "plugin_manager.h"
 
 // Cho phép chọn file config thông qua biến môi trường hoặc tham số dòng lệnh
 #define DEFAULT_CONFIG_PATH "config/config.json"
@@ -44,13 +45,70 @@ int main(int argc, char *argv[]) {
 
     log_message(LOG_LVL_DEBUG, "Starting test program with config: %s", config_path);
 
-    // Đọc và parse file JSON từ config
+    // FIX: Sửa logic kiểm tra biến môi trường USE_PLUGINS
+    bool use_plugins = false;
+    const char* env_use_plugins = getenv("USE_PLUGINS");
+    
+    // Kiểm tra biến môi trường trước tiên
+    if (env_use_plugins) {
+        if (strcmp(env_use_plugins, "1") == 0 || 
+            strcasecmp(env_use_plugins, "yes") == 0 ||
+            strcasecmp(env_use_plugins, "true") == 0) {
+            use_plugins = true;
+            log_message(LOG_LVL_DEBUG, "Plugin system enabled via environment variable");
+        }
+    }
+    
+    // THÊM: Nếu không có biến môi trường, kiểm tra trong config
     char *json_content = NULL;
     size_t content_size = 0;
-    if (read_file(config_path, &json_content, &content_size) != 0) {
-        log_message(LOG_LVL_ERROR, "Failed to read JSON file %s", config_path);
-        printf("{\"error\": \"Failed to load config\"}\n");
-        return -1;
+    if (!use_plugins) {
+        // Đọc và parse file cấu hình trước khi kiểm tra use_plugins
+        if (read_file(config_path, &json_content, &content_size) == 0) {
+            cJSON *root = cJSON_Parse(json_content);
+            if (root) {
+                cJSON *use_plugins_json = cJSON_GetObjectItem(root, "use_plugins");
+                if (use_plugins_json && cJSON_IsBool(use_plugins_json) && cJSON_IsTrue(use_plugins_json)) {
+                    use_plugins = true;
+                    log_message(LOG_LVL_DEBUG, "Plugin system enabled via config file");
+                }
+                cJSON_Delete(root);
+            }
+            free(json_content);
+            json_content = NULL;
+        }
+    }
+    
+    if (use_plugins) {
+        log_message(LOG_LVL_DEBUG, "Plugin system is ENABLED");
+        
+        // Khởi tạo plugin manager
+        if (plugin_manager_init() != 0) {
+            log_message(LOG_LVL_ERROR, "Failed to initialize plugin manager");
+        } else {
+            // Nạp các plugin từ thư mục plugins
+            const char* plugin_dir = "/home/tobie/testing_device/plugins";
+            
+            // Kiểm tra biến môi trường PLUGIN_DIR
+            const char* env_plugin_dir = getenv("PLUGIN_DIR");
+            if (env_plugin_dir != NULL) {
+                plugin_dir = env_plugin_dir;
+            }
+            
+            int loaded_count = load_plugins(plugin_dir);
+            log_message(LOG_LVL_DEBUG, "Loaded %d plugins from %s", loaded_count, plugin_dir);
+        }
+    } else {
+        log_message(LOG_LVL_DEBUG, "Plugin system is DISABLED");
+    }
+
+    // Di chuyển đoạn đọc file và parse JSON xuống đây nếu chưa thực hiện ở trên
+    if (!json_content) {
+        if (read_file(config_path, &json_content, &content_size) != 0) {
+            log_message(LOG_LVL_ERROR, "Failed to read JSON file %s", config_path);
+            printf("{\"error\": \"Failed to load config\"}\n");
+            return -1;
+        }
     }
 
     // Parse JSON content thành instructions
@@ -88,7 +146,18 @@ int main(int argc, char *argv[]) {
 
         // Tạo JSON để lưu kết quả cho test case này
         cJSON *result = cJSON_CreateObject();
+        if (!result) {
+            log_message(LOG_LVL_ERROR, "Failed to create JSON object for result");
+            continue;
+        }
+        
         cJSON *attributes = cJSON_CreateObject();
+        if (!attributes) {
+            log_message(LOG_LVL_ERROR, "Failed to create JSON object for attributes");
+            cJSON_Delete(result);
+            continue;
+        }
+        
         cJSON_AddStringToObject(result, "action", action);
         cJSON_AddItemToObject(result, "results", attributes);
 
@@ -99,21 +168,25 @@ int main(int argc, char *argv[]) {
             cJSON *test_cases = cJSON_GetObjectItem(root, "test_cases");
             if (test_cases && cJSON_IsArray(test_cases) && i < cJSON_GetArraySize(test_cases)) {
                 cJSON *test_case = cJSON_GetArrayItem(test_cases, i);
-                input_params = cJSON_GetObjectItem(test_case, "input_params");
+                if (test_case) {
+                    input_params = cJSON_GetObjectItem(test_case, "input_params");
+                }
             } else {
                 // Nếu là file đơn test case
                 input_params = cJSON_GetObjectItem(root, "input_params");
             }
         }
 
-        // Thực thi test case - ghi thông báo thực thi vào log thay vì stdout
-        execute_instruction(&instructions[i], input_params);
+        // Thực thi test case với xử lý lỗi
+        if (execute_instruction(&instructions[i], input_params) != 0) {
+            log_message(LOG_LVL_ERROR, "Failed to execute instruction for %s", action);
+        }
 
-        // Lấy kết quả từ tcapi_get
+        // Lấy kết quả từ tcapi_get với kiểm tra lỗi
         for (int j = 0; j < instructions[i].attr_count; j++) {
             attribute_t *attr = &instructions[i].attributes[j];
-            if (strcmp(attr->execute, "yes") == 0) {
-                char buffer[128];
+            if (attr && strcmp(attr->execute, "yes") == 0) {
+                char buffer[128] = {0};
                 if (tcapi_get(node_name, instructions[i].sub_node, attr->private_name, buffer) == 0) {
                     if (strcmp(attr->attr_type, "int") == 0) {
                         cJSON_AddNumberToObject(attributes, attr->public_name, atoi(buffer));
@@ -193,6 +266,11 @@ int main(int argc, char *argv[]) {
     if (root) cJSON_Delete(root);
     free(json_content);
     free_instructions(instructions, count);
+
+    // Giải phóng tài nguyên của plugin manager nếu đã khởi tạo
+    if (use_plugins) {
+        plugin_manager_cleanup();
+    }
 
     return 0;
 }

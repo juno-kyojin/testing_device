@@ -1,0 +1,27 @@
+{
+	"test_results":	[{
+			"action":	"ping",
+			"results":	{
+				"pingCode":	0,
+				"host":	"google.com",
+				"averageResponseTime":	62.2,
+				"packetLoss":	0,
+				"successCount":	5,
+				"failureCount":	0,
+				"minRTT":	57.7,
+				"maxRTT":	73.2,
+				"details":	"Ping to google.com completed. Packets: 5/5, Loss: 0.0%, RTT min/avg/max: 57.657/62.225/73.237 ms"
+			}
+		}, {
+			"action":	"speedtest",
+			"results":	{
+				"speedtestCode":	0,
+				"downloadSpeed":	271.09,
+				"uploadSpeed":	179.02,
+				"latency":	79.2,
+				"serverInfo":	"Ha Noi (hn1",
+				"executionTime":	24693.5,
+				"details":	"Speedtest completed with server Ha Noi (hn1.mobifone.vn:8080, Vietnam) [ID: 55434]. Download: 271.09 Mbps, Upload: 179.02 Mbps, Latency: 79.20 ms"
+			}
+		}]
+}

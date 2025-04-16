@@ -1,5 +1,8 @@
 #!/bin/bash
 
+export USE_PLUGINS=1
+echo "Plugin system enabled" >> "$LOG_DIR/service.log"
+
 INPUT_DIR="/home/tobie/testing_device/var/input"
 OUTPUT_DIR="/home/tobie/testing_device/var/results"
 LOG_DIR="/home/tobie/testing_device/var/log"

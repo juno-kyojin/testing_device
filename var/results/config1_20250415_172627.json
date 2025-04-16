@@ -1,0 +1,27 @@
+{
+	"test_results":	[{
+			"action":	"ping",
+			"results":	{
+				"pingCode":	0,
+				"host":	"google.com",
+				"averageResponseTime":	15,
+				"packetLoss":	0,
+				"successCount":	5,
+				"failureCount":	0,
+				"minRTT":	10,
+				"maxRTT":	20,
+				"details":	"Debug Ping test to google.com completed successfully via plugin"
+			}
+		}, {
+			"action":	"speedtest",
+			"results":	{
+				"speedtestCode":	0,
+				"downloadSpeed":	373.02,
+				"uploadSpeed":	185.74,
+				"latency":	55.98,
+				"serverInfo":	"Vinh (vinh-speedtest",
+				"executionTime":	18331.1,
+				"details":	"Speedtest completed with server Vinh (vinh-speedtest.viettelidc.com.vn:8080, Vietnam) [ID: 59932]. Download: 373.02 Mbps, Upload: 185.74 Mbps, Latency: 55.98 ms"
+			}
+		}]
+}

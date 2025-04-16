@@ -2,7 +2,7 @@
  #define TC_H
  
  #include "parser_data.h"  // Để sử dụng cấu trúc test_case_t
- 
+ #include "cjson/cJSON.h"
  //---------- Các định nghĩa kiểu dữ liệu ----------//
  /**
   * @brief Trạng thái kết quả test
@@ -136,5 +136,15 @@
   * @return int 0 nếu thành công, -1 nếu thất bại
   */
  int generate_summary_report(test_result_info_t *results, int count, const char *filename);
+
+ /**
+  * @brief Thực thi một instruction
+  * 
+  * @param instruction Con trỏ đến instruction cần thực thi
+  * @param input_params Tham số đầu vào từ file cấu hình
+  * @param use_plugin_system Cờ xác định có sử dụng plugin system hay không
+  * @return int 0 nếu thành công, -1 nếu thất bại
+  */
+ int execute_instruction(const instruction_t *instruction, cJSON *input_params, bool use_plugin_system);
  
  #endif /* TC_H */

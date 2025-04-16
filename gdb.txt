@@ -1,0 +1,25 @@
+warning: could not find '.gnu_debugaltlink' file for /lib/x86_64-linux-gnu/libcjson.so.1
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
+
+Program received signal SIGSEGV, Segmentation fault.
+0x0000000000000001 in ?? ()
+#0  0x0000000000000001 in ?? ()
+No symbol table info available.
+#1  0x000055555555c4bb in plugin_execute_test (action_name=0x555555566320 <loaded_plugins+352> "ping", test_case=0x55555556a060 <current_test_case>, result=0x5555555685c0 <test_results+32>, input_params=0x55555556c730) at src/plugin_manager.c:335
+        sa = {__sigaction_handler = {sa_handler = 0x0, sa_sigaction = 0x0}, sa_mask = {__val = {0, 140737488344432, 140737352215777, 93824992321632, 93824992321641, 93824992321664, 0, 140733193388034, 0, 3, 5445433121687798016, 93824992336693, 140737353738944, 3, 18446744073709551552, 93824992331904}}, sa_flags = 0, sa_restorer = 0x7fffffffd560}
+        old_sa = {__sigaction_handler = {sa_handler = 0x0, sa_sigaction = 0x0}, sa_mask = {__val = {0, 93824992343712, 93824992345024, 140737488344224, 140737353812703, 0, 860, 93824992335975, 93824992343600, 140737488344816, 93824992343200, 140737488344160, 93824992264390, 93824992331088, 93824992305952, 3}}, sa_flags = 67108864, sa_restorer = 0x7ffff7de0330 <__restore_rt>}
+        plugin = 0x5555555661c0 <loaded_plugins>
+        jmpbuf = {{__jmpbuf = {140737488346600, -5282339335122345718, 2, 0, 93824992303904, 140737354125312, -5282339335046848246, -2025483999237529334}, __mask_was_saved = 0, __saved_mask = {__val = {7, 140737488344800, 140737353810531, 140733193388032, 140737488346600, 2, 0, 140737488344736, 93824992273199, 0, 140737351923737, 93824992338816, 93824992264390, 2, 93824992338816, 93824992303904}}}}
+        result_code = -1
+#2  0x000055555556043c in execute_instruction (instruction=0x55555556e380, input_params=0x55555556c730) at src/tc_api.c:758
+        result = 32767
+        plugin_count = 2
+        plugins = 0x5555555661c0 <loaded_plugins>
+        has_valid_target = true
+        test_result = 0x5555555685a0 <test_results>
+        specific_plugin = "Debug Ping Plugin", '\000' <repeats 46 times>
+        use_plugin_system = true
+        env_use_plugins = 0x7fffffffe16c "1"
+        plugin = 0x5555555661c0 <loaded_plugins>
+#3  0x000055555555846e in main (argc=2, argv=0x7fffffffdde8)Quit

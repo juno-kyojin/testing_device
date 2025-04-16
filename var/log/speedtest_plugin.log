@@ -1,0 +1,9 @@
+[INIT] Speedtest plugin initialized
+[2025-04-15 17:26:27] DEBUG: Starting speedtest with server target: speedtest.net
+[2025-04-15 17:26:27] DEBUG: Using default server (nearest)
+[2025-04-15 17:26:27] DEBUG: Executing command: speedtest-cli --json --secure
+[2025-04-15 17:26:45] DEBUG: Speedtest execution time: 18331.1 ms
+[2025-04-15 17:26:45] DEBUG: Successfully read 690 bytes of JSON result
+[2025-04-15 17:26:45] DEBUG: Server ID for future reference: 59932
+[2025-04-15 17:26:45] DEBUG: Plugin: Speedtest completed successfully: Download=373.02 Mbps, Upload=185.74 Mbps, Latency=55.98 ms
+[CLEANUP] Speedtest plugin cleaned up

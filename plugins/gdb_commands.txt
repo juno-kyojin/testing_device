@@ -1,0 +1,5 @@
+set logging on
+run ./config/config1.json
+bt full
+info registers
+quit

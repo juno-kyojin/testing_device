@@ -3,7 +3,8 @@
     {
       "action": "ping",
       "input_params": {
-        "host": "google.com"
+        "host": "google.com",
+        "plugin": "Debug Ping Plugin"
       },
       "attributes": [
         {
@@ -29,7 +30,8 @@
     {
       "action": "speedtest",
       "input_params": {
-        "server": ""
+        "server": "",
+        "plugin": "Speedtest Plugin"
       },
       "attributes": [
         {
@@ -59,5 +61,6 @@
       ]
     }
   ],
-  "execute_all": true
+  "execute_all": true,
+  "use_plugins": true
 }

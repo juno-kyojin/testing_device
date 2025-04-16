@@ -4,10 +4,14 @@
 #include <unistd.h>
 #include <sys/time.h>
 #include <errno.h>  
+#include <setjmp.h>
+#include <signal.h>
+#include <time.h>
 #include "parser_data.h"
 #include "cjson/cJSON.h"
 #include "tc.h"
 #include "log.h"
+#include "plugin_manager.h"
 
 // Định nghĩa số lượng tối đa test cases có thể xử lý cùng lúc
 #define MAX_TEST_RESULTS 5
@@ -671,46 +675,8 @@ int execute_test_case(test_case_t *test_case, test_result_info_t *result) {
     return ret;
 }
 
-/**
- * @brief Thực thi test case dựa trên loại mạng
- * 
- * @param test_case Con trỏ đến test case
- * @param network_type Loại mạng để thực thi (LAN hoặc WAN)
- * @param result Con trỏ đến biến lưu kết quả
- * @return int 0 nếu thành công, -1 nếu thất bại
- */
-int execute_test_case_by_network(test_case_t *test_case, network_type_t network_type, test_result_info_t *result) {
-    if (!test_case || !result) {
-        log_message(LOG_LVL_ERROR, "Invalid parameters for execute_test_case_by_network");
-        return -1;
-    }
-    
-    if (test_case->network_type != network_type && test_case->network_type != NETWORK_BOTH) {
-        log_message(LOG_LVL_WARN, "Test case %s is not configured for network type %d", 
-                   test_case->id, network_type);
-        
-        memset(result, 0, sizeof(test_result_info_t));
-        strncpy(result->test_id, test_case->id, sizeof(result->test_id) - 1);
-        result->test_id[sizeof(result->test_id) - 1] = '\0';
-        result->test_type = test_case->type;
-        result->status = TEST_RESULT_ERROR;
-        snprintf(result->result_details, sizeof(result->result_details), 
-                "Test case is not configured for this network type");
-        
-        return -1;
-    }
-    
-    if (network_type == NETWORK_LAN) {
-        log_message(LOG_LVL_DEBUG, "Executing test case %s on LAN", test_case->id);
-    } else if (network_type == NETWORK_WAN) {
-        log_message(LOG_LVL_DEBUG, "Executing test case %s on WAN", test_case->id);
-    }
-    
-    return execute_test_case(test_case, result);
-}
-
 // Function thực thi test case dựa trên instruction và input parameters
-int execute_instruction(const instruction_t *instruction, cJSON *input_params) {
+int execute_instruction(const instruction_t *instruction, cJSON *input_params, bool use_plugin_system) {
     if (!instruction) return -1;
     
     log_message(LOG_LVL_DEBUG, "Executing instruction: %s", instruction->action);
@@ -730,6 +696,97 @@ int execute_instruction(const instruction_t *instruction, cJSON *input_params) {
     memset(&test_result->result, 0, sizeof(test_result_info_t));
     test_result->executed = false;
     
+    // Kiểm tra xem cấu hình có chỉ định plugin cụ thể không
+    char specific_plugin[64] = {0};
+    if (input_params) {
+        cJSON *plugin_name = cJSON_GetObjectItem(input_params, "plugin");
+        if (plugin_name && cJSON_IsString(plugin_name) && strlen(plugin_name->valuestring) > 0) {
+            strncpy(specific_plugin, plugin_name->valuestring, sizeof(specific_plugin) - 1);
+            log_message(LOG_LVL_DEBUG, "Yêu cầu sử dụng plugin cụ thể: %s", specific_plugin);
+        }
+    }
+    
+    // Sử dụng biến đầu vào thay vì kiểm tra biến môi trường
+    if (use_plugin_system) {
+        log_message(LOG_LVL_DEBUG, "Plugin system is ENABLED");
+    } else {
+        log_message(LOG_LVL_DEBUG, "Plugin system is DISABLED");
+    }
+    
+    // Chỉ thực hiện tìm kiếm plugin nếu hệ thống plugin được bật
+    plugin_info_t *plugin = NULL;
+    if (use_plugin_system) {
+        // Lấy danh sách plugin đã nạp
+        int plugin_count = 0;
+        plugin_info_t *plugins = get_loaded_plugins(&plugin_count);
+        
+        if (plugins && plugin_count > 0) {
+            // Nếu có yêu cầu plugin cụ thể
+            if (strlen(specific_plugin) > 0) {
+                log_message(LOG_LVL_DEBUG, "Tìm kiếm plugin theo tên: %s", specific_plugin);
+                for (int i = 0; i < plugin_count; i++) {
+                    // So sánh không phân biệt chữ hoa/thường để tìm kiếm linh hoạt hơn
+                    if (strcasecmp(plugins[i].name, specific_plugin) == 0) {
+                        plugin = &plugins[i];
+                        log_message(LOG_LVL_DEBUG, "Tìm thấy plugin theo tên chính xác: %s", specific_plugin);
+                        break;
+                    }
+                }
+                
+                if (!plugin) {
+                    // Tìm plugin chứa tên tương tự
+                    for (int i = 0; i < plugin_count; i++) {
+                        if (strcasestr(plugins[i].name, specific_plugin) || 
+                            strcasestr(specific_plugin, plugins[i].name)) {
+                            plugin = &plugins[i];
+                            log_message(LOG_LVL_DEBUG, "Tìm thấy plugin theo tên tương tự: %s -> %s", 
+                                       specific_plugin, plugins[i].name);
+                            break;
+                        }
+                    }
+                }
+                
+                if (!plugin) {
+                    log_message(LOG_LVL_WARN, "Không tìm thấy plugin cụ thể: %s. Đang chuyển sang plugin mặc định.", specific_plugin);
+                }
+            }
+            
+            // Nếu không có plugin cụ thể hoặc không tìm thấy, tìm theo action
+            if (!plugin) {
+                plugin = find_plugin_by_action(instruction->action);
+                if (plugin) {
+                    log_message(LOG_LVL_DEBUG, "Tìm thấy plugin theo action: %s", instruction->action);
+                }
+            }
+            
+            // Thực thi test thông qua plugin nếu tìm thấy
+            if (plugin) {
+                log_message(LOG_LVL_DEBUG, "Đang thực thi test qua plugin: %s", plugin->name);
+                
+                // Thực thi test thông qua plugin
+                int result = plugin_execute_test(plugin->action_name, 
+                                                &current_test_case, 
+                                                &test_result->result, 
+                                                input_params);
+                
+                if (result == 0) {
+                    test_result->executed = true;
+                    log_message(LOG_LVL_DEBUG, "%s completed with status: %d via plugin", 
+                              instruction->action, test_result->result.status);
+                    return 0;
+                } else {
+                    log_message(LOG_LVL_ERROR, "%s execution failed via plugin, falling back to built-in implementation", 
+                              instruction->action);
+                }
+            } else {
+                log_message(LOG_LVL_DEBUG, "Không tìm thấy plugin cho action: %s", instruction->action);
+            }
+        } else {
+            log_message(LOG_LVL_DEBUG, "Không có plugin nào được nạp, sử dụng triển khai mặc định");
+        }
+    }
+    
+    // Sử dụng các hàm built-in nếu không có plugin hoặc plugin thất bại
     if (strcmp(instruction->action, "ping") == 0) {
         if (has_valid_target) {
             log_message(LOG_LVL_DEBUG, "Executing ping test to %s", current_test_case.target);
@@ -787,6 +844,21 @@ int execute_instruction(const instruction_t *instruction, cJSON *input_params) {
     if (test_result->executed) {
         log_message(LOG_LVL_DEBUG, "Test result: %s", test_result_status_to_string(test_result->result.status));
         log_message(LOG_LVL_DEBUG, "Details: %s", test_result->result.result_details);
+        
+        if (strcmp(instruction->action, "ping") == 0) {
+            log_message(LOG_LVL_DEBUG, "Ping results - Packets: %d/%d, Loss: %.1f%%, RTT min/avg/max: %.3f/%.3f/%.3f ms",
+                      test_result->result.data.ping.packets_received,
+                      test_result->result.data.ping.packets_sent,
+                      test_result->result.data.ping.packet_loss,
+                      test_result->result.data.ping.min_rtt,
+                      test_result->result.data.ping.avg_rtt,
+                      test_result->result.data.ping.max_rtt);
+        } else if (strcmp(instruction->action, "speedtest") == 0) {
+            log_message(LOG_LVL_DEBUG, "Speedtest results - Download: %.2f Mbps, Upload: %.2f Mbps, Latency: %.2f ms",
+                      test_result->result.data.speedtest.download_speed,
+                      test_result->result.data.speedtest.upload_speed,
+                      test_result->result.data.speedtest.latency);
+        }
     }
     
     return 0;

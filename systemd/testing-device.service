@@ -7,6 +7,7 @@ Type=simple
 User=tobie
 Group=tobie
 WorkingDirectory=/home/tobie/testing_device
+Environment="USE_PLUGINS=1"
 ExecStart=/home/tobie/testing_device/scripts/testing-service.sh
 Restart=on-failure
 RestartSec=10

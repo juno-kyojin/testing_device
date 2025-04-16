@@ -1,51 +1,48 @@
-CC=gcc
-CFLAGS=-I./include -Wall -Wextra -g -fPIC
-LDFLAGS=-pthread -lcjson -ldl
-OBJDIR=obj
-BINDIR=bin
-PLUGINDIR=plugins
-TARGET=$(BINDIR)/testing_device
+CC = gcc
+CFLAGS = -I./include -Wall -Wextra -g -fPIC
+LDFLAGS = -pthread -lcjson -ldl
 
-# Source files and object files
-SRC=$(wildcard src/*.c)
-OBJ=$(patsubst src/%.c,$(OBJDIR)/%.o,$(SRC))
+SRC_DIR = src
+OBJ_DIR = obj
+BIN_DIR = bin
+PLUGIN_DIR = plugins
 
-# Plugin source files and shared objects
-PLUGIN_SRC=$(wildcard plugins/*.c)
-PLUGIN_SO=$(patsubst plugins/%.c,$(PLUGINDIR)/%.so,$(PLUGIN_SRC))
+SOURCES = $(wildcard $(SRC_DIR)/*.c)
+OBJECTS = $(SOURCES:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
+EXECUTABLE = $(BIN_DIR)/testing_device
 
-# Create directories
-$(shell mkdir -p $(OBJDIR) $(BINDIR) $(PLUGINDIR))
+# Đảm bảo rằng các symbols được xuất cho plugins
+CFLAGS += -rdynamic
 
-# Build everything
-all: $(TARGET) $(PLUGIN_SO)
+all: directories $(EXECUTABLE)
 
-# Link main executable
-$(TARGET): $(OBJ)
+directories:
+	mkdir -p $(OBJ_DIR)
+	mkdir -p $(BIN_DIR)
+	mkdir -p $(PLUGIN_DIR)
+	mkdir -p var/log
+	mkdir -p var/input
+	mkdir -p var/results
+
+$(EXECUTABLE): $(OBJECTS)
 	$(CC) -o $@ $^ $(LDFLAGS)
 
-# Compile core sources
-$(OBJDIR)/%.o: src/%.c
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
 	$(CC) $(CFLAGS) -c $< -o $@
+	
+plugins: directories
+	chmod +x scripts/compile_plugin.sh
+	./scripts/compile_plugin.sh plugins/ping_plugin.c
+	./scripts/compile_plugin.sh plugins/speedtest_plugin.c
 
-# Build plugins as shared libraries
-$(PLUGINDIR)/%.so: plugins/%.c
-	$(CC) $(CFLAGS) -shared -o $@ $< -Wl,-soname,$@
-
-# Create test structure
-install: $(TARGET) $(PLUGIN_SO)
-	mkdir -p config var/input var/results var/log
-	@if [ ! -f config/config.json ]; then \
-		echo "Creating sample config file..."; \
-		echo '{"test_cases": [{"action": "ping", "attributes": [{"public_attr_name": "host", "private_attr_name": "host", "attr_type": "string", "attr_execute": "yes"}], "input_params": {"host": "8.8.8.8"}}]}' > config/config.json; \
-	fi
-
-# Clean objects
 clean:
-	rm -rf $(OBJDIR)/*.o
+	rm -f $(OBJ_DIR)/*.o $(EXECUTABLE)
+	
+clean_plugins:
+	rm -f $(PLUGIN_DIR)/*.so
 
-# Clean everything
-distclean: clean
-	rm -rf $(TARGET) $(PLUGIN_SO)
+clean_all: clean clean_plugins
+	rm -f var/log/* var/results/*
+	rm -rf var/input/processed
 
-.PHONY: all clean distclean install
+.PHONY: all clean clean_plugins clean_all directories plugins
