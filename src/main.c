@@ -1,245 +1,198 @@
-
-
-#define _POSIX_C_SOURCE 200809L
-
+// src/main.c
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <unistd.h>
-#include <sys/stat.h>
-#include <time.h>
-#include <signal.h>
-
 #include "parser_data.h"
+#include "tc.h"
+#include "cjson/cJSON.h"
 #include "log.h"
 #include "file_process.h"
-#include "tc.h"
 
-// Global flag for signal handling
-static volatile int run_flag = 1;
+// Cho phép chọn file config thông qua biến môi trường hoặc tham số dòng lệnh
+#define DEFAULT_CONFIG_PATH "config/config.json"
 
-// Signal handler
-static void handle_signal(int sig) {
-    run_flag = 0;
-    printf("Received signal %d, stopping...\n", sig);
-}
+// Khai báo các hàm trong tc_stubs.c để tránh cảnh báo implicit declaration
+int execute_instruction(const instruction_t *instruction, cJSON *input_params);
+int tcapi_get(const char *node, const char *entry, const char *attribute, char *value);
 
-/**
- * @brief Print test results to console
- * 
- * @param results Array of test results
- * @param count Number of results
- */
-void print_test_results(test_result_info_t *results, int count) {
-    printf("\n------ Test Results ------\n");
-    for (int i = 0; i < count; i++) {
-        printf("Test #%d: ID=%s, Status=%s, Time=%.2fms\n", 
-               i+1, results[i].test_id, 
-               test_result_status_to_string(results[i].status), 
-               results[i].execution_time);
-        printf("  Details: %s\n", results[i].result_details);
-    }
-    printf("-------------------------\n");
-}
-
-/**
- * @brief Initialize the application
- * 
- * @param log_file Path to log file
- * @return int 0 on success, -1 on failure
- */
-int initialize_app(const char *log_file) {
-    // Initialize logger
-    set_log_level(LOG_LVL_DEBUG);
-    set_log_file(log_file);
-    
-    // Create output directories if they don't exist
-    if (!file_exists("logs")) {
-        if (create_directory("logs") != 0) {
-            printf("Failed to create logs directory\n");
-            return -1;
-        }
-    }
-    
-    if (!file_exists("results")) {
-        if (create_directory("results") != 0) {
-            printf("Failed to create results directory\n");
-            return -1;
-        }
-    }
-    
-    return 0;
-}
-
-/**
- * @brief Load test cases from config file
- * 
- * @param config_file Path to config file
- * @param tests Pointer to test cases array
- * @param test_count Pointer to test count variable
- * @return int 0 on success, -1 on failure
- */
-int load_test_cases(const char *config_file, test_case_t **tests, int *test_count) {
-    printf("Using config file: %s\n", config_file);
-    
-    log_message(LOG_LVL_DEBUG, "Reading test cases from %s", config_file);
-    if (!read_json_test_cases(config_file, tests, test_count)) {
-        log_message(LOG_LVL_ERROR, "Failed to read test cases from %s", config_file);
-        printf("Failed to read test cases from %s\n", config_file);
-        return -1;
-    }
-    
-    printf("Loaded %d test cases\n", *test_count);
-    return 0;
-}
-
-/**
- * @brief Execute all test cases
- * 
- * @param tests Array of test cases
- * @param test_count Number of test cases
- * @param results Array to store results
- * @return int 0 on success, -1 on failure 
- */
-int execute_tests(test_case_t *tests, int test_count, test_result_info_t *results) {
-    int success_count = 0;
-    int failed_count = 0;
-    
-    printf("Executing test cases...\n");
-    
-    // Execute each test case sequentially
-    for (int i = 0; i < test_count && run_flag; i++) {
-        printf("Running test case %d/%d: %s (%s)\n", 
-               i+1, test_count, tests[i].id, tests[i].name);
-        
-        // Execute the test case
-        int ret = execute_test_case(&tests[i], &results[i]);
-        
-        // Update statistics
-        if (ret == 0) {
-            if (results[i].status == TEST_RESULT_SUCCESS) {
-                printf("  Result: SUCCESS\n");
-                success_count++;
-            } else {
-                printf("  Result: %s\n", test_result_status_to_string(results[i].status));
-                failed_count++;
-            }
-        } else {
-            printf("  Result: EXECUTION FAILED\n");
-            failed_count++;
-        }
-        
-        // Show progress
-        printf("Progress: %d/%d completed (%d success, %d failed)\n",
-               i+1, test_count, success_count, failed_count);
-    }
-    
-    printf("\nTests complete.\n");
-    return 0;
-}
-
-/**
- * @brief Generate test report
- * 
- * @param results Array of test results
- * @param test_count Number of test results
- * @return int 0 on success, -1 on failure
- */
-int generate_report(test_result_info_t *results, int test_count) {
-    if (test_count <= 0) {
-        printf("No results available to generate report\n");
-        return -1;
-    }
-    
-    char report_file[128];
-    time_t now = time(NULL);
-    strftime(report_file, sizeof(report_file), "results/summary_%Y%m%d_%H%M%S.json", 
-             localtime(&now));
-    
-    if (generate_summary_report(results, test_count, report_file) == 0) {
-        printf("Report generated: %s\n", report_file);
-        return 0;
-    } else {
-        printf("Failed to generate report\n");
-        return -1;
-    }
-}
-
-/**
- * @brief Clean up resources
- * 
- * @param tests Test cases array
- * @param results Test results array
- * @param test_count Number of tests
- */
-void cleanup(test_case_t *tests, test_result_info_t *results, int test_count) {
-    if (results) {
-        free(results);
-    }
-    
-    if (tests) {
-        free_test_cases(tests, test_count);
-    }
-}
-
-/**
- * @brief Parse command line arguments
- * 
- * @param argc Argument count
- * @param argv Argument values
- * @param config_file Pointer to config file path
- */
-void parse_arguments(int argc, char *argv[], const char **config_file) {
-    for (int i = 1; i < argc; i++) {
-        if (strcmp(argv[i], "-c") == 0 && i + 1 < argc) {
-            *config_file = argv[++i];
-        }
-    }
+// Hàm trợ giúp để xác định node name cho mỗi action
+const char* get_node_name_for_action(const char* action) {
+    if (strcmp(action, "ping") == 0) return "Ping";
+    if (strcmp(action, "throughput") == 0) return "Throughput";
+    if (strcmp(action, "security") == 0) return "Security";
+    if (strcmp(action, "speedtest") == 0) return "Speedtest";
+    return "Unknown";
 }
 
 int main(int argc, char *argv[]) {
-    // Set up signal handlers
-    signal(SIGINT, handle_signal);
-    signal(SIGTERM, handle_signal);
+    instruction_t *instructions = NULL;
+    int count = 0;
     
-    // Default config file path
-    const char *config_file = "config/config.json";
+    // Xác định đường dẫn config file
+    const char* config_path = DEFAULT_CONFIG_PATH;
     
-    // Parse command line arguments
-    parse_arguments(argc, argv, &config_file);
-    
-    // Initialize application
-    if (initialize_app("logs/testing_device.log") != 0) {
-        return EXIT_FAILURE;
+    // Kiểm tra xem có tham số dòng lệnh chỉ định file config hay không
+    if (argc > 1) {
+        config_path = argv[1];
     }
     
-    // Load test cases
-    test_case_t *tests = NULL;
-    int test_count = 0;
-    if (load_test_cases(config_file, &tests, &test_count) != 0) {
-        return EXIT_FAILURE;
+    // Kiểm tra biến môi trường CONFIG_FILE nếu không có tham số dòng lệnh
+    const char* env_config = getenv("CONFIG_FILE");
+    if (env_config != NULL && argc <= 1) {
+        config_path = env_config;
     }
-    
-    // Allocate memory for results
-    test_result_info_t *results = (test_result_info_t*)malloc(test_count * sizeof(test_result_info_t));
-    if (!results) {
-        log_message(LOG_LVL_ERROR, "Failed to allocate memory for results");
-        printf("Failed to allocate memory for results\n");
-        free_test_cases(tests, test_count);
-        return EXIT_FAILURE;
+
+    log_message(LOG_LVL_DEBUG, "Starting test program with config: %s", config_path);
+
+    // Đọc và parse file JSON từ config
+    char *json_content = NULL;
+    size_t content_size = 0;
+    if (read_file(config_path, &json_content, &content_size) != 0) {
+        log_message(LOG_LVL_ERROR, "Failed to read JSON file %s", config_path);
+        printf("{\"error\": \"Failed to load config\"}\n");
+        return -1;
     }
-    
-    // Execute tests
-    execute_tests(tests, test_count, results);
-    
-    // Print results
-    print_test_results(results, test_count);
-    
-    // Generate report
-    generate_report(results, test_count);
-    
-    // Clean up
-    cleanup(tests, results, test_count);
-    
-    return EXIT_SUCCESS;
+
+    // Parse JSON content thành instructions
+    if (!parse_json_instruction(json_content, &instructions, &count)) {
+        log_message(LOG_LVL_ERROR, "Failed to parse JSON content from %s", config_path);
+        free(json_content);
+        printf("{\"error\": \"Failed to load config\"}\n");
+        return -1;
+    }
+
+    log_message(LOG_LVL_DEBUG, "Parsed %d instructions from %s", count, config_path);
+
+    // Parse JSON để kiểm tra execute_all
+    cJSON *root = cJSON_Parse(json_content);
+    bool execute_all = false;
+    if (root) {
+        cJSON *execute_all_json = cJSON_GetObjectItem(root, "execute_all");
+        if (execute_all_json && cJSON_IsBool(execute_all_json)) {
+            execute_all = cJSON_IsTrue(execute_all_json);
+        }
+    }
+
+    // Kết quả tổng hợp từ tất cả các test cases
+    cJSON *all_results = cJSON_CreateObject();
+    cJSON *test_results = cJSON_CreateArray();
+    cJSON_AddItemToObject(all_results, "test_results", test_results);
+
+    // Thực thi các instruction
+    for (int i = 0; i < count; i++) {
+        const char* action = instructions[i].action;
+        const char* node_name = get_node_name_for_action(action);
+        
+        // Ghi vào log thay vì ra stdout
+        log_message(LOG_LVL_DEBUG, "Executing %s test", action);
+
+        // Tạo JSON để lưu kết quả cho test case này
+        cJSON *result = cJSON_CreateObject();
+        cJSON *attributes = cJSON_CreateObject();
+        cJSON_AddStringToObject(result, "action", action);
+        cJSON_AddItemToObject(result, "results", attributes);
+
+        // Parse JSON để lấy input_params cho test case này
+        cJSON *input_params = NULL;
+        if (root) {
+            // Nếu là file đa test case
+            cJSON *test_cases = cJSON_GetObjectItem(root, "test_cases");
+            if (test_cases && cJSON_IsArray(test_cases) && i < cJSON_GetArraySize(test_cases)) {
+                cJSON *test_case = cJSON_GetArrayItem(test_cases, i);
+                input_params = cJSON_GetObjectItem(test_case, "input_params");
+            } else {
+                // Nếu là file đơn test case
+                input_params = cJSON_GetObjectItem(root, "input_params");
+            }
+        }
+
+        // Thực thi test case - ghi thông báo thực thi vào log thay vì stdout
+        execute_instruction(&instructions[i], input_params);
+
+        // Lấy kết quả từ tcapi_get
+        for (int j = 0; j < instructions[i].attr_count; j++) {
+            attribute_t *attr = &instructions[i].attributes[j];
+            if (strcmp(attr->execute, "yes") == 0) {
+                char buffer[128];
+                if (tcapi_get(node_name, instructions[i].sub_node, attr->private_name, buffer) == 0) {
+                    if (strcmp(attr->attr_type, "int") == 0) {
+                        cJSON_AddNumberToObject(attributes, attr->public_name, atoi(buffer));
+                    } else if (strcmp(attr->attr_type, "float") == 0) {
+                        cJSON_AddNumberToObject(attributes, attr->public_name, atof(buffer));
+                    } else {
+                        cJSON_AddStringToObject(attributes, attr->public_name, buffer);
+                    }
+                }
+            }
+        }
+
+        // Thêm chi tiết bổ sung cho từng loại test
+        if (strcmp(action, "ping") == 0) {
+            // Lấy thông tin chi tiết về ping
+            char buffer[128];
+            
+            // Thêm packet loss
+            if (tcapi_get(node_name, instructions[i].sub_node, "packetLoss", buffer) == 0) {
+                cJSON_AddNumberToObject(attributes, "packetLoss", atof(buffer));
+            }
+            
+            // Thêm thông tin về số gói tin
+            if (tcapi_get(node_name, instructions[i].sub_node, "successCount", buffer) == 0) {
+                cJSON_AddNumberToObject(attributes, "successCount", atoi(buffer));
+            }
+            
+            if (tcapi_get(node_name, instructions[i].sub_node, "failureCount", buffer) == 0) {
+                cJSON_AddNumberToObject(attributes, "failureCount", atoi(buffer));
+            }
+            
+            // Thêm thông tin về RTT
+            if (tcapi_get(node_name, instructions[i].sub_node, "minimumResponseTime", buffer) == 0) {
+                cJSON_AddNumberToObject(attributes, "minRTT", atof(buffer));
+            }
+            
+            if (tcapi_get(node_name, instructions[i].sub_node, "maximumResponseTime", buffer) == 0) {
+                cJSON_AddNumberToObject(attributes, "maxRTT", atof(buffer));
+            }
+        } 
+        else if (strcmp(action, "speedtest") == 0) {
+            // Thêm chi tiết về server
+            char details[1024] = {0};
+            if (tcapi_get(node_name, instructions[i].sub_node, "ServerDetails", details) == 0 && strlen(details) > 0) {
+                cJSON_AddStringToObject(attributes, "serverInfo", details);
+            }
+            
+            // Thêm thời gian thực thi
+            char buffer[128];
+            if (tcapi_get(node_name, instructions[i].sub_node, "ExecutionTime", buffer) == 0) {
+                cJSON_AddNumberToObject(attributes, "executionTime", atof(buffer));
+            }
+        }
+
+        // status details cho tất cả các loại test
+        char details[1024] = {0};
+        if (tcapi_get(node_name, instructions[i].sub_node, "Details", details) == 0 && strlen(details) > 0) {
+            cJSON_AddStringToObject(attributes, "details", details);
+        }
+
+        // Thêm kết quả của test case này vào mảng kết quả
+        cJSON_AddItemToArray(test_results, result);
+        
+        // Nếu không thực thi tất cả, chỉ thực thi test case đầu tiên
+        if (!execute_all) {
+            break;
+        }
+    }
+
+    // In kết quả tổng hợp ra stdout - CHỈ in JSON, không có thông báo khác
+    char *result_str = cJSON_Print(all_results);
+    printf("%s\n", result_str);
+    free(result_str);
+
+    // Giải phóng bộ nhớ
+    cJSON_Delete(all_results);
+    if (root) cJSON_Delete(root);
+    free(json_content);
+    free_instructions(instructions, count);
+
+    return 0;
 }

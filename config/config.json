@@ -1,36 +1,63 @@
 {
   "test_cases": [
     {
-      "id": "PING_01",
-      "name": "Ping to Google DNS",
-      "description": "Test ping connectivity to Google DNS",
-      "type": "ping",
-      "target": "8.8.8.8",
-      "network": "LAN",
-      "timeout": 3000,
-      "enabled": true,
-      "ping_params": {
-        "count": 4,
-        "size": 56,
-        "interval": 500,
-        "ipv6": false
-      }
+      "action": "ping",
+      "input_params": {
+        "host": "google.com"
+      },
+      "attributes": [
+        {
+          "public_attr_name": "pingCode",
+          "private_attr_name": "Status",
+          "attr_type": "int",
+          "attr_execute": "yes"
+        },
+        {
+          "public_attr_name": "host",
+          "private_attr_name": "host",
+          "attr_type": "string",
+          "attr_execute": "yes"
+        },
+        {
+          "public_attr_name": "averageResponseTime",
+          "private_attr_name": "averageResponseTime",
+          "attr_type": "float",
+          "attr_execute": "yes"
+        }
+      ]
     },
     {
-      "id": "PING_02",
-      "name": "Ping to localhost",
-      "description": "Test ping to localhost",
-      "type": "ping",
-      "target": "127.0.0.1",
-      "network": "LAN",
-      "timeout": 2000,
-      "enabled": true,
-      "ping_params": {
-        "count": 3,
-        "size": 64,
-        "interval": 100,
-        "ipv6": false
-      }
+      "action": "speedtest",
+      "input_params": {
+        "server": ""
+      },
+      "attributes": [
+        {
+          "public_attr_name": "speedtestCode",
+          "private_attr_name": "Status",
+          "attr_type": "int",
+          "attr_execute": "yes"
+        },
+        {
+          "public_attr_name": "downloadSpeed",
+          "private_attr_name": "DownloadSpeed",
+          "attr_type": "float",
+          "attr_execute": "yes"
+        },
+        {
+          "public_attr_name": "uploadSpeed",
+          "private_attr_name": "UploadSpeed",
+          "attr_type": "float",
+          "attr_execute": "yes"
+        },
+        {
+          "public_attr_name": "latency",
+          "private_attr_name": "Latency",
+          "attr_type": "float",
+          "attr_execute": "yes"
+        }
+      ]
     }
-  ]
+  ],
+  "execute_all": true
 }

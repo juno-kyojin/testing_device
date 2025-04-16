@@ -1,9 +1,9 @@
-
- #ifndef TC_H
+#ifndef TC_H
  #define TC_H
  
  #include "parser_data.h"  // Để sử dụng cấu trúc test_case_t
  
+ //---------- Các định nghĩa kiểu dữ liệu ----------//
  /**
   * @brief Trạng thái kết quả test
   */
@@ -46,6 +46,15 @@
  } security_result_t;
  
  /**
+  * @brief Kết quả chi tiết cho speedtest
+  */
+ typedef struct {
+     float download_speed;  /**< Tốc độ tải xuống (Mbps) */
+     float upload_speed;    /**< Tốc độ tải lên (Mbps) */
+     float latency;         /**< Độ trễ (ms) */
+ } speedtest_result_t;
+ 
+ /**
   * @brief Cấu trúc kết quả test
   */
  typedef struct {
@@ -62,53 +71,61 @@
          ping_result_t ping;             /**< Kết quả ping test */
          throughput_result_t throughput; /**< Kết quả throughput test */
          security_result_t security;     /**< Kết quả security test */
+         speedtest_result_t speedtest;   /**< Kết quả speedtest */
      } data;
  } test_result_info_t;
  
- /* Các hằng số và macro */
+ //---------- Các hàm hỗ trợ thời gian và timeout (trong tc.c) ----------//
+ 
  /**
-  * @brief Ngưỡng thời gian timeout mặc định (ms)
+  * @brief Bắt đầu đếm thời gian
   */
- #define DEFAULT_TEST_TIMEOUT 10000  /* 10 giây */
+ void start_timer(void);
  
  /**
-  * @brief Ngưỡng tỷ lệ mất gói cho phép đối với ping test
+  * @brief Dừng đếm thời gian và trả về thời gian đã trôi qua (ms)
+  * @return Thời gian đã trôi qua tính bằng ms
   */
- #define PING_ACCEPTABLE_LOSS 20.0f  /* 20% */
+ float stop_timer(void);
  
  /**
-  * @brief Ngưỡng RTT tối đa chấp nhận được cho ping test (ms)
-  */
- #define PING_MAX_ACCEPTABLE_RTT 200.0f  /* 200ms */
- 
- /* Khai báo các hàm */
- 
- /**
-  * @brief Thực thi test case
+  * @brief Thiết lập timeout cho test
   * 
-  * @param test_case Con trỏ đến test case
+  * @param timeout_ms Thời gian timeout tính bằng ms
+  * @return int 0 nếu thành công, -1 nếu thất bại
+  */
+ int set_timeout(int timeout_ms);
+ 
+ /**
+  * @brief Hủy timeout
+  */
+ void clear_timeout(void);
+ 
+ /**
+  * @brief Kiểm tra xem timeout đã xảy ra chưa
+  * 
+  * @return int 1 nếu timeout đã xảy ra, 0 nếu chưa
+  */
+ int is_timeout_occurred(void);
+ 
+ //---------- Các hàm xử lý kết quả test (trong tc.c) ----------//
+ 
+ /**
+  * @brief Parse kết quả ping từ output
+  * 
+  * @param output Chuỗi output của lệnh ping
   * @param result Con trỏ đến biến lưu kết quả
   * @return int 0 nếu thành công, -1 nếu thất bại
   */
- int execute_test_case(test_case_t *test_case, test_result_info_t *result);
+ int parse_ping_result(const char *output, ping_result_t *result);
  
  /**
-  * @brief Thực thi ping test
+  * @brief Chuyển đổi trạng thái kết quả test sang chuỗi
   * 
-  * @param test_case Con trỏ đến test case
-  * @param result Con trỏ đến biến lưu kết quả
-  * @return int 0 nếu thành công, -1 nếu thất bại
+  * @param status Trạng thái kết quả test
+  * @return const char* Chuỗi mô tả trạng thái
   */
- int execute_ping_test(test_case_t *test_case, test_result_info_t *result);
- 
- /**
-  * @brief Thực thi throughput test
-  * 
-  * @param test_case Con trỏ đến test case
-  * @param result Con trỏ đến biến lưu kết quả
-  * @return int 0 nếu thành công, -1 nếu thất bại
-  */
- int execute_throughput_test(test_case_t *test_case, test_result_info_t *result);
+ const char* test_result_status_to_string(test_result_status_t status);
  
  /**
   * @brief Tạo báo cáo tổng hợp từ các kết quả test
@@ -119,33 +136,5 @@
   * @return int 0 nếu thành công, -1 nếu thất bại
   */
  int generate_summary_report(test_result_info_t *results, int count, const char *filename);
- 
- /**
-  * @brief Thực thi test case dựa trên loại mạng
-  * 
-  * @param test_case Con trỏ đến test case
-  * @param network_type Loại mạng để thực thi (LAN hoặc WAN)
-  * @param result Con trỏ đến biến lưu kết quả
-  * @return int 0 nếu thành công, -1 nếu thất bại
-  */
- int execute_test_case_by_network(test_case_t *test_case, network_type_t network_type, test_result_info_t *result);
- 
- /**
-  * @brief Chuyển đổi kết quả test sang định dạng JSON
-  * 
-  * @param result Con trỏ đến kết quả test
-  * @param json_buffer Buffer để lưu chuỗi JSON
-  * @param buffer_size Kích thước buffer
-  * @return int 0 nếu thành công, -1 nếu thất bại
-  */
- int test_result_to_json(test_result_info_t *result, char *json_buffer, size_t buffer_size);
- 
- /**
-  * @brief Chuyển đổi trạng thái kết quả test sang chuỗi
-  * 
-  * @param status Trạng thái kết quả test
-  * @return const char* Chuỗi mô tả trạng thái
-  */
- const char* test_result_status_to_string(test_result_status_t status);
  
  #endif /* TC_H */

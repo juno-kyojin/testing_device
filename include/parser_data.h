@@ -1,6 +1,4 @@
-
-
- #ifndef PARSER_DATA_H
+#ifndef PARSER_DATA_H
  #define PARSER_DATA_H
  
  #include <stdbool.h>
@@ -22,6 +20,7 @@
      TEST_PING,             /**< Kiểm tra ping */
      TEST_THROUGHPUT,       /**< Kiểm tra throughput */
      TEST_SECURITY,         /**< Kiểm tra bảo mật */
+     TEST_SPEEDTEST,        /**< Kiểm tra tốc độ mạng */
      TEST_OTHER             /**< Các loại kiểm tra khác */
  } test_type_t;
  
@@ -56,6 +55,14 @@
  } security_params_t;
  
  /**
+  * @brief Cấu trúc cho các tham số speedtest
+  */
+ typedef struct {
+     int timeout;        /**< Thời gian timeout (giây) */
+     bool use_https;     /**< Sử dụng HTTPS */
+ } speedtest_params_t;
+ 
+ /**
   * @brief Cấu trúc lưu thông tin của một test case
   */
  typedef struct {
@@ -73,6 +80,7 @@
          ping_params_t ping;         /**< Tham số cho ping test */
          throughput_params_t throughput; /**< Tham số cho throughput test */
          security_params_t security;  /**< Tham số cho security test */
+         speedtest_params_t speedtest; /**< Tham số cho speedtest */
      } params;
      
      /* Dữ liệu bổ sung nếu cần */
@@ -80,6 +88,43 @@
      size_t extra_data_size;     /**< Kích thước dữ liệu bổ sung */
  } test_case_t;
  
+ /**
+  * @brief Loại hành động cho instruction
+  */
+ typedef enum {
+     ACTION_DIAGNOSTIC,
+     ACTION_CONFIG,
+     ACTION_STATUS
+ } action_type_t;
+
+ /**
+  * @brief Cấu trúc cho một thuộc tính
+  */
+ typedef struct {
+     char public_name[64];    /**< Tên thuộc tính công khai */
+     char private_name[64];   /**< Tên thuộc tính nội bộ */
+     char attr_type[16];      /**< Kiểu dữ liệu (int, float, string) */
+     char execute[8];         /**< Có thực thi hay không (yes/no) */
+ } attribute_t;
+
+ /**
+  * @brief Cấu trúc cho một instruction
+  */
+ typedef struct {
+     char action[64];         /**< Hành động (ping, config, etc.) */
+     action_type_t type;      /**< Loại hành động */
+     char set_func[64];       /**< Hàm set */
+     char get_func[64];       /**< Hàm get */
+     char commit_func[64];    /**< Hàm commit */
+     char save_func[64];      /**< Hàm save */
+     char node_type[16];      /**< Loại node (single, multi) */
+     char node_name[64];      /**< Tên node */
+     char sub_node[64];       /**< Tên sub node */
+     int max_entry;           /**< Số entry tối đa */
+     attribute_t *attributes; /**< Mảng các thuộc tính */
+     int attr_count;          /**< Số lượng thuộc tính */
+ } instruction_t;
+
  /**
   * @brief Đọc test cases từ file JSON
   * 
@@ -143,5 +188,23 @@
   * @return true nếu thành công, false nếu thất bại
   */
  bool test_cases_to_json(const test_case_t *test_cases, int count, char *json_buffer, size_t buffer_size);
- 
- #endif /* PARSER_DATA_H */
+
+ /**
+  * @brief Phân tích nội dung JSON trực tiếp thành instruction
+  * 
+  * @param json_content Chuỗi JSON chứa instruction
+  * @param instructions Con trỏ đến mảng instructions
+  * @param count Con trỏ đến biến lưu số lượng instructions
+  * @return true nếu thành công, false nếu thất bại
+  */
+ bool parse_json_instruction(const char *json_content, instruction_t **instructions, int *count);
+
+ /**
+  * @brief Giải phóng bộ nhớ của mảng instructions
+  * 
+  * @param instructions Mảng instructions cần giải phóng
+  * @param count Số lượng instructions
+  */
+ void free_instructions(instruction_t *instructions, int count);
+
+#endif /* PARSER_DATA_H */
