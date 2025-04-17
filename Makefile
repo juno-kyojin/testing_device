@@ -1,31 +1,18 @@
 CC = gcc
-CFLAGS = -Wall -Wextra -g -pthread
-LDFLAGS = -pthread -lz -lssh -lcjson
+CFLAGS = -Iinclude -pthread
+SRC = src/main.c src/app_config.c src/file_process.c src/log.c src/parser/parser.c src/parser/parser_hardcode.c src/parser/parser_dynamic.c src/test_execute/test_executor.c src/wan.c
+OBJ = $(SRC:.c=.o)
+EXEC = build/testing_device
 
-SRC_DIR = src
-INC_DIR = include
-OBJ_DIR = obj
-BIN_DIR = bin
+all: $(EXEC)
 
-# Tìm tất cả các file nguồn
-SRCS = $(wildcard $(SRC_DIR)/*.c)
-OBJS = $(patsubst $(SRC_DIR)/%.c, $(OBJ_DIR)/%.o, $(SRCS))
+$(EXEC): $(OBJ)
+    $(CC) $(OBJ) -o $(EXEC)
 
-# Tên chương trình thực thi
-TARGET = $(BIN_DIR)/device_test
-
-# Tạo thư mục nếu chưa tồn tại
-$(shell mkdir -p $(OBJ_DIR) $(BIN_DIR) logs results)
-
-all: $(TARGET)
-
-$(TARGET): $(OBJS)
-	$(CC) $(OBJS) $(LDFLAGS) -o $@
-
-$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
-	$(CC) $(CFLAGS) -I$(INC_DIR) -c $< -o $@
+%.o: %.c
+    $(CC) $(CFLAGS) -c $< -o $@
 
 clean:
-	rm -rf $(OBJ_DIR)/*.o $(TARGET)
+    rm -f $(OBJ) $(EXEC)
 
 .PHONY: all clean
