@@ -1,10 +1,117 @@
 {
-  "test_cases": [
+  "version_model": 1,
+  "instruction": [
+    {
+      "action": "wanViewConfig",
+      "action_type": "getall",
+      "get_func": "tcapi_get",
+      "node_type": "multi",
+      "node_name": "Wan",
+      "sub_node": "PVC",
+      "max_entry": 8,
+      "attributes": [
+        {
+          "public_attr_name": "wanIndex",
+          "private_attr_name": "ruleIndex",
+          "attr_type": "int",
+          "attr_execute": "no",
+          "attr_value": "",
+          "attr_default_value": "0"
+        },
+        {
+          "public_attr_name": "wanType",
+          "private_attr_name": "ISP",
+          "attr_type": "string",
+          "attr_execute": "yes",
+          "attr_default_value": "PPPoE",
+          "attr_mapping_value": "2=PPPoE;0=IPoE;1=IPoE Static;3=Bridge"
+        },
+        {
+          "public_attr_name": "InstanceExisted",
+          "private_attr_name": "ISCREATED",
+          "attr_type": "string",
+          "attr_execute": "no",
+          "attr_value": "",
+          "attr_default_value": "No"
+        },
+        {
+          "public_attr_name": "vlanId",
+          "private_attr_name": "VLANID",
+          "attr_type": "int",
+          "attr_execute": "yes",
+          "attr_default_value": "-1"
+        },
+        {
+          "public_attr_name": "802.1p",
+          "private_attr_name": "DOT1P",
+          "attr_type": "int",
+          "attr_execute": "0",
+          "attr_default_value": "0"
+        },
+        {
+          "public_attr_name": "ipVersion",
+          "private_attr_name": "IPVERSION",
+          "attr_type": "string",
+          "attr_execute": "yes",
+          "attr_mapping_value": "IPv4=IPv4;IPv6=IPv6;IPv4/IPv6=Dualstack"
+        },
+        {
+          "public_attr_name": "username",
+          "private_attr_name": "USERNAME",
+          "attr_type": "string",
+          "attr_execute": "yes"
+        },
+        {
+          "public_attr_name": "password",
+          "private_attr_name": "PASSWORD",
+          "attr_type": "string",
+          "attr_execute": "yes"
+        },
+        {
+          "public_attr_name": "ipAddr",
+          "private_attr_name": "IPADDR",
+          "attr_type": "string",
+          "attr_execute": "yes"
+        },
+        {
+          "public_attr_name": "netMask",
+          "private_attr_name": "NETMASK",
+          "attr_type": "string",
+          "attr_execute": "yes"
+        },
+        {
+          "public_attr_name": "gateway",
+          "private_attr_name": "GATEWAY",
+          "attr_type": "string",
+          "attr_execute": "yes"
+        },
+        {
+          "public_attr_name": "defaultRoute",
+          "private_attr_name": "DEFAULTROUTE",
+          "attr_type": "boolean",
+          "attr_execute": "yes",
+          "attr_mapping_value": "Yes=true;No=false"
+        },
+        {
+          "public_attr_name": "natEnable",
+          "private_attr_name": "NATENABLE",
+          "attr_type": "boolean",
+          "attr_execute": "yes",
+          "attr_mapping_value": "Enable=true;Disabled=false"
+        }
+      ]
+    },
     {
       "action": "ping",
-      "input_params": {
-        "host": "google.com"
-      },
+      "action_type": "diagnostic",
+      "set_func": "tcapi_set",
+      "get_func": "tcapi_get",
+      "commit_func": "ai_diagnostic_commit",
+      "save_func": "tcapi_save",
+      "node_type": "single",
+      "node_name": "Ping",
+      "sub_node": "Entry",
+      "max_entry": 1,
       "attributes": [
         {
           "public_attr_name": "pingCode",
@@ -19,45 +126,48 @@
           "attr_execute": "yes"
         },
         {
-          "public_attr_name": "averageResponseTime",
-          "private_attr_name": "averageResponseTime",
-          "attr_type": "float",
+          "public_attr_name": "hostAddress",
+          "private_attr_name": "hostAddress",
+          "attr_type": "string",
           "attr_execute": "yes"
-        }
-      ]
-    },
-    {
-      "action": "speedtest",
-      "input_params": {
-        "server": ""
-      },
-      "attributes": [
+        },
         {
-          "public_attr_name": "speedtestCode",
-          "private_attr_name": "Status",
+          "public_attr_name": "successCount",
+          "private_attr_name": "successCount",
           "attr_type": "int",
           "attr_execute": "yes"
         },
         {
-          "public_attr_name": "downloadSpeed",
-          "private_attr_name": "DownloadSpeed",
+          "public_attr_name": "failureCount",
+          "private_attr_name": "failureCount",
+          "attr_type": "int",
+          "attr_execute": "yes"
+        },
+        {
+          "public_attr_name": "averageResponseTime",
+          "private_attr_name": "averageResponseTime",
           "attr_type": "float",
           "attr_execute": "yes"
         },
         {
-          "public_attr_name": "uploadSpeed",
-          "private_attr_name": "UploadSpeed",
+          "public_attr_name": "minimumResponseTime",
+          "private_attr_name": "minimumResponseTime",
           "attr_type": "float",
           "attr_execute": "yes"
         },
         {
-          "public_attr_name": "latency",
-          "private_attr_name": "Latency",
+          "public_attr_name": "maximumResponseTime",
+          "private_attr_name": "maximumResponseTime",
+          "attr_type": "float",
+          "attr_execute": "yes"
+        },
+        {
+          "public_attr_name": "jitter",
+          "private_attr_name": "jitter",
           "attr_type": "float",
           "attr_execute": "yes"
         }
       ]
     }
-  ],
-  "execute_all": true
+  ]
 }

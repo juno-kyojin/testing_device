@@ -2,7 +2,7 @@
 #define PARSER_HARDCODE_H
 
 #include "cjson/cJSON.h"
-#include "types.h"
+#include "core/types.h"
 
 void parse_hardcode_fields(cJSON *instr_json, Instruction *instr);
 

@@ -1,71 +1,108 @@
+#include <stdio.h>
 #include <string.h>
-#include "parser_hardcode.h"
+#include <stdlib.h>
+#include "parser/parser_hardcode.h"
+#include "cjson/cJSON.h"
+#include "core/log.h"
 
 void parse_hardcode_fields(cJSON *instr_json, Instruction *instr) {
     cJSON *action = cJSON_GetObjectItem(instr_json, "action");
+    if (action && cJSON_IsString(action)) {
+        strncpy(instr->action, action->valuestring, sizeof(instr->action) - 1);
+        instr->action[sizeof(instr->action) - 1] = '\0';
+    }
+
     cJSON *action_type = cJSON_GetObjectItem(instr_json, "action_type");
+    if (action_type && cJSON_IsString(action_type)) {
+        strncpy(instr->action_type, action_type->valuestring, sizeof(instr->action_type) - 1);
+        instr->action_type[sizeof(instr->action_type) - 1] = '\0';
+    }
+
     cJSON *set_func = cJSON_GetObjectItem(instr_json, "set_func");
+    if (set_func && cJSON_IsString(set_func)) {
+        strncpy(instr->set_func, set_func->valuestring, sizeof(instr->set_func) - 1);
+        instr->set_func[sizeof(instr->set_func) - 1] = '\0';
+    }
+
     cJSON *get_func = cJSON_GetObjectItem(instr_json, "get_func");
+    if (get_func && cJSON_IsString(get_func)) {
+        strncpy(instr->get_func, get_func->valuestring, sizeof(instr->get_func) - 1);
+        instr->get_func[sizeof(instr->get_func) - 1] = '\0';
+    }
+
     cJSON *unset_func = cJSON_GetObjectItem(instr_json, "unset_func");
+    if (unset_func && cJSON_IsString(unset_func)) {
+        strncpy(instr->unset_func, unset_func->valuestring, sizeof(instr->unset_func) - 1);
+        instr->unset_func[sizeof(instr->unset_func) - 1] = '\0';
+    }
+
     cJSON *commit_func = cJSON_GetObjectItem(instr_json, "commit_func");
+    if (commit_func && cJSON_IsString(commit_func)) {
+        strncpy(instr->commit_func, commit_func->valuestring, sizeof(instr->commit_func) - 1);
+        instr->commit_func[sizeof(instr->commit_func) - 1] = '\0';
+    }
+
     cJSON *save_func = cJSON_GetObjectItem(instr_json, "save_func");
+    if (save_func && cJSON_IsString(save_func)) {
+        strncpy(instr->save_func, save_func->valuestring, sizeof(instr->save_func) - 1);
+        instr->save_func[sizeof(instr->save_func) - 1] = '\0';
+    }
+
     cJSON *node_type = cJSON_GetObjectItem(instr_json, "node_type");
+    if (node_type && cJSON_IsString(node_type)) {
+        strncpy(instr->node_type, node_type->valuestring, sizeof(instr->node_type) - 1);
+        instr->node_type[sizeof(instr->node_type) - 1] = '\0';
+    }
+
     cJSON *node_name = cJSON_GetObjectItem(instr_json, "node_name");
+    if (node_name && cJSON_IsString(node_name)) {
+        strncpy(instr->node_name, node_name->valuestring, sizeof(instr->node_name) - 1);
+        instr->node_name[sizeof(instr->node_name) - 1] = '\0';
+    }
+
+    cJSON *node_level = cJSON_GetObjectItem(instr_json, "node_level");
+    if (node_level && cJSON_IsString(node_level)) {
+        strncpy(instr->node_level, node_level->valuestring, sizeof(instr->node_level) - 1);
+        instr->node_level[sizeof(instr->node_level) - 1] = '\0';
+    }
+
     cJSON *sub_node = cJSON_GetObjectItem(instr_json, "sub_node");
+    if (sub_node && cJSON_IsString(sub_node)) {
+        strncpy(instr->sub_node, sub_node->valuestring, sizeof(instr->sub_node) - 1);
+        instr->sub_node[sizeof(instr->sub_node) - 1] = '\0';
+    }
+
+    cJSON *web_id_pvc = cJSON_GetObjectItem(instr_json, "web_id_pvc");
+    if (web_id_pvc && cJSON_IsString(web_id_pvc)) {
+        strncpy(instr->web_id_pvc, web_id_pvc->valuestring, sizeof(instr->web_id_pvc) - 1);
+        instr->web_id_pvc[sizeof(instr->web_id_pvc) - 1] = '\0';
+    }
+
+    cJSON *web_id_entry = cJSON_GetObjectItem(instr_json, "web_id_entry");
+    if (web_id_entry && cJSON_IsString(web_id_entry)) {
+        strncpy(instr->web_id_entry, web_id_entry->valuestring, sizeof(instr->web_id_entry) - 1);
+        instr->web_id_entry[sizeof(instr->web_id_entry) - 1] = '\0';
+    }
+
+    cJSON *entry_node = cJSON_GetObjectItem(instr_json, "entry_node");
+    if (entry_node && cJSON_IsString(entry_node)) {
+        strncpy(instr->entry_node, entry_node->valuestring, sizeof(instr->entry_node) - 1);
+        instr->entry_node[sizeof(instr->entry_node) - 1] = '\0';
+    }
+
+    cJSON *entry_count = cJSON_GetObjectItem(instr_json, "entry_count");
+    if (entry_count && cJSON_IsString(entry_count)) {
+        strncpy(instr->entry_count, entry_count->valuestring, sizeof(instr->entry_count) - 1);
+        instr->entry_count[sizeof(instr->entry_count) - 1] = '\0';
+    }
+
     cJSON *max_entry = cJSON_GetObjectItem(instr_json, "max_entry");
+    if (max_entry && cJSON_IsNumber(max_entry)) {
+        instr->max_entry = max_entry->valueint;
+    }
 
-    if (action) strcpy(instr->action, action->valuestring);
-    if (action_type) strcpy(instr->action_type, action_type->valuestring);
-    if (set_func) strcpy(instr->set_func, set_func->valuestring);
-    if (get_func) strcpy(instr->get_func, get_func->valuestring);
-    if (unset_func) strcpy(instr->unset_func, unset_func->valuestring);
-    if (commit_func) strcpy(instr->commit_func, commit_func->valuestring);
-    if (save_func) strcpy(instr->save_func, save_func->valuestring);
-    if (node_type) strcpy(instr->node_type, node_type->valuestring);
-    if (node_name) strcpy(instr->node_name, node_name->valuestring);
-    if (sub_node) strcpy(instr->sub_node, sub_node->valuestring);
-    if (max_entry) instr->max_entry = max_entry->valueint;
-
-    // Xác định group động
-    if (action) {
-        if (strncmp(action->valuestring, "wan", 3) == 0) {
-            strcpy(instr->group, "wan");
-        } else if (strncmp(action->valuestring, "ssid", 4) == 0) {
-            strcpy(instr->group, "ssid");
-        } else if (strncmp(action->valuestring, "portforward", 11) == 0) {
-            strcpy(instr->group, "portforward");
-        } else if (strncmp(action->valuestring, "speedtest", 9) == 0 ||
-                   strncmp(action->valuestring, "ping", 4) == 0 ||
-                   strncmp(action->valuestring, "traceroute", 10) == 0) {
-            strcpy(instr->group, "diagnostic");
-        } else if (strncmp(action->valuestring, "dns", 3) == 0) {
-            strcpy(instr->group, "dns");
-        } else if (strncmp(action->valuestring, "ddns", 4) == 0) {
-            strcpy(instr->group, "ddns");
-        } else if (strncmp(action->valuestring, "mesh", 4) == 0) {
-            strcpy(instr->group, "mesh");
-        } else if (strncmp(action->valuestring, "clientinfo", 10) == 0) {
-            strcpy(instr->group, "clientinfo");
-        } else if (strncmp(action->valuestring, "deviceinfo", 10) == 0) {
-            strcpy(instr->group, "deviceinfo");
-        } else if (strncmp(action->valuestring, "oltmodel", 8) == 0) {
-            strcpy(instr->group, "oltmodel");
-        } else if (strncmp(action->valuestring, "radio", 5) == 0) {
-            strcpy(instr->group, "radio");
-        } else if (strncmp(action->valuestring, "bndstrg", 7) == 0) {
-            strcpy(instr->group, "bndstrg");
-        } else if (strncmp(action->valuestring, "sip", 3) == 0) {
-            strcpy(instr->group, "sip");
-        } else if (strncmp(action->valuestring, "intfgroup", 9) == 0) {
-            strcpy(instr->group, "intfgroup");
-        } else if (strncmp(action->valuestring, "parental", 8) == 0) {
-            strcpy(instr->group, "parental");
-        } else if (strncmp(action->valuestring, "apstrg", 6) == 0) {
-            strcpy(instr->group, "apstrg");
-        } else {
-            strcpy(instr->group, "unknown");
-        }
-    } else {
-        strcpy(instr->group, "unknown");
+    cJSON *max_level = cJSON_GetObjectItem(instr_json, "max_level");
+    if (max_level && cJSON_IsNumber(max_level)) {
+        instr->max_level = max_level->valueint;
     }
 }
