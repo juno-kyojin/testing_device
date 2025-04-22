@@ -22,7 +22,6 @@ static void default_action_handler(Instruction *instr, TestCase *test_case) {
                 log_message(LOG_LVL_WARN, "Attribute %s has no value", test_case->attributes[i].key);
             }
         }
-        // Log input_params nếu có
         if (test_case->param_count > 0) {
             log_message(LOG_LVL_DEBUG, "Input parameters:");
             for (int i = 0; i < test_case->param_count; i++) {
@@ -30,7 +29,6 @@ static void default_action_handler(Instruction *instr, TestCase *test_case) {
                             test_case->input_params[i].key, test_case->input_params[i].value);
             }
         }
-        // TODO: Thêm logic gọi tcapi_set khi có API
     } else if (strcmp(instr->action_type, "get") == 0 || strcmp(instr->action_type, "getall") == 0 || 
                strcmp(instr->action_type, "get_radio") == 0 || strcmp(instr->action_type, "get_voip") == 0 ||
                strcmp(instr->action_type, "getall_voip") == 0) {
@@ -39,7 +37,6 @@ static void default_action_handler(Instruction *instr, TestCase *test_case) {
         for (int i = 0; i < test_case->attr_count; i++) {
             log_message(LOG_LVL_DEBUG, "Get attribute %s", test_case->attributes[i].key);
         }
-        // Log input_params nếu có
         if (test_case->param_count > 0) {
             log_message(LOG_LVL_DEBUG, "Input parameters:");
             for (int i = 0; i < test_case->param_count; i++) {
@@ -47,14 +44,12 @@ static void default_action_handler(Instruction *instr, TestCase *test_case) {
                             test_case->input_params[i].key, test_case->input_params[i].value);
             }
         }
-        // TODO: Thêm logic gọi tcapi_get khi có API
     } else if (strcmp(instr->action_type, "unset") == 0 || strcmp(instr->action_type, "unset_interface") == 0) {
         log_message(LOG_LVL_DEBUG, "Preparing to call %s for node %s_%s", 
                     instr->unset_func, instr->node_name, instr->sub_node);
         for (int i = 0; i < test_case->attr_count; i++) {
             log_message(LOG_LVL_DEBUG, "Unset attribute %s", test_case->attributes[i].key);
         }
-        // Log input_params nếu có
         if (test_case->param_count > 0) {
             log_message(LOG_LVL_DEBUG, "Input parameters:");
             for (int i = 0; i < test_case->param_count; i++) {
@@ -62,7 +57,6 @@ static void default_action_handler(Instruction *instr, TestCase *test_case) {
                             test_case->input_params[i].key, test_case->input_params[i].value);
             }
         }
-        // TODO: Thêm logic gọi tcapi_unset khi có API
     } else if (strcmp(instr->action_type, "diagnostic") == 0) {
         log_message(LOG_LVL_DEBUG, "Preparing diagnostic action with %s and %s", 
                     instr->set_func, instr->get_func);
@@ -74,7 +68,6 @@ static void default_action_handler(Instruction *instr, TestCase *test_case) {
                 log_message(LOG_LVL_DEBUG, "Diagnostic attribute %s", test_case->attributes[i].key);
             }
         }
-        // Log input_params nếu có
         if (test_case->param_count > 0) {
             log_message(LOG_LVL_DEBUG, "Input parameters:");
             for (int i = 0; i < test_case->param_count; i++) {
@@ -82,7 +75,6 @@ static void default_action_handler(Instruction *instr, TestCase *test_case) {
                             test_case->input_params[i].key, test_case->input_params[i].value);
             }
         }
-        // TODO: Thêm logic gọi API diagnostic khi có
     } else {
         log_message(LOG_LVL_ERROR, "Unknown action_type: %s", instr->action_type);
     }

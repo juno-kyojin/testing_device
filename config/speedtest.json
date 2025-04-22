@@ -1,1 +1,34 @@
-
+{
+    "test_cases": [
+        {
+            "action": "speedtest",
+            "input_params": {},
+            "attributes": [
+                {
+                    "public_attr_name": "speedtestCode",
+                    "private_attr_name": "Status",
+                    "attr_type": "int",
+                    "attr_execute": "yes"
+                },
+                {
+                    "public_attr_name": "downloadSpeed",
+                    "private_attr_name": "DownloadSpeed",
+                    "attr_type": "float",
+                    "attr_execute": "yes"
+                },
+                {
+                    "public_attr_name": "uploadSpeed",
+                    "private_attr_name": "UploadSpeed",
+                    "attr_type": "float",
+                    "attr_execute": "yes"
+                },
+                {
+                    "public_attr_name": "latency",
+                    "private_attr_name": "Latency",
+                    "attr_type": "float",
+                    "attr_execute": "yes"
+                }
+            ]
+        }
+    ]
+}

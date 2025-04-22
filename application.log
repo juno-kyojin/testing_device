@@ -1,51 +1,40 @@
-[2025-04-22 08:47:40] DEBUG: Successfully read 4951 bytes from file config/config.json
-[2025-04-22 08:47:40] DEBUG: Loaded 2 instructions from config.json
-[2025-04-22 08:47:40] DEBUG: Processing test configuration file: config/ping.json
-[2025-04-22 08:47:40] DEBUG: Successfully read 772 bytes from file config/ping.json
-[2025-04-22 08:47:40] DEBUG: Successfully parsed 1 test cases from config/ping.json
-[2025-04-22 08:47:40] DEBUG: Executing action: ping (type: diagnostic)
-[2025-04-22 08:47:40] DEBUG: Executing ping test
-[2025-04-22 08:47:40] DEBUG: Param host = google.com
-[2025-04-22 08:47:40] DEBUG: Param plugin = Debug Ping Plugin
-[2025-04-22 08:47:40] DEBUG: Performing real ping to google.com
-[2025-04-22 08:47:40] DEBUG: Executing real ping command: ping -c 5 -W 3 google.com 2>&1
-[2025-04-22 08:47:44] DEBUG: Packets: 5 sent, 5 received, 0.0% loss
-[2025-04-22 08:47:44] DEBUG: Average response time: 23.239 ms
-[2025-04-22 08:47:44] DEBUG: Ping.Status = 0
-[2025-04-22 08:47:44] DEBUG: Ping.averageResponseTime = 23.239 ms
-[2025-04-22 08:47:44] DEBUG: Ping.packetLoss = 0.0%
-[2025-04-22 08:47:44] DEBUG: Ping test completed in 4 seconds
-[2025-04-22 09:13:33] DEBUG: Successfully read 4951 bytes from file config/config.json
-[2025-04-22 09:13:33] DEBUG: Loaded 2 instructions from config.json
-[2025-04-22 09:13:33] DEBUG: Processing test configuration file: config/ping.json
-[2025-04-22 09:13:33] DEBUG: Successfully read 772 bytes from file config/ping.json
-[2025-04-22 09:13:33] DEBUG: Successfully parsed 1 test cases from config/ping.json
-[2025-04-22 09:13:33] DEBUG: Executing action: ping (type: diagnostic)
-[2025-04-22 09:13:33] DEBUG: Executing ping test
-[2025-04-22 09:13:33] DEBUG: Param host = google.com
-[2025-04-22 09:13:33] DEBUG: Param plugin = Debug Ping Plugin
-[2025-04-22 09:13:33] DEBUG: Performing real ping to google.com
-[2025-04-22 09:13:33] DEBUG: Executing real ping command: ping -c 5 -W 3 google.com 2>&1
-[2025-04-22 09:13:41] DEBUG: Packets: 5 sent, 5 received, 0.0% loss
-[2025-04-22 09:13:41] DEBUG: Average response time: 24.087 ms
-[2025-04-22 09:13:41] DEBUG: Ping.Status = 0
-[2025-04-22 09:13:41] DEBUG: Ping.averageResponseTime = 24.087 ms
-[2025-04-22 09:13:41] DEBUG: Ping.packetLoss = 0.0%
-[2025-04-22 09:13:41] DEBUG: Ping test completed in 8 seconds
-[2025-04-22 09:13:51] DEBUG: Successfully read 4951 bytes from file config/config.json
-[2025-04-22 09:13:51] DEBUG: Loaded 2 instructions from config.json
-[2025-04-22 09:13:51] DEBUG: Processing test configuration file: config/ping.json
-[2025-04-22 09:13:51] DEBUG: Successfully read 772 bytes from file config/ping.json
-[2025-04-22 09:13:51] DEBUG: Successfully parsed 1 test cases from config/ping.json
-[2025-04-22 09:13:51] DEBUG: Executing action: ping (type: diagnostic)
-[2025-04-22 09:13:51] DEBUG: Executing ping test
-[2025-04-22 09:13:51] DEBUG: Param host = google.com
-[2025-04-22 09:13:51] DEBUG: Param plugin = Debug Ping Plugin
-[2025-04-22 09:13:51] DEBUG: Performing real ping to google.com
-[2025-04-22 09:13:51] DEBUG: Executing real ping command: ping -c 5 -W 3 google.com 2>&1
-[2025-04-22 09:13:55] DEBUG: Packets: 5 sent, 5 received, 0.0% loss
-[2025-04-22 09:13:55] DEBUG: Average response time: 58.245 ms
-[2025-04-22 09:13:55] DEBUG: Ping.Status = 0
-[2025-04-22 09:13:55] DEBUG: Ping.averageResponseTime = 58.245 ms
-[2025-04-22 09:13:55] DEBUG: Ping.packetLoss = 0.0%
-[2025-04-22 09:13:55] DEBUG: Ping test completed in 4 seconds
+[2025-04-22 11:20:37] DEBUG: Successfully read 6002 bytes from file config/config.json
+[2025-04-22 11:20:37] DEBUG: Loaded 3 instructions from config.json
+[2025-04-22 11:20:37] DEBUG: Processing test configuration file: config/ping.json
+[2025-04-22 11:20:37] DEBUG: Successfully read 772 bytes from file config/ping.json
+[2025-04-22 11:20:37] DEBUG: Successfully parsed 1 test cases from config/ping.json
+[2025-04-22 11:20:37] DEBUG: Executing action: ping (type: diagnostic)
+[2025-04-22 11:20:37] DEBUG: Executing ping test
+[2025-04-22 11:20:37] DEBUG: Param host = google.com
+[2025-04-22 11:20:37] DEBUG: Param plugin = Debug Ping Plugin
+[2025-04-22 11:20:37] DEBUG: Performing real ping to google.com
+[2025-04-22 11:20:37] DEBUG: Executing real ping command: ping -c 5 -W 3 google.com 2>&1
+[2025-04-22 11:20:41] DEBUG: Packets: 5 sent, 5 received, 0.0% loss
+[2025-04-22 11:20:41] DEBUG: RTT: min=23.171 ms, avg=24.316 ms, max=25.612 ms, jitter=0.801 ms
+[2025-04-22 11:20:41] DEBUG: Ping.Status = 0
+[2025-04-22 11:20:41] DEBUG: Ping.host = google.com
+[2025-04-22 11:20:41] DEBUG: Ping.hostAddress = 142.250.197.238
+[2025-04-22 11:20:41] DEBUG: Ping.successCount = 5
+[2025-04-22 11:20:41] DEBUG: Ping.failureCount = 0
+[2025-04-22 11:20:41] DEBUG: Ping.averageResponseTime = 24.316 ms
+[2025-04-22 11:20:41] DEBUG: Ping.minimumResponseTime = 23.171 ms
+[2025-04-22 11:20:41] DEBUG: Ping.maximumResponseTime = 25.612 ms
+[2025-04-22 11:20:41] DEBUG: Ping.jitter = 0.801 ms
+[2025-04-22 11:20:41] DEBUG: Ping.packetLoss = 0.0%
+[2025-04-22 11:20:41] DEBUG: Ping test completed in 4 seconds
+[2025-04-22 11:20:45] DEBUG: Successfully read 6002 bytes from file config/config.json
+[2025-04-22 11:20:45] DEBUG: Loaded 3 instructions from config.json
+[2025-04-22 11:20:45] DEBUG: Processing test configuration file: config/speedtest.json
+[2025-04-22 11:20:45] DEBUG: Successfully read 1076 bytes from file config/speedtest.json
+[2025-04-22 11:20:45] DEBUG: Successfully parsed 1 test cases from config/speedtest.json
+[2025-04-22 11:20:45] DEBUG: Executing action: speedtest (type: diagnostic)
+[2025-04-22 11:20:45] DEBUG: Executing speedtest test
+[2025-04-22 11:20:45] DEBUG: Executing instruction: speedtest
+[2025-04-22 11:20:45] DEBUG: No server specified, using default server (nearest)
+[2025-04-22 11:20:45] DEBUG: Executing command: speedtest-cli --json --secure 2>&1
+[2025-04-22 11:21:09] DEBUG: Successfully read 690 bytes of JSON result
+[2025-04-22 11:21:09] DEBUG: Server ID for future reference: 59932
+[2025-04-22 11:21:09] DEBUG: Speedtest.Status = 0
+[2025-04-22 11:21:09] DEBUG: Speedtest completed successfully: Server=Vinh (, Vietnam), ISP=VNPT, Download=230.67 Mbps, Upload=163.11 Mbps, Latency=50.28 ms
+[2025-04-22 11:21:09] DEBUG: Speedtest execution time: 24000.0 ms
+[2025-04-22 11:21:19] ERROR: No test configuration files provided. Usage: ./build/testing_device <config_file1> [config_file2 ...]

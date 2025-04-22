@@ -29,6 +29,7 @@ SOURCES = \
     $(PARSER_DIR)/parser_dynamic.c \
     $(PARSER_DIR)/parser_hardcode.c \
     $(TEST_DIR)/ping.c \
+    $(TEST_DIR)/speedtest.c \
     $(TEST_DIR)/test_executor.c \
     $(UTILS_DIR)/file_process.c
 
@@ -43,6 +44,7 @@ OBJECTS = \
     $(BIN_DIR)/parser_dynamic.o \
     $(BIN_DIR)/parser_hardcode.o \
     $(BIN_DIR)/ping.o \
+    $(BIN_DIR)/speedtest.o \
     $(BIN_DIR)/test_executor.o \
     $(BIN_DIR)/file_process.o
 
@@ -57,6 +59,7 @@ HEADERS = \
     $(INCLUDE_DIR)/parser/parser_dynamic.h \
     $(INCLUDE_DIR)/parser/parser_hardcode.h \
     $(INCLUDE_DIR)/test/ping.h \
+    $(INCLUDE_DIR)/test/speedtest.h \
     $(INCLUDE_DIR)/test/test_executor.h \
     $(INCLUDE_DIR)/utils/file_process.h
 

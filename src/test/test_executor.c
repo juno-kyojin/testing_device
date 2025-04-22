@@ -28,14 +28,14 @@ int execute_tests(const char *test_file_path) {
         if (test_cases[i].action[0]) {
             // Tìm cấu trúc instruction trong device_config
             int found = 0;
-            for (int j = 0; j < device_config.wan.field_count; j++) {
-                if (strcmp(device_config.wan.fields[j].key, test_cases[i].action) == 0) {
+            for (int j = 0; j < device_config.actions.field_count; j++) {
+                if (strcmp(device_config.actions.fields[j].key, test_cases[i].action) == 0) {
                     found = 1;
                     // Parse instruction từ chuỗi JSON
-                    cJSON *instr_json = cJSON_Parse(device_config.wan.fields[j].value);
+                    cJSON *instr_json = cJSON_Parse(device_config.actions.fields[j].value);
                     if (!instr_json) {
                         log_message(LOG_LVL_ERROR, "Failed to parse instruction for action: %s. JSON string: %s", 
-                                    test_cases[i].action, device_config.wan.fields[j].value);
+                                    test_cases[i].action, device_config.actions.fields[j].value);
                         continue;
                     }
 

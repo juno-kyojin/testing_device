@@ -54,9 +54,9 @@ int app_config_init(void) {
     }
 
     // Cấp phát bộ nhớ cho danh sách instruction
-    device_config.wan.field_count = cJSON_GetArraySize(instructions_json);
-    device_config.wan.fields = (KeyValue *)malloc(device_config.wan.field_count * sizeof(KeyValue));
-    if (!device_config.wan.fields) {
+    device_config.actions.field_count = cJSON_GetArraySize(instructions_json);
+    device_config.actions.fields = (KeyValue *)malloc(device_config.actions.field_count * sizeof(KeyValue));
+    if (!device_config.actions.fields) {
         log_message(LOG_LVL_ERROR, "Memory allocation failed for instructions");
         cJSON_Delete(config);
         free(config_data);
@@ -64,20 +64,20 @@ int app_config_init(void) {
     }
 
     // Parse từng instruction
-    for (int i = 0; i < device_config.wan.field_count; i++) {
+    for (int i = 0; i < device_config.actions.field_count; i++) {
         cJSON *instr_json = cJSON_GetArrayItem(instructions_json, i);
         cJSON *action = cJSON_GetObjectItem(instr_json, "action");
 
         if (action && cJSON_IsString(action)) {
             // Lưu tên action làm key
-            strncpy(device_config.wan.fields[i].key, action->valuestring, sizeof(device_config.wan.fields[i].key) - 1);
-            device_config.wan.fields[i].key[sizeof(device_config.wan.fields[i].key) - 1] = '\0';
+            strncpy(device_config.actions.fields[i].key, action->valuestring, sizeof(device_config.actions.fields[i].key) - 1);
+            device_config.actions.fields[i].key[sizeof(device_config.actions.fields[i].key) - 1] = '\0';
 
             // Lưu toàn bộ cấu trúc instruction dưới dạng chuỗi JSON
             char *instr_str = cJSON_PrintUnformatted(instr_json);
             if (instr_str) {
-                strncpy(device_config.wan.fields[i].value, instr_str, sizeof(device_config.wan.fields[i].value) - 1);
-                device_config.wan.fields[i].value[sizeof(device_config.wan.fields[i].value) - 1] = '\0';
+                strncpy(device_config.actions.fields[i].value, instr_str, sizeof(device_config.actions.fields[i].value) - 1);
+                device_config.actions.fields[i].value[sizeof(device_config.actions.fields[i].value) - 1] = '\0';
                 free(instr_str);
             }
         }
@@ -86,16 +86,16 @@ int app_config_init(void) {
     // Giải phóng tài nguyên
     cJSON_Delete(config);
     free(config_data);
-    log_message(LOG_LVL_DEBUG, "Loaded %d instructions from config.json", device_config.wan.field_count);
+    log_message(LOG_LVL_DEBUG, "Loaded %d instructions from config.json", device_config.actions.field_count);
     return 0;
 }
 
 void app_config_cleanup(void) {
     // Dọn dẹp cấu hình thiết bị
-    if (device_config.wan.fields) {
-        free(device_config.wan.fields);
-        device_config.wan.fields = NULL;
-        device_config.wan.field_count = 0;
+    if (device_config.actions.fields) {
+        free(device_config.actions.fields);
+        device_config.actions.fields = NULL;
+        device_config.actions.field_count = 0;
     }
 
     // Dọn dẹp logger

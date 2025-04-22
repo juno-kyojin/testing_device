@@ -44,7 +44,7 @@ typedef struct {
 } Config;
 
 typedef struct {
-    Config wan;
+    Config actions;
 } DeviceConfig;
 
 // Kiểu con trỏ hàm cho xử lý hành động
