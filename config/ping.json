@@ -1,31 +1,22 @@
 {
     "test_cases": [
-      {
-        "action": "ping",
-        "input_params": {
-          "host": "google.com",
-          "plugin": "Debug Ping Plugin"
+        {
+            "service": "ping",
+            "params": {
+                "host": "youtube.com"
+            }
         },
-        "attributes": [
-          {
-            "public_attr_name": "pingCode",
-            "private_attr_name": "Status",
-            "attr_type": "int",
-            "attr_execute": "yes"
-          },
-          {
-            "public_attr_name": "host",
-            "private_attr_name": "host",
-            "attr_type": "string",
-            "attr_execute": "yes"
-          },
-          {
-            "public_attr_name": "averageResponseTime",
-            "private_attr_name": "averageResponseTime",
-            "attr_type": "float",
-            "attr_execute": "yes"
-          }
-        ]
-      }
+        {
+            "service": "ping",
+            "params": {
+                "host": "facebook.com"
+            }
+        },
+        {
+            "service": "ping"
+        },
+        {
+            "service": "unknown_service"
+        }
     ]
-  }
+}

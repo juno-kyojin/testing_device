@@ -1,5 +1,7 @@
 {
     "test_cases": [
-        {"action": "wanViewConfig"}
+        {"service": "wan", "action": "create"},
+        {"service": "wan", "action": "delete"},
+        {"service": "wan"}
     ]
 }
