@@ -1,0 +1,71 @@
+#include <stdio.h>
+#include <string.h>
+#include "parser.h"
+#include "file_process.h"
+#include "log.h"
+#include "cjson/cJSON.h"
+
+int parse_test_cases(const char *filepath, TestCase *test_cases, int *test_case_count) {
+    // Read JSON file
+    char *json_data;
+    size_t json_size;
+    if (read_file(filepath, &json_data, &json_size) != 0) {
+        log_message(LOG_LVL_ERROR, "Failed to read %s", filepath);
+        return -1;
+    }
+
+    // Parse JSON
+    cJSON *json = cJSON_Parse(json_data);
+    if (!json) {
+        log_message(LOG_LVL_ERROR, "Failed to parse %s: %s", filepath, cJSON_GetErrorPtr());
+        free(json_data);
+        return -1;
+    }
+
+    // Get the test_cases array
+    cJSON *test_cases_json = cJSON_GetObjectItem(json, "test_cases");
+    if (!cJSON_IsArray(test_cases_json)) {
+        log_message(LOG_LVL_ERROR, "No 'test_cases' array found in %s", filepath);
+        cJSON_Delete(json);
+        free(json_data);
+        return -1;
+    }
+
+    // Parse each test case
+    int count = 0;
+    cJSON *test_case_json;
+    cJSON_ArrayForEach(test_case_json, test_cases_json) {
+        cJSON *service_json = cJSON_GetObjectItem(test_case_json, "service");
+        cJSON *action_json = cJSON_GetObjectItem(test_case_json, "action");
+
+        if (!cJSON_IsString(service_json)) {
+            log_message(LOG_LVL_ERROR, "Invalid or missing 'service' in test case");
+            continue;
+        }
+
+        if (count >= MAX_TEST_CASES) {
+            log_message(LOG_LVL_ERROR, "Too many test cases, skipping");
+            break;
+        }
+
+        strncpy(test_cases[count].service, service_json->valuestring, sizeof(test_cases[count].service) - 1);
+        test_cases[count].service[sizeof(test_cases[count].service) - 1] = '\0';
+
+        if (action_json && cJSON_IsString(action_json)) {
+            strncpy(test_cases[count].action, action_json->valuestring, sizeof(test_cases[count].action) - 1);
+            test_cases[count].action[sizeof(test_cases[count].action) - 1] = '\0';
+        } else {
+            test_cases[count].action[0] = '\0';
+        }
+
+        count++;
+    }
+
+    *test_case_count = count;
+
+    log_message(LOG_LVL_DEBUG, "Successfully parsed %d test cases from %s", count, filepath);
+
+    cJSON_Delete(json);
+    free(json_data);
+    return 0;
+}

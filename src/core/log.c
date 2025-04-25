@@ -1,4 +1,3 @@
-
  #include "log.h"
  #include <stdio.h>
  #include <stdlib.h>
@@ -60,7 +59,7 @@
          return;
      }
      
-  // Lấy thời gian hiện tại
+  // get the current time
   time_t now = time(NULL);
   struct tm tm_now;
   localtime_r(&now, &tm_now);
@@ -68,18 +67,18 @@
   char time_str[20];
   strftime(time_str, sizeof(time_str), "%Y-%m-%d %H:%M:%S", &tm_now);
   
-  // Tạo chuỗi log
+  // log message buffer
   char log_buffer[MAX_LOG_LINE_SIZE];
   
-  // Header với timestamp và log level
+  // Header with timestamp and log level
   int header_len = snprintf(log_buffer, sizeof(log_buffer), "[%s] %s: ", 
                            time_str, log_level_names[level]);
   
-  if (header_len < 0 || header_len >= sizeof(log_buffer)) {
-      return; // Lỗi khi tạo header
+  if (header_len < 0 || (size_t)header_len >= sizeof(log_buffer)) {
+      return; 
   }
   
-  // Nội dung log
+  // log content
   va_list args;
   va_start(args, format);
   int content_len = vsnprintf(log_buffer + header_len, sizeof(log_buffer) - header_len, 
@@ -87,10 +86,10 @@
   va_end(args);
   
   if (content_len < 0) {
-      return; // Lỗi khi tạo nội dung
+      return; // 
   }
   
-  // Đảm bảo có ký tự xuống dòng ở cuối
+// Ensure there is a newline character at the end
   size_t total_len = header_len + content_len;
   if (total_len < sizeof(log_buffer) - 2) {
       if (log_buffer[total_len - 1] != '\n') {
@@ -98,14 +97,14 @@
           log_buffer[total_len + 1] = '\0';
       }
   } else {
-      // Đặt ký tự xuống dòng cho chuỗi quá dài
+    // Add a newline character for overly long strings
       log_buffer[sizeof(log_buffer) - 2] = '\n';
       log_buffer[sizeof(log_buffer) - 1] = '\0';
   }
   
   pthread_mutex_lock(&log_mutex);
   
-  // Ghi log vào file
+// Write log to file
   FILE *log_file = fopen(logger_config.log_file_path, "a");
   if (log_file) {
       fputs(log_buffer, log_file);

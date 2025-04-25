@@ -1,0 +1,24 @@
+{
+	"test_cases":	[{
+			"host":	"youtube.com",
+			"status":	"pass",
+			"packets_received":	5,
+			"packets_transmitted":	5,
+			"packet_loss":	0,
+			"avg_time_ms":	29.847999572753906
+		}, {
+			"host":	"facebook.com",
+			"status":	"pass",
+			"packets_received":	5,
+			"packets_transmitted":	5,
+			"packet_loss":	0,
+			"avg_time_ms":	29.142000198364258
+		}, {
+			"host":	"",
+			"status":	"fail",
+			"packets_received":	0,
+			"packets_transmitted":	0,
+			"packet_loss":	100,
+			"avg_time_ms":	0
+		}]
+}
