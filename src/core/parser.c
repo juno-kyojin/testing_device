@@ -1,3 +1,20 @@
+/**
+ * @file parser.c
+ * @brief Implementation of the test case parser
+ *
+ * This file implements the test case parser, which reads and parses test case files
+ * in JSON format. It extracts test case information, such as service names and actions,
+ * and stores them in an array of `TestCase` structures. The parser is used by the test
+ * case execution system to process test case definitions from files and prepare them
+ * for execution.
+ *
+ * @author [junokyojin]
+ * @date 2025-04-23
+ * @see parser.h
+ * @see file_process.h
+ * @see log.h
+ * @see cjson/cJSON.h
+ */
 #include <stdio.h>
 #include <string.h>
 #include "parser.h"
