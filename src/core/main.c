@@ -1,3 +1,27 @@
+/**
+ * @file main.c
+ * @brief Main entry point for the test case execution system
+ *
+ * This file serves as the main entry point for the test case execution system.
+ * It initializes the system, sets up a file system watcher using `inotify` to monitor
+ * the `config` directory for new test case files in JSON format. When a new test case
+ * file is detected, the system processes the file by parsing its test cases, executing
+ * the corresponding actions, and writing the results to a JSON file in the `result`
+ * directory. Processed test case files are then moved to the `processed` directory to
+ * avoid reprocessing.
+ *
+ * The system is designed to run continuously as a daemon, automatically started at
+ * boot via a systemd service (`testing_device.service`), ensuring uninterrupted test
+ * case execution.
+ *
+ * @author [Your Name]
+ * @date 2025-04-23
+ * @see action.h
+ * @see parser.h
+ * @see file_process.h
+ * @see log.h
+ * @see types.h
+ */
 #include <stdio.h>
 #include <dirent.h>
 #include <string.h>
@@ -13,11 +37,46 @@
 #include "types.h"
 #include "cjson/cJSON.h"
 
+/**
+ * @def MAX_TEST_CASES
+ * @brief Maximum number of test cases that can be processed from a single file
+ *
+ * Defines the maximum number of test cases that the system can handle from a single
+ * test case file. Currently set to 100 to prevent excessive memory usage and ensure
+ * system stability.
+ */
 #define MAX_TEST_CASES 100
+
+/**
+ * @def EVENT_SIZE
+ * @brief Size of an inotify event structure
+ *
+ * Defines the size of the `inotify_event` structure used for monitoring file system
+ * events. It is used to calculate the buffer size for reading events.
+ */
 #define EVENT_SIZE (sizeof(struct inotify_event))
+
+/**
+ * @def BUF_LEN
+ * @brief Buffer length for reading inotify events
+ *
+ * Defines the buffer size for reading inotify events. It is set to accommodate multiple
+ * events, ensuring the system can handle bursts of file system activity.
+ */
 #define BUF_LEN (1024 * (EVENT_SIZE + 16))
 
-// Write results to a JSON file in the result directory with a timestamp
+/**
+ * @brief Write test case results to a JSON file with a timestamp
+ *
+ * This function writes the test case results to a JSON file in the `result` directory.
+ * The file name includes a timestamp to prevent overwriting previous results. If the
+ * `result` directory does not exist, it is created automatically with appropriate
+ * permissions.
+ *
+ * @param filepath Path to the original test case file (e.g., "config/ping.json").
+ * @param results Pointer to the `cJSON` object containing the test case results.
+ * @return None
+ */
 void write_results_to_file(const char *filepath, cJSON *results) {
     // Create the result directory if it does not exist
     struct stat st = {0};
@@ -66,7 +125,17 @@ void write_results_to_file(const char *filepath, cJSON *results) {
     log_message(LOG_LVL_DEBUG, "Results written to %s", result_filepath);
 }
 
-// Process a test case file
+/**
+ * @brief Process a single test case file
+ *
+ * This function processes a test case file by parsing its contents, executing each
+ * test case, and writing the results to a JSON file. After processing, the file is
+ * moved to the `processed` directory to prevent reprocessing. If the `processed`
+ * directory does not exist, it is created automatically with appropriate permissions.
+ *
+ * @param filepath Path to the test case file to process (e.g., "config/ping.json").
+ * @return None
+ */
 void process_test_case_file(const char *filepath) {
     TestCase test_cases[MAX_TEST_CASES];
     int test_case_count = 0;
@@ -121,6 +190,18 @@ void process_test_case_file(const char *filepath) {
     }
 }
 
+/**
+ * @brief Main entry point for the test case execution system
+ *
+ * This function initializes the system, sets up an `inotify` watcher to monitor the
+ * `config` directory for new test case files, and processes them as they arrive.
+ * It runs continuously, handling test case execution, result logging, and file management.
+ * The system is designed to run as a systemd service, starting automatically at boot.
+ *
+ * @param argc Number of command-line arguments (not used).
+ * @param argv Array of command-line arguments (not used).
+ * @return int Exit code (0 for success, 1 for failure).
+ */
 int main(int argc, char *argv[]) {
     init_logger();
     init_action_dispatch();

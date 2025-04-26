@@ -1,3 +1,18 @@
+/**
+ * @file file_process.c
+ * @brief Implementation of file processing utilities
+ *
+ * This file implements file processing utilities for the test case execution system.
+ * It provides functions for reading, writing, appending, and managing files, as well
+ * as utilities for directory creation, file copying, and temporary file creation.
+ * These functions are used to handle test case files and result files, ensuring robust
+ * file operations with proper error handling and logging.
+ *
+ * @author [junokyojin]
+ * @date 2025-04-23
+ * @see file_process.h
+ * @see log.h
+ */
 #include "file_process.h"
 #include "log.h"
 #include <stdio.h>
