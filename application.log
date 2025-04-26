@@ -562,3 +562,28 @@
 [2025-04-23 07:33:01] DEBUG: Executing action: unknown_service (service: unknown_service, action: default)
 [2025-04-23 07:33:01] ERROR: No handler found for service: unknown_service
 [2025-04-23 07:33:01] DEBUG: Results written to result/ping.json_20250423073301_result.json
+[2025-04-26 09:36:07] DEBUG: Started monitoring config directory for new test case files...
+[2025-04-26 10:02:16] DEBUG: Detected new test case file: config/ping copy.json
+[2025-04-26 10:02:16] DEBUG: Successfully read 398 bytes from file config/ping copy.json
+[2025-04-26 10:02:16] DEBUG: Successfully parsed 4 test cases from config/ping copy.json
+[2025-04-26 10:02:16] DEBUG: Executing action: ping (service: ping, action: default)
+[2025-04-26 10:02:16] DEBUG: Executing ping test
+[2025-04-26 10:02:16] DEBUG: Successfully read 398 bytes from file config/ping copy.json
+[2025-04-26 10:02:16] DEBUG: Parsed host: youtube.com
+[2025-04-26 10:02:16] DEBUG: Pinging host: youtube.com
+[2025-04-26 10:02:26] ERROR: Ping command failed with exit code 1
+[2025-04-26 10:02:26] DEBUG: Executing action: ping (service: ping, action: default)
+[2025-04-26 10:02:26] DEBUG: Executing ping test
+[2025-04-26 10:02:26] DEBUG: Successfully read 398 bytes from file config/ping copy.json
+[2025-04-26 10:02:26] DEBUG: Parsed host: facebook.com
+[2025-04-26 10:02:26] DEBUG: Pinging host: facebook.com
+[2025-04-26 10:02:33] ERROR: Ping command failed with exit code 1
+[2025-04-26 10:02:33] DEBUG: Executing action: ping (service: ping, action: default)
+[2025-04-26 10:02:33] DEBUG: Executing ping test
+[2025-04-26 10:02:33] DEBUG: Successfully read 398 bytes from file config/ping copy.json
+[2025-04-26 10:02:33] ERROR: No params specified for test case 2
+[2025-04-26 10:02:33] DEBUG: Executing action: unknown_service (service: unknown_service, action: default)
+[2025-04-26 10:02:33] ERROR: No handler found for service: unknown_service
+[2025-04-26 10:02:33] DEBUG: Results written to result/ping copy.json_20250426100233_result.json
+[2025-04-26 10:02:33] DEBUG: Created directory: processed
+[2025-04-26 10:02:33] DEBUG: Moved file to processed/ping copy.json

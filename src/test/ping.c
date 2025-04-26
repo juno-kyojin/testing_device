@@ -10,9 +10,9 @@
 #include "file_process.h"
 #include "cjson/cJSON.h"
 
-// Parse host từ file JSON
+// Parse host from JSON file
 int parse_host(const char *filepath, int index, char *host, size_t host_size, cJSON *result_json) {
-    // Đọc file JSON
+    // Read JSON file
     char *json_data;
     size_t json_size;
     if (read_file(filepath, &json_data, &json_size) != 0) {
@@ -28,7 +28,7 @@ int parse_host(const char *filepath, int index, char *host, size_t host_size, cJ
         return -1;
     }
 
-    // Lấy mảng test_cases
+    // Get the test_cases array
     cJSON *test_cases_json = cJSON_GetObjectItem(json, "test_cases");
     if (!cJSON_IsArray(test_cases_json)) {
         log_message(LOG_LVL_ERROR, "No 'test_cases' array found in %s", filepath);
@@ -37,7 +37,7 @@ int parse_host(const char *filepath, int index, char *host, size_t host_size, cJ
         return -1;
     }
 
-    // Tìm test case theo chỉ số
+    // Find the test case by index
     cJSON *test_case_json = cJSON_GetArrayItem(test_cases_json, index);
     if (!test_case_json) {
         log_message(LOG_LVL_ERROR, "Test case at index %d not found in %s", index, filepath);
@@ -46,13 +46,13 @@ int parse_host(const char *filepath, int index, char *host, size_t host_size, cJ
         return -1;
     }
 
-    // Parse params để lấy host
+    // Parse params to get the host
     cJSON *params_json = cJSON_GetObjectItem(test_case_json, "params");
     if (!params_json) {
         log_message(LOG_LVL_ERROR, "No params specified for test case %d", index);
         cJSON_Delete(json);
         free(json_data);
-        return -1; // Không thêm duplicate keys, để execute_ping xử lý
+        return -1;
     }
 
     cJSON *host_json = cJSON_GetObjectItem(params_json, "host");
@@ -64,7 +64,7 @@ int parse_host(const char *filepath, int index, char *host, size_t host_size, cJ
         log_message(LOG_LVL_ERROR, "No host specified in params for test case %d", index);
         cJSON_Delete(json);
         free(json_data);
-        return -1; // Không thêm duplicate keys, để execute_ping xử lý
+        return -1;
     }
 
     cJSON_ReplaceItemInObject(result_json, "host", cJSON_CreateString(host));
@@ -73,7 +73,7 @@ int parse_host(const char *filepath, int index, char *host, size_t host_size, cJ
     return 0;
 }
 
-// Chạy lệnh ping và thu thập kết quả
+// Run the ping command and collect results
 int ping(const char *host, PingResult *result) {
     char cmd[512];
     snprintf(cmd, sizeof(cmd), "ping -c 5 -W 3 %s 2>&1", host);
@@ -83,6 +83,7 @@ int ping(const char *host, PingResult *result) {
     if (fp == NULL) {
         log_message(LOG_LVL_ERROR, "Failed to execute ping command for host: %s", host);
         strcpy(result->status, "fail");
+        result->packet_loss = 100.0; // 100% packet loss
         return -1;
     }
 
@@ -102,23 +103,33 @@ int ping(const char *host, PingResult *result) {
     if (WEXITSTATUS(status) != 0) {
         log_message(LOG_LVL_ERROR, "Ping command failed with exit code %d", WEXITSTATUS(status));
         strcpy(result->status, "fail");
+        result->packet_loss = 100.0; // 100% packet loss
         return -1;
     }
 
-    // Xác định trạng thái pass/fail
-    if (result->packets_received > 0) {
-        strcpy(result->status, "pass");
+    // Calculate packet loss percentage
+    if (result->packets_transmitted > 0) {
+        result->packet_loss = ((float)(result->packets_transmitted - result->packets_received) / result->packets_transmitted) * 100.0;
     } else {
-        strcpy(result->status, "fail");
+        result->packet_loss = 100.0; // If no packets were sent, assume 100% loss
+    }
+
+    // Determine pass/partial/fail status
+    if (result->packets_received == result->packets_transmitted) {
+        strcpy(result->status, "pass"); // 100% of packets received
+    } else if (result->packets_received > 0) {
+        strcpy(result->status, "partial"); // Some packets received, but not all
+    } else {
+        strcpy(result->status, "fail"); // No packets received
     }
 
     return 0;
 }
 
-// Ghi log kết quả
+// Log the results
 void log_result(const PingResult *result, time_t start_time, time_t end_time) {
-    log_message(LOG_LVL_DEBUG, "Ping test result: Packets received=%d, Avg time=%.3f ms, Status=%s",
-                result->packets_received, result->avg_time, result->status);
+    log_message(LOG_LVL_DEBUG, "Ping test result: Packets received=%d/%d, Packet loss=%.2f%%, Avg time=%.3f ms, Status=%s",
+                result->packets_received, result->packets_transmitted, result->packet_loss, result->avg_time, result->status);
     log_message(LOG_LVL_DEBUG, "Ping test completed in %ld seconds", end_time - start_time);
 }
 
@@ -126,22 +137,23 @@ void execute_ping(TestCase *test_case, const char *filepath, int index, cJSON *r
     log_message(LOG_LVL_DEBUG, "Executing ping test");
     time_t start_time = time(NULL);
 
-    // Tạo result_json ngay từ đầu
+    // Create result_json at the beginning
     cJSON *result_json = cJSON_CreateObject();
     cJSON_AddStringToObject(result_json, "host", "");
     cJSON_AddStringToObject(result_json, "status", "fail");
     cJSON_AddNumberToObject(result_json, "packets_received", 0);
     cJSON_AddNumberToObject(result_json, "packets_transmitted", 0);
+    cJSON_AddNumberToObject(result_json, "packet_loss", 100.0);
     cJSON_AddNumberToObject(result_json, "avg_time_ms", 0.0);
 
-    // Parse host từ file JSON
+    // Parse host from JSON file
     char host[256] = "";
     if (parse_host(filepath, index, host, sizeof(host), result_json) != 0) {
         cJSON_AddItemToArray(result_array, result_json);
         return;
     }
 
-    // Chạy lệnh ping
+    // Run the ping command
     PingResult result;
     log_message(LOG_LVL_DEBUG, "Pinging host: %s", host);
     if (ping(host, &result) != 0) {
@@ -149,16 +161,17 @@ void execute_ping(TestCase *test_case, const char *filepath, int index, cJSON *r
         return;
     }
 
-    // Cập nhật kết quả vào result_json
+    // Update the results in result_json
     cJSON_ReplaceItemInObject(result_json, "status", cJSON_CreateString(result.status));
     cJSON_ReplaceItemInObject(result_json, "packets_received", cJSON_CreateNumber(result.packets_received));
     cJSON_ReplaceItemInObject(result_json, "packets_transmitted", cJSON_CreateNumber(result.packets_transmitted));
+    cJSON_ReplaceItemInObject(result_json, "packet_loss", cJSON_CreateNumber(result.packet_loss));
     cJSON_ReplaceItemInObject(result_json, "avg_time_ms", cJSON_CreateNumber(result.avg_time));
 
-    // Thêm kết quả vào mảng
+    // Add the result to the array
     cJSON_AddItemToArray(result_array, result_json);
 
-    // Ghi log kết quả
+    // Log the results
     time_t end_time = time(NULL);
     log_result(&result, start_time, end_time);
 }

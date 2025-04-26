@@ -4,11 +4,11 @@
 #include "action_registry.h"
 #include "log.h"
 
-// Bảng điều phối hành động
-static ActionDispatch action_table[100]; // Giới hạn 100 dịch vụ
+// Action dispatch table
+static ActionDispatch action_table[100]; // Limit of 100 services
 static int action_count = 0;
 
-// Hàm đăng ký dịch vụ
+// Function to register a service
 void register_service(const char *service, ActionHandler handler) {
     if (action_count >= 100) {
         log_message(LOG_LVL_ERROR, "Action dispatch table is full");
@@ -20,7 +20,7 @@ void register_service(const char *service, ActionHandler handler) {
     action_count++;
 }
 
-// Hàm tra cứu handler cho dịch vụ
+// Function to look up a handler for a service
 static ActionHandler get_action_handler(const char *service) {
     for (int i = 0; i < action_count; i++) {
         if (strcmp(action_table[i].service, service) == 0) {
