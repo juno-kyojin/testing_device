@@ -100,6 +100,9 @@ int write_file(const char *file_path, const char *buffer, size_t size) {
     return 0;
 }
 
+/**
+ * @note This function is currently unused in the system.
+ */
 int append_to_file(const char *file_path, const char *buffer, size_t size) {
     if (!file_path || (!buffer && size > 0)) {
         log_message(LOG_LVL_ERROR, "append_to_file: Invalid parameters");
@@ -125,6 +128,9 @@ int append_to_file(const char *file_path, const char *buffer, size_t size) {
     return 0;
 }
 
+/**
+ * @note This function is currently unused in the system.
+ */
 int file_exists(const char *file_path) {
     if (!file_path) {
         return 0;
@@ -151,6 +157,9 @@ int create_directory(const char *dir_path) {
     return 0;
 }
 
+/**
+ * @note This function is currently unused in the system.
+ */
 int delete_file(const char *file_path) {
     if (!file_path) {
         log_message(LOG_LVL_ERROR, "delete_file: Invalid parameter");
@@ -166,6 +175,9 @@ int delete_file(const char *file_path) {
     return 0;
 }
 
+/**
+ * @note This function is currently unused in the system.
+ */
 int copy_file(const char *src_path, const char *dest_path) {
     char buffer[4096];
     size_t bytes_read;
@@ -212,6 +224,9 @@ int copy_file(const char *src_path, const char *dest_path) {
     return 0;
 }
 
+/**
+ * @note This function is currently unused in the system.
+ */
 long get_file_size(const char *file_path) {
     if (!file_path) {
         return -1;
@@ -226,6 +241,9 @@ long get_file_size(const char *file_path) {
     return st.st_size;
 }
 
+/**
+ * @note This function is currently unused in the system.
+ */
 time_t get_file_modification_time(const char *file_path) {
     if (!file_path) {
         return -1;
@@ -240,6 +258,9 @@ time_t get_file_modification_time(const char *file_path) {
     return st.st_mtime;
 }
 
+/**
+ * @note This function is currently unused in the system.
+ */
 char* create_temp_file(const char *prefix, char *temp_path, size_t path_size) {
     if (!prefix || !temp_path || path_size < 16) {
         log_message(LOG_LVL_ERROR, "create_temp_file: Invalid parameters");
@@ -259,6 +280,9 @@ char* create_temp_file(const char *prefix, char *temp_path, size_t path_size) {
     return temp_path;
 }
 
+/**
+ * @note This function is currently unused in the system.
+ */
 int read_file_chunk(const char *file_path, char *buffer, size_t buffer_size, off_t offset, size_t *bytes_read) {
     if (!file_path || !buffer || !bytes_read) {
         log_message(LOG_LVL_ERROR, "read_file_chunk: Invalid parameters");

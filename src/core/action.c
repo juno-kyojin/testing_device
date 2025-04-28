@@ -19,6 +19,7 @@
 #include "action.h"
 #include "action_registry.h"
 #include "log.h"
+#include "cjson/cJSON.h"
 
 /**
  * @def MAX_SERVICES
@@ -93,5 +94,13 @@ void execute_action(TestCase *test_case, const char *filepath, int index, cJSON 
         handler(test_case, filepath, index, result_array);
     } else {
         log_message(LOG_LVL_ERROR, "No handler found for service: %s", test_case->service);
+        // Thêm kết quả thất bại với lý do
+        cJSON *result_json = cJSON_CreateObject();
+        cJSON_AddStringToObject(result_json, "service", test_case->service);
+        cJSON_AddStringToObject(result_json, "action", test_case->action[0] ? test_case->action : "default");
+        cJSON_AddStringToObject(result_json, "host", "");
+        cJSON_AddStringToObject(result_json, "status", "fail");
+        cJSON_AddStringToObject(result_json, "fail_reason", "Unknown service");
+        cJSON_AddItemToArray(result_array, result_json);
     }
 }

@@ -17,6 +17,7 @@
 #define PARSER_H
 
 #include "types.h"
+#include "cjson/cJSON.h"
 
 /**
  * @def MAX_TEST_CASES
@@ -35,15 +36,17 @@
  * test cases, and stores them in an array of `TestCase` structures. Each test case
  * must specify a `service` (e.g., "ping", "speedtest") and may optionally specify
  * an `action`. The function logs errors if the file cannot be read, the JSON is
- * invalid, or the test case format is incorrect.
+ * invalid, or the test case format is incorrect. If parsing fails, an error reason
+ * is added to the provided `result_json` object.
  *
  * @param filepath Path to the JSON file containing the test cases (e.g., "config/ping.json").
  * @param test_cases Pointer to an array of `TestCase` structures where the parsed test cases will be stored.
  * @param test_case_count Pointer to an integer where the number of parsed test cases will be stored.
+ * @param result_json Pointer to a `cJSON` object where error information will be stored if parsing fails.
  * @return int
  *         - 0 if the test cases were successfully parsed.
  *         - -1 if an error occurred (e.g., file not found, invalid JSON, missing test cases).
  */
-int parse_test_cases(const char *filepath, TestCase *test_cases, int *test_case_count);
+int parse_test_cases(const char *filepath, TestCase *test_cases, int *test_case_count, cJSON *result_json);
 
 #endif

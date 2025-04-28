@@ -22,12 +22,21 @@
 #include "log.h"
 #include "cjson/cJSON.h"
 
-int parse_test_cases(const char *filepath, TestCase *test_cases, int *test_case_count) {
+int parse_test_cases(const char *filepath, TestCase *test_cases, int *test_case_count, cJSON *result_json) {
     // Read JSON file
     char *json_data;
     size_t json_size;
     if (read_file(filepath, &json_data, &json_size) != 0) {
         log_message(LOG_LVL_ERROR, "Failed to read %s", filepath);
+        cJSON_AddStringToObject(result_json, "fail_reason", "Failed to read file");
+        return -1;
+    }
+
+    // Kiểm tra nếu file rỗng
+    if (json_size == 0) {
+        log_message(LOG_LVL_ERROR, "File %s is empty", filepath);
+        cJSON_AddStringToObject(result_json, "fail_reason", "Empty file");
+        free(json_data);
         return -1;
     }
 
@@ -35,6 +44,7 @@ int parse_test_cases(const char *filepath, TestCase *test_cases, int *test_case_
     cJSON *json = cJSON_Parse(json_data);
     if (!json) {
         log_message(LOG_LVL_ERROR, "Failed to parse %s: %s", filepath, cJSON_GetErrorPtr());
+        cJSON_AddStringToObject(result_json, "fail_reason", "Invalid JSON format");
         free(json_data);
         return -1;
     }
@@ -43,6 +53,7 @@ int parse_test_cases(const char *filepath, TestCase *test_cases, int *test_case_
     cJSON *test_cases_json = cJSON_GetObjectItem(json, "test_cases");
     if (!cJSON_IsArray(test_cases_json)) {
         log_message(LOG_LVL_ERROR, "No 'test_cases' array found in %s", filepath);
+        cJSON_AddStringToObject(result_json, "fail_reason", "No test cases array found");
         cJSON_Delete(json);
         free(json_data);
         return -1;

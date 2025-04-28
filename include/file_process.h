@@ -65,6 +65,7 @@ int write_file(const char *file_path, const char *buffer, size_t size);
  * @return int
  *         - 0 if the data was successfully appended.
  *         - -1 if an error occurred (e.g., file cannot be opened, write error).
+ * @note This function is currently unused in the system.
  */
 int append_to_file(const char *file_path, const char *buffer, size_t size);
 
@@ -78,6 +79,7 @@ int append_to_file(const char *file_path, const char *buffer, size_t size);
  * @return int
  *         - 1 if the file exists.
  *         - 0 if the file does not exist or the parameter is invalid.
+ * @note This function is currently unused in the system.
  */
 int file_exists(const char *file_path);
 
@@ -106,6 +108,7 @@ int create_directory(const char *dir_path);
  * @return int
  *         - 0 if the file was successfully deleted.
  *         - -1 if an error occurred (e.g., file not found, permission denied).
+ * @note This function is currently unused in the system.
  */
 int delete_file(const char *file_path);
 
@@ -121,6 +124,7 @@ int delete_file(const char *file_path);
  * @return int
  *         - 0 if the file was successfully copied.
  *         - -1 if an error occurred (e.g., source file not found, write error).
+ * @note This function is currently unused in the system.
  */
 int copy_file(const char *src_path, const char *dest_path);
 
@@ -134,6 +138,7 @@ int copy_file(const char *src_path, const char *dest_path);
  * @return long
  *         - Size of the file in bytes if successful.
  *         - -1 if an error occurred (e.g., file not found, permission denied).
+ * @note This function is currently unused in the system.
  */
 long get_file_size(const char *file_path);
 
@@ -147,6 +152,7 @@ long get_file_size(const char *file_path);
  * @return time_t
  *         - The last modification time of the file if successful.
  *         - -1 if an error occurred (e.g., file not found, permission denied).
+ * @note This function is currently unused in the system.
  */
 time_t get_file_modification_time(const char *file_path);
 
@@ -164,6 +170,7 @@ time_t get_file_modification_time(const char *file_path);
  * @return char*
  *         - Pointer to `temp_path` containing the path to the temporary file if successful.
  *         - NULL if an error occurred (e.g., invalid parameters, failed to create file).
+ * @note This function is currently unused in the system.
  */
 char* create_temp_file(const char *prefix, char *temp_path, size_t path_size);
 
@@ -183,6 +190,7 @@ char* create_temp_file(const char *prefix, char *temp_path, size_t path_size);
  * @return int
  *         - 0 if the read operation was successful.
  *         - -1 if an error occurred (e.g., file not found, read error).
+ * @note This function is currently unused in the system.
  */
 int read_file_chunk(const char *file_path, char *buffer, size_t buffer_size, off_t offset, size_t *bytes_read);
 

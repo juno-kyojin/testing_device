@@ -1,0 +1,29 @@
+{
+	"failed_test_cases":	[{
+			"service":	"wan",
+			"action":	"create",
+			"host":	"",
+			"status":	"fail",
+			"fail_reason":	"Unknown service"
+		}, {
+			"service":	"wan",
+			"action":	"delete",
+			"host":	"",
+			"status":	"fail",
+			"fail_reason":	"Unknown service"
+		}, {
+			"service":	"wan",
+			"action":	"default",
+			"host":	"",
+			"status":	"fail",
+			"fail_reason":	"Unknown service"
+		}],
+	"summary":	{
+		"total_test_cases":	3,
+		"passed":	0,
+		"fail_percentage":	100,
+		"failure_reasons":	{
+			"Unknown service":	1
+		}
+	}
+}

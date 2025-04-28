@@ -1,2 +1,36 @@
-[2025-04-26 15:37:09] DEBUG: Started monitoring config directory for new test case files...
-[2025-04-26 16:12:01] DEBUG: Started monitoring config directory for new test case files...
+[2025-04-28 15:51:34] DEBUG: Detected new test case file: config/ping copy.json
+[2025-04-28 15:51:34] DEBUG: Successfully read 398 bytes from file config/ping copy.json
+[2025-04-28 15:51:34] DEBUG: Successfully parsed 4 test cases from config/ping copy.json
+[2025-04-28 15:51:34] DEBUG: Executing action: ping (service: ping, action: default)
+[2025-04-28 15:51:34] DEBUG: Executing ping test
+[2025-04-28 15:51:34] DEBUG: Successfully read 398 bytes from file config/ping copy.json
+[2025-04-28 15:51:34] DEBUG: Parsed host: youtube.com
+[2025-04-28 15:51:34] DEBUG: Pinging host: youtube.com
+[2025-04-28 15:51:38] DEBUG: Ping test result: Packets received=5/5, Packet loss=0.00%, Avg time=25.821 ms, Status=pass
+[2025-04-28 15:51:38] DEBUG: Ping test completed in 4 seconds
+[2025-04-28 15:51:38] DEBUG: Executing action: ping (service: ping, action: default)
+[2025-04-28 15:51:38] DEBUG: Executing ping test
+[2025-04-28 15:51:38] DEBUG: Successfully read 398 bytes from file config/ping copy.json
+[2025-04-28 15:51:38] DEBUG: Parsed host: facebook.com
+[2025-04-28 15:51:38] DEBUG: Pinging host: facebook.com
+[2025-04-28 15:51:42] DEBUG: Ping test result: Packets received=5/5, Packet loss=0.00%, Avg time=21.107 ms, Status=pass
+[2025-04-28 15:51:42] DEBUG: Ping test completed in 4 seconds
+[2025-04-28 15:51:42] DEBUG: Executing action: ping (service: ping, action: default)
+[2025-04-28 15:51:42] DEBUG: Executing ping test
+[2025-04-28 15:51:42] DEBUG: Successfully read 398 bytes from file config/ping copy.json
+[2025-04-28 15:51:42] ERROR: No params specified for test case 2
+[2025-04-28 15:51:42] DEBUG: Executing action: unknown_service (service: unknown_service, action: default)
+[2025-04-28 15:51:42] ERROR: No handler found for service: unknown_service
+[2025-04-28 15:51:42] DEBUG: Successfully wrote 460 bytes to file result/ping copy.json_20250428155142_result.json
+[2025-04-28 15:51:42] DEBUG: Moved file to processed/ping copy.json
+[2025-04-28 15:51:54] DEBUG: Detected new test case file: config/wan copy.json
+[2025-04-28 15:51:54] DEBUG: Successfully read 152 bytes from file config/wan copy.json
+[2025-04-28 15:51:54] DEBUG: Successfully parsed 3 test cases from config/wan copy.json
+[2025-04-28 15:51:54] DEBUG: Executing action: create (service: wan, action: create)
+[2025-04-28 15:51:54] ERROR: No handler found for service: wan
+[2025-04-28 15:51:54] DEBUG: Executing action: delete (service: wan, action: delete)
+[2025-04-28 15:51:54] ERROR: No handler found for service: wan
+[2025-04-28 15:51:54] DEBUG: Executing action: wan (service: wan, action: default)
+[2025-04-28 15:51:54] ERROR: No handler found for service: wan
+[2025-04-28 15:51:54] DEBUG: Successfully wrote 531 bytes to file result/wan copy.json_20250428155154_result.json
+[2025-04-28 15:51:54] DEBUG: Moved file to processed/wan copy.json
