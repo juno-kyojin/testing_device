@@ -146,7 +146,7 @@ Nếu service `wan` chưa được hỗ trợ, bạn cần viết một handler 
 
 2. **Tạo file source**:
    - Tạo file `src/test/wan.c`.
-   - Triển khai hàm `executeWan`:
+   - Triển khai hàm `execute_wan`:
      - Parse tham số từ `params` như `type`, `username`, `password`, `interface`.
      - Kiểm tra action của test case:
        Nếu `action` là `"create"`, thực hiện tạo kết nối WAN theo loại được chỉ định (PPPoE hoặc DHCP).
@@ -161,10 +161,10 @@ Nếu service `wan` chưa được hỗ trợ, bạn cần viết một handler 
    - Trong hàm `init_action_dispatch`, thêm dòng sau:
 
      ```c
-      register_service("wan", executeWan);
+      register_service("wan", execute_wan);
      ```
 
-   - Dòng này ánh xạ `service`: `"wan"` với handler `executeWan`.
+   - Dòng này ánh xạ `service`: `"wan"` với handler `execute_wan`.
 
 ### Cập nhật Makefile
 
