@@ -1,7 +1,0 @@
-{
-    "test_cases": [
-        {"service": "wan", "action": "create"},
-        {"service": "wan", "action": "delete"},
-        {"service": "wan"}
-    ]
-}

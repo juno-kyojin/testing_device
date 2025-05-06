@@ -15,6 +15,7 @@
  */
 #include "config_watcher.h"
 #include "log.h"
+#include "action_registry.h"
 
 /**
  * @brief Main entry point for the test case execution system
@@ -32,17 +33,18 @@ int main(int argc, char *argv[]) {
     init_logger();
     init_action_dispatch();
 
-    // Initialize file system watcher
+    // Initialize file system watcher and queue
     int fd, wd;
-    if (initializeFileWatcher("config", &fd, &wd) != 0) {
+    FileQueue queue;
+    if (initializeFileWatcher("config", &fd, &wd, &queue) != 0) {
         cleanup_logger();
         return 1;
     }
 
-    // Monitor directory and process test case files
-    int result = monitorConfigDirectory(fd, wd);
+    // Monitor directory and process test case files from the queue
+    int result = monitorConfigDirectory(fd, wd, &queue);
 
     // Clean up resources
-    cleanupFileWatcher(fd, wd);
+    cleanupFileWatcher(fd, wd, &queue);
     return result;
 }
