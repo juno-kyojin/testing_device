@@ -141,7 +141,7 @@ Nếu service `wan` chưa được hỗ trợ, bạn cần viết một handler 
    - Khai báo prototype của handler:
 
      ```c
-     void execute_wan_create(TestCase *test_case, const char *filepath, int index, cJSON *result_array);
+     void execute_wan(TestCase *test_case, const char *filepath, int index, cJSON *result_array);
      ```
 
 2. **Tạo file source**:
