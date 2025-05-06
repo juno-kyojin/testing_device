@@ -1,0 +1,18 @@
+{
+    "test_cases": [
+        {
+            "service": "speedtest",
+            "params": {
+                "server_id": 11430,  
+                "location": "VietPN"
+            }
+        },
+        {
+            "service": "speedtest",
+            "params": {
+                "server_id": 2552, 
+                "location": "Hanoi, Vietnam"
+            }
+        }
+    ]
+}

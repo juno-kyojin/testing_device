@@ -1,0 +1,24 @@
+{
+	"failed_test_cases":	[{
+			"service":	"ping",
+			"action":	"default",
+			"host":	"",
+			"status":	"fail",
+			"fail_reason":	"Missing host parameter"
+		}, {
+			"service":	"unknown_service",
+			"action":	"default",
+			"host":	"",
+			"status":	"fail",
+			"fail_reason":	"Unknown service"
+		}],
+	"summary":	{
+		"total_test_cases":	4,
+		"passed":	2,
+		"fail_percentage":	50,
+		"failure_reasons":	{
+			"Missing host parameter":	1,
+			"Unknown service":	1
+		}
+	}
+}

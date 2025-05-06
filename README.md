@@ -1,180 +1,80 @@
-# Hệ Thống Kiểm Thử Thiết Bị
+# README - Hệ thống `testing_device`
 
-## Tổng Quan
+## Mục lục
 
-**Hệ Thống Kiểm Thử Thiết Bị** là một công cụ được thiết kế để thực hiện các bài kiểm tra chẩn đoán trên thiết bị mạng. 
+- [Giới thiệu](#giới-thiệu)
+- [Cách hoạt động của hệ thống](#cách-hoạt-động-của-hệ-thống)
+  - [Quy trình tổng quan](#quy-trình-tổng-quan)
+  - [Cấu trúc file test case](#cấu-trúc-file-test-case)
+- [Hướng dẫn thêm test case mới](#hướng-dẫn-thêm-test-case-mới)
+  - [Tạo file test case JSON](#tạo-file-test-case-json)
+  - [Viết handler cho service mới](#viết-handler-cho-service-mới)
+  - [Đăng ký service vào hệ thống](#đăng-ký-service-vào-hệ-thống)
+  - [Cập nhật Makefile](#cập-nhật-makefile)
+  - [Build và kiểm tra](#build-và-kiểm-tra)
+- [Lưu ý và mẹo sử dụng](#lưu-ý-và-mẹo-sử-dụng)
 
-Tài liệu này cung cấp hướng dẫn cơ bản để xây dựng, chạy hệ thống và đọc log kết quả.
+---
 
-## Yêu Cầu Cần Có
+## Giới thiệu
 
-Trước khi sử dụng hệ thống, hãy đảm bảo bạn đã cài đặt các công cụ sau trên hệ điều hành Linux:
+Hệ thống `testing_device` là một ứng dụng tự động thực thi các test case được định nghĩa trong các file JSON. Hệ thống được thiết kế để:
 
-- **Trình Biên Dịch GCC**: Để xây dựng dự án.
+- Giám sát thư mục `config` để phát hiện các file test case mới (file JSON).
+- Parse file JSON để lấy danh sách test case.
+- Thực thi các test case theo service được chỉ định.
+- Ghi kết quả vào thư mục `result` và di chuyển file đã xử lý vào thư mục `processed`.
 
-  ```
-  sudo apt-get install gcc
-  ```
-- **Make**: Để xây dựng dự án bằng Makefile.
+Hệ thống chạy như một dịch vụ systemd (`testing_device.service`), tự động khởi động khi hệ thống khởi động, đảm bảo hoạt động liên tục.
 
-  ```
-  sudo apt-get install make
-  ```
-- **Thư Viện cJSON**: Để xử lý các file cấu hình JSON.
+---
 
-  ```
-  sudo apt-get install libcjson-dev
-  ```
-- **speedtest-cli**: Cần thiết cho bài kiểm tra `speedtest` để đo tốc độ mạng (tùy chọn nếu không dùng `speedtest`).
+## Cách hoạt động của hệ thống
 
-  ```
-  sudo apt-get install speedtest-cli
-  ```
+### Quy trình tổng quan
 
-## Cấu Trúc Thư Mục
+Hệ thống `testing_device` hoạt động theo các bước sau:
 
-- `config/`: Chứa các file cấu hình bài kiểm tra định dạng JSON (`ping.json`, `speedtest.json`, v.v.).
-- `src/`: Chứa các file mã nguồn.
-- `include/`: Chứa các file header.
-- `build/`: Thư mục chứa file thực thi sau khi biên dịch (`testing_device`).
-- `bin/`: Thư mục tạm để lưu các file đối tượng trong quá trình biên dịch.
+1. **Giám sát thư mục `config`**:
+   - Sử dụng `inotify` để phát hiện các file JSON mới trong thư mục `config`.
+   - Khi phát hiện file JSON (như `ping.json`), hệ thống thêm đường dẫn file vào một hàng đợi (queue) để xử lý tuần tự.
 
-## Biên Dịch Dự Án
+2. **Lấy file từ hàng đợi**:
+   - Hệ thống lấy file từ hàng đợi theo thứ tự phát hiện (first-come, first-served).
+   - Gọi hàm xử lý để đọc và thực thi file JSON.
 
-1. Di chuyển đến thư mục dự án:
+3. **Đọc và parse file JSON**:
+   - Đọc toàn bộ nội dung file JSON vào bộ nhớ.
+   - Parse nội dung JSON để lấy danh sách test case (mảng `test_cases`).
+   - Mỗi test case chứa thông tin: `service` (bắt buộc), `action` (tùy chọn), và `params` (tùy chọn).
 
-   ```
-   cd testing_device
-   ```
+4. **Thực thi test case**:
+   - Với mỗi test case, hệ thống tra cứu handler (hàm xử lý) tương ứng với `service`.
+   - Gọi handler để thực thi test case (ví dụ: ping host, kiểm tra tốc độ mạng).
+   - Ghi kết quả thực thi vào một mảng JSON (`result_array`).
 
-2. Biên dịch dự án bằng Makefile:
+5. **Ghi kết quả và di chuyển file**:
+   - Sau khi thực thi tất cả test case, kết quả được ghi vào file JSON trong thư mục `result` (ví dụ: `result/ping.json_20250506120000_result.json`).
+   - File JSON gốc được di chuyển vào thư mục `processed` (ví dụ: `processed/ping.json`) để tránh xử lý lại.
 
-   ```
-   make
-   ```
+### Cấu trúc file test case
 
-   - Lệnh này sẽ biên dịch mã nguồn và tạo file thực thi `build/testing_device`.
+File test case là một file JSON chứa danh sách các test case. Cấu trúc cơ bản như sau:
 
-3. Nếu cần xóa các file biên dịch:
-
-   ```
-   make clean
-   ```
-
-## Chạy Các Bài Kiểm Tra
-
-### Chạy Các Bài Kiểm Tra Cụ Thể
-
-Bạn có thể chạy các bài kiểm tra cụ thể bằng cách cung cấp đường dẫn đến các file cấu hình JSON qua tham số dòng lệnh.
-
-**Ví dụ**:
-
-```
-./build/testing_device config/ping.json config/speedtest.json
-```
-
-- Lệnh này chạy bài kiểm tra `ping` (từ `ping.json`) và sau đó là bài kiểm tra `speedtest` (từ `speedtest.json`).
-
-
-
-## Các Bài Kiểm Tra Hiện Có
-
-### 1. `ping`
-
-- **Mục đích**: Kiểm tra khả năng kết nối mạng bằng cách gửi các gói tin ICMP đến một host được chỉ định.
-- **File Cấu Hình**: `config/ping.json`
-- **Tham Số Đầu Vào**:
-  - `host`: Host mục tiêu để ping (ví dụ: `"google.com"`).
-  - `plugin`: Tên plugin tùy chọn (ví dụ: `"Debug Ping Plugin"`).
-- **Kết Quả Đầu Ra**:
-  - `Ping.Status`: 0 (thành công) hoặc 1 (thất bại).
-  - `Ping.host`: Host mục tiêu.
-  - `Ping.hostAddress`: Địa chỉ IP của host mục tiêu.
-  - `Ping.successCount`: Số gói tin nhận thành công.
-  - `Ping.failureCount`: Số gói tin bị mất.
-  - `Ping.averageResponseTime`: Thời gian phản hồi trung bình (ms).
-  - `Ping.minimumResponseTime`: Thời gian phản hồi nhỏ nhất (ms).
-  - `Ping.maximumResponseTime`: Thời gian phản hồi lớn nhất (ms).
-  - `Ping.jitter`: Độ dao động mạng (ms).
-  - `Ping.packetLoss`: Tỷ lệ mất gói (%).
-
-### 2. `speedtest`
-
-- **Mục đích**: Đo tốc độ mạng (tốc độ tải xuống, tải lên và độ trễ).
-- **File Cấu Hình**: `config/speedtest.json`
-- **Tham Số Đầu Vào** (tùy chọn):
-  - `server`: Tên server speedtest (ví dụ: `"speedtest.net"`). Nếu không chỉ định, hệ thống sẽ dùng server gần nhất.
-- **Kết Quả Đầu Ra**:
-  - `Speedtest.Status`: 0 (thành công) hoặc 1 (thất bại).
-  - `Server`: Tên server được sử dụng để kiểm tra.
-  - `Server Location`: Thành phố và quốc gia của server.
-  - `ISP`: Nhà cung cấp dịch vụ internet được sử dụng.
-  - `Download`: Tốc độ tải xuống (Mbps).
-  - `Upload`: Tốc độ tải lên (Mbps).
-  - `Latency`: Độ trễ mạng (ms).
-
-## Đọc Log Kết Quả
-
-Hệ thống tạo log chi tiết để giúp bạn hiểu quá trình thực thi và kết quả bài kiểm tra. Log được ghi vào file `application.log` (nếu được cấu hình trong `config.json`) và cũng hiển thị trên màn hình console.
-
-### Cấu Trúc Log
-
-- **Thời Gian**: Mỗi dòng log bắt đầu bằng thời gian (ví dụ: `[2025-04-22 11:00:54]`).
-- **Mức Độ Log**: Thể hiện mức độ quan trọng (`DEBUG`, `INFO`, `WARN`, `ERROR`).
-- **Thông Điệp**: Mô tả hành động hoặc kết quả.
-
-### Các Phần Chính Cần Chú Ý
-
-1. **Tải Bài Kiểm Tra**:
-
-   - Dòng như `Processing test configuration file: config/ping.json` cho biết hệ thống đang tải một bài kiểm tra.
-   - `Successfully read XXX bytes from file` và `Successfully parsed X test cases` xác nhận file đã được tải và phân tích thành công.
-
-2. **Thực Thi Bài Kiểm Tra**:
-
-   - `Executing action: ping (type: diagnostic)`: Hiển thị hành động đang được thực thi và loại hành động.
-   - `Executing ping test`: Cho biết trình xử lý (`execute_ping`) đang chạy.
-   - `Param host = ...`: Hiển thị các tham số đầu vào của bài kiểm tra.
-
-3. **Kết Quả Bài Kiểm Tra**:
-
-   - Đối với `ping`:
-     - `Packets: X sent, Y received, Z% loss`: Tóm tắt việc gửi và nhận gói tin.
-     - `RTT: min=X ms, avg=Y ms, max=Z ms, jitter=W ms`: Các thông số thời gian phản hồi.
-     - `Ping.Status`: Kết quả kiểm tra (0 = thành công, 1 = thất bại).
-     - Các thông số khác: `Ping.host`, `Ping.hostAddress`, `Ping.successCount`, v.v.
-   - Đối với `speedtest`:
-     - `No server specified, using default server (nearest)`: Cho biết server mặc định được sử dụng.
-     - `Server ID for future reference`: ID của server được dùng.
-     - `Speedtest completed successfully`: Bao gồm thông tin server, ISP và các thông số tốc độ.
-
-4. **Lỗi hoặc Cảnh Báo**:
-
-   - Tìm các dòng có `ERROR` hoặc `WARN` để xác định vấn đề (ví dụ: `Failed to execute speedtest command` nếu `speedtest-cli` chưa được cài đặt).
-
-## Khắc Phục Sự Cố
-
-- **Bài Kiểm Tra Không Chạy Được**:
-
-  - Kiểm tra xem các công cụ cần thiết (`speedtest-cli`) đã được cài đặt chưa.
-  - Đảm bảo file cấu hình JSON (`config/ping.json`, `config/speedtest.json`) hợp lệ và tồn tại.
-
-- **Không Có Kết Quả Trong Log**:
-
-  - Đảm bảo bài kiểm tra có tham số đầu vào đúng (ví dụ: `host` cho `ping`).
-  - Kiểm tra các dòng `ERROR` trong log để tìm nguyên nhân.
-
-- **Lỗi Biên Dịch**:
-
-  - Đảm bảo đã cài đặt tất cả các phụ thuộc (`gcc`, `make`, `libcjson-dev`).
-  - Chạy `make clean` rồi `make` để biên dịch lại dự án.
-
-## Mở Rộng Hệ Thống
-
-Để thêm một bài kiểm tra mới:
-
-1. Tạo file cấu hình JSON mới trong `config/` (ví dụ: `new_test.json`).
-2. Thêm `instruction` tương ứng vào `config.json`.
-3. Viết trình xử lý trong `src/test/` (ví dụ: `new_test.c`) và đăng ký trong `src/action/action_registry.c`.
-4. Cập nhật `Makefile` để bao gồm file mã nguồn mới.
-
+```json
+{
+    "test_cases": [
+        {
+            "service": "ping",
+            "params": {
+                "host": "youtube.com"
+            }
+        },
+        {
+            "service": "ping",
+            "params": {
+                "host": "facebook.com"
+            }
+        }
+    ]
+}
