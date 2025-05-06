@@ -93,27 +93,32 @@ File test case là một file JSON chứa danh sách các test case. Cấu trúc
 
 ## Hướng dẫn thêm test case mới
 
-Nếu bạn muốn thêm một test case mới (ví dụ: kiểm tra trạng thái website với service `http_check`), hãy làm theo các bước sau:
+Nếu bạn muốn thêm một test case mới (ví dụ: tạo kết nối WAN với service `wan`), hãy làm theo các bước sau:
 
 ### Tạo file test case JSON
 
 1. **Tạo file JSON**:
-   - Tạo một file JSON mới trong thư mục `config`, ví dụ: `config/http_check.json`.
+   - Tạo một file JSON mới trong thư mục `config`, ví dụ: `config/wan.json`.
    - Nội dung file có cấu trúc như sau:
 
      ```json
      {
          "test_cases": [
              {
-                 "service": "http_check",
+                 "service": "wan",
+                 "action": "create",
                  "params": {
-                     "url": "https://example.com"
+                     "type": "pppoe",
+                     "username": "test_user",
+                     "password": "test_pass"
                  }
              },
              {
-                 "service": "http_check",
+                 "service": "wan",
+                 "action": "create",
                  "params": {
-                     "url": "https://google.com"
+                     "type": "dhcp",
+                     "interface": "eth0"
                  }
              }
          ]
@@ -123,28 +128,28 @@ Nếu bạn muốn thêm một test case mới (ví dụ: kiểm tra trạng th�
 2. **Đặt file vào thư mục `config`**:
    - Copy file vào thư mục `config`:
      ```
-     cp http_check.json /path/to/testing_device/config/
+     cp wan.json /path/to/testing_device/config/
      ```
    - Hệ thống sẽ tự động phát hiện file và xử lý.
 
 ### Viết handler cho service mới
 
-Nếu service `http_check` chưa được hỗ trợ, bạn cần viết một handler cho nó:
+Nếu service `wan` chưa được hỗ trợ, bạn cần viết một handler cho nó:
 
 1. **Tạo file header**:
-   - Tạo file `include/http_check.h`.
+   - Tạo file `include/wan.h`.
    - Khai báo prototype của handler:
 
      ```c
-     void executeHttpCheck(TestCase *test_case, const char *filepath, int index, cJSON *result_array);
+     void execute_wan_create(TestCase *test_case, const char *filepath, int index, cJSON *result_array);
      ```
 
 2. **Tạo file source**:
-   - Tạo file `src/test/http_check.c`.
-   - Triển khai hàm `executeHttpCheck`:
-     - Parse tham số `url` từ `params`.
-     - Gửi HTTP request để kiểm tra trạng thái website (có thể dùng thư viện như `libcurl`).
-     - Ghi kết quả vào `result_array` (pass nếu mã trạng thái là 200, fail nếu không).
+   - Tạo file `src/test/wan.c`.
+   - Triển khai hàm `execute_wan_create`:
+     - Parse tham số từ `params` như `type`, `username`, `password`, `interface`.
+     - Thực hiện tạo kết nối WAN theo loại được chỉ định (PPPoE hoặc DHCP).
+     - Ghi kết quả vào `result_array` (pass nếu tạo thành công, fail nếu không).
 
 ### Đăng ký service vào hệ thống
 
@@ -155,10 +160,10 @@ Nếu service `http_check` chưa được hỗ trợ, bạn cần viết một h
    - Trong hàm `init_action_dispatch`, thêm dòng sau:
 
      ```c
-     register_service("http_check", executeHttpCheck);
+     register_service_action("wan", "create", execute_wan_create);
      ```
 
-   - Dòng này ánh xạ `service: "http_check"` với handler `executeHttpCheck`.
+   - Dòng này ánh xạ `service: "wan"` với action `"create"` và handler `execute_wan_create`.
 
 ### Cập nhật Makefile
 
@@ -166,9 +171,9 @@ Nếu service `http_check` chưa được hỗ trợ, bạn cần viết một h
    - Thêm file mới vào danh sách `SOURCES` và `OBJECTS`.
 
 2. **Cập nhật danh sách**:
-   - Thêm `$(TEST_DIR)/http_check.c` vào `SOURCES`.
-   - Thêm `$(BIN_DIR)/http_check.o` vào `OBJECTS`.
-   - Thêm `$(INCLUDE_DIR)/http_check.h` vào `HEADERS`.
+   - Thêm `$(TEST_DIR)/wan.c` vào `SOURCES`.
+   - Thêm `$(BIN_DIR)/wan.o` vào `OBJECTS`.
+   - Thêm `$(INCLUDE_DIR)/wan.h` vào `HEADERS`.
    - Ví dụ:
 
      ```makefile
@@ -182,7 +187,7 @@ Nếu service `http_check` chưa được hỗ trợ, bạn cần viết một h
          $(CORE_DIR)/parser.c \
          $(CORE_DIR)/test_case_handler.c \
          $(TEST_DIR)/ping.c \
-         $(TEST_DIR)/http_check.c
+         $(TEST_DIR)/wan.c
 
      OBJECTS = \
          $(BIN_DIR)/action.o \
@@ -194,7 +199,7 @@ Nếu service `http_check` chưa được hỗ trợ, bạn cần viết một h
          $(BIN_DIR)/parser.o \
          $(BIN_DIR)/test_case_handler.o \
          $(BIN_DIR)/ping.o \
-         $(BIN_DIR)/http_check.o
+         $(BIN_DIR)/wan.o
 
      HEADERS = \
          $(INCLUDE_DIR)/action.h \
@@ -206,7 +211,7 @@ Nếu service `http_check` chưa được hỗ trợ, bạn cần viết một h
          $(INCLUDE_DIR)/ping.h \
          $(INCLUDE_DIR)/test_case_handler.h \
          $(INCLUDE_DIR)/types.h \
-         $(INCLUDE_DIR)/http_check.h
+         $(INCLUDE_DIR)/wan.h
      ```
 
 ### Build và kiểm tra
@@ -232,8 +237,8 @@ Nếu service `http_check` chưa được hỗ trợ, bạn cần viết một h
        sudo systemctl start testing_device.service
        ```
 
-   - Đặt file `http_check.json` vào thư mục `config`.
-   - Kiểm tra file kết quả trong thư mục `result` (ví dụ: `result/http_check.json_20250506120000_result.json`).
+   - Đặt file `wan.json` vào thư mục `config`.
+   - Kiểm tra file kết quả trong thư mục `result` (ví dụ: `result/wan.json_20250506120000_result.json`).
    - Kiểm tra log để xem quá trình thực thi (thường trong `/var/log/testing_device.log` hoặc stdout/stderr).
 
 ---
