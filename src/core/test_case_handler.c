@@ -19,9 +19,9 @@
 #include "action.h"
 #include "file_process.h"
 #include "log.h"
-#include <sys/stat.h> 
-#include <stdio.h>   
-#include <time.h>  
+#include <sys/stat.h>
+#include <stdio.h>
+#include <time.h>
 #include <string.h>
 
 /**
@@ -107,9 +107,18 @@ static void writeTestResults(const char *filepath, cJSON *results, int total_tes
         filename = (char *)filepath;
     }
 
-    // Create the result file name: result/<filename>_<timestamp>_result.json
+    // Remove the .json extension from the filename
+    char base_filename[256];
+    strncpy(base_filename, filename, sizeof(base_filename) - 1);
+    base_filename[sizeof(base_filename) - 1] = '\0';
+    char *dot = strrchr(base_filename, '.');
+    if (dot && strcmp(dot, ".json") == 0) {
+        *dot = '\0'; // Truncate at the .json extension
+    }
+
+    // Create the result file name: result/<base_filename>_<timestamp>.json
     char result_filepath[512];
-    snprintf(result_filepath, sizeof(result_filepath), "result/%s_%s_result.json", filename, timestamp);
+    snprintf(result_filepath, sizeof(result_filepath), "result/%s_%s.json", base_filename, timestamp);
 
     // Calculate summary
     cJSON *failed_test_cases_array = cJSON_GetObjectItem(results, "failed_test_cases");
@@ -163,25 +172,15 @@ static void writeTestResults(const char *filepath, cJSON *results, int total_tes
     free(json_str);
 }
 
-/**
- * @brief Process a single test case file
- *
- * This function processes a test case file by parsing its contents, executing each test case,
- * writing the results to a JSON file, and moving the file to the `processed` directory.
- * If parsing fails, it logs the failure reason and writes a failure result.
- *
- * @param filepath Path to the test case file to process (e.g., "config/ping.json").
- * @return None
- */
 void processTestCaseFile(const char *filepath) {
     TestCase test_cases[MAX_TEST_CASES];
 
-    // Create JSON object to store results
+    // Create an array to store failed test cases
     cJSON *results = cJSON_CreateObject();
     cJSON *result_array = cJSON_CreateArray();
     cJSON_AddItemToObject(results, "failed_test_cases", result_array);
 
-    //Parse the test case file
+    // Parse file test case
     int count = 0;
     if (parse_test_cases(filepath, test_cases, &count, results) != 0) {
         // If parsing fails, log the failure with a reason
@@ -198,23 +197,18 @@ void processTestCaseFile(const char *filepath) {
         // Write results with total_test_cases = 0
         writeTestResults(filepath, results, 0);
     } else {
-        //Check the test case count limit
-        if (count >= MAX_TEST_CASES) {
-            log_message(LOG_LVL_ERROR, "Too many test cases, stopping");
-        } else {
-            //If parsing succeeds, execute the test cases
-            for (int j = 0; j < count; j++) {
-                execute_action(&test_cases[j], filepath, j, result_array);
-            }
-
-            // Step 4: Write results with the total test case count
-            writeTestResults(filepath, results, count);
+        // If parsing succeeds, execute the test cases
+        for (int i = 0; i < count; i++) {
+            execute_action(&test_cases[i], filepath, i, result_array);
         }
+
+        // Write results with the total test case count
+        writeTestResults(filepath, results, count);
     }
 
-    //Free memory
+    // Free memory
     cJSON_Delete(results);
 
-    //Move the file to the processed directory
+    // Move the file to the processed directory
     moveToProcessedDir(filepath);
 }

@@ -168,3 +168,75 @@
 [2025-05-06 09:58:39] ERROR: No handler found for service: unknown_service
 [2025-05-06 09:58:39] DEBUG: Successfully wrote 460 bytes to file result/ping copy.json_20250506095839_result.json
 [2025-05-06 09:58:39] DEBUG: Moved file to processed/ping copy.json
+[2025-05-06 17:18:16] DEBUG: Started monitoring directory config for new test case files...
+[2025-05-06 22:45:05] DEBUG: Started monitoring directory config for new test case files...
+[2025-05-07 16:37:37] DEBUG: Started monitoring directory config for new test case files...
+[2025-05-07 20:42:01] DEBUG: Started monitoring directory config for new test case files...
+[2025-05-07 21:20:40] DEBUG: Started monitoring directory config for new test case files...
+[2025-05-08 03:17:45] DEBUG: Started monitoring directory config for new test case files...
+[2025-05-08 09:23:54] DEBUG: Started monitoring directory config for new test case files...
+[2025-05-08 22:01:59] DEBUG: Started monitoring directory config for new test case files...
+[2025-05-09 08:22:10] DEBUG: Started monitoring directory config for new test case files...
+[2025-05-12 08:43:31] DEBUG: Started monitoring directory config for new test case files...
+[2025-05-12 08:44:07] DEBUG: Detected new test case file: config/ping.json
+[2025-05-12 08:44:07] DEBUG: Added file to queue: config/ping.json
+[2025-05-12 08:44:07] DEBUG: Processing file from queue: config/ping.json
+[2025-05-12 08:44:07] DEBUG: Successfully read 0 bytes from file config/ping.json
+[2025-05-12 08:44:07] ERROR: File config/ping.json is empty
+[2025-05-12 08:44:07] DEBUG: Successfully wrote 314 bytes to file result/ping.json_20250512084407_result.json
+[2025-05-12 08:44:07] DEBUG: Moved file to processed/ping.json
+[2025-05-12 08:48:39] DEBUG: Detected new test case file: config/ping.json
+[2025-05-12 08:48:39] DEBUG: Added file to queue: config/ping.json
+[2025-05-12 08:48:39] DEBUG: Processing file from queue: config/ping.json
+[2025-05-12 08:48:39] DEBUG: Successfully read 398 bytes from file config/ping.json
+[2025-05-12 08:48:39] DEBUG: Successfully parsed 4 test cases from config/ping.json
+[2025-05-12 08:48:39] DEBUG: Executing action: ping (service: ping, action: default)
+[2025-05-12 08:48:39] DEBUG: Executing ping test
+[2025-05-12 08:48:39] DEBUG: Successfully read 398 bytes from file config/ping.json
+[2025-05-12 08:48:39] DEBUG: Parsed host: youtube.com
+[2025-05-12 08:48:39] DEBUG: Pinging host: youtube.com
+[2025-05-12 08:48:46] DEBUG: Ping test result: Packets received=5/5, Packet loss=0.00%, Avg time=49.883 ms, Status=pass
+[2025-05-12 08:48:46] DEBUG: Ping test completed in 7 seconds
+[2025-05-12 08:48:46] DEBUG: Executing action: ping (service: ping, action: default)
+[2025-05-12 08:48:46] DEBUG: Executing ping test
+[2025-05-12 08:48:46] DEBUG: Successfully read 398 bytes from file config/ping.json
+[2025-05-12 08:48:46] DEBUG: Parsed host: facebook.com
+[2025-05-12 08:48:46] DEBUG: Pinging host: facebook.com
+[2025-05-12 08:48:50] DEBUG: Ping test result: Packets received=5/5, Packet loss=0.00%, Avg time=34.116 ms, Status=pass
+[2025-05-12 08:48:50] DEBUG: Ping test completed in 4 seconds
+[2025-05-12 08:48:50] DEBUG: Executing action: ping (service: ping, action: default)
+[2025-05-12 08:48:50] DEBUG: Executing ping test
+[2025-05-12 08:48:50] DEBUG: Successfully read 398 bytes from file config/ping.json
+[2025-05-12 08:48:50] ERROR: No params specified for test case 2
+[2025-05-12 08:48:50] DEBUG: Executing action: unknown_service (service: unknown_service, action: default)
+[2025-05-12 08:48:50] ERROR: No handler found for service: unknown_service
+[2025-05-12 08:48:50] DEBUG: Successfully wrote 460 bytes to file result/ping.json_20250512084850_result.json
+[2025-05-12 08:48:50] DEBUG: Moved file to processed/ping.json
+[2025-05-12 08:51:53] DEBUG: Started monitoring directory config for new test case files...
+[2025-05-12 08:51:57] DEBUG: Detected new test case file: config/ping.json
+[2025-05-12 08:51:57] DEBUG: Added file to queue: config/ping.json
+[2025-05-12 08:51:57] DEBUG: Processing file from queue: config/ping.json
+[2025-05-12 08:51:57] DEBUG: Successfully read 398 bytes from file config/ping.json
+[2025-05-12 08:51:57] DEBUG: Successfully parsed 4 test cases from config/ping.json
+[2025-05-12 08:51:57] DEBUG: Executing action: ping (service: ping, action: default)
+[2025-05-12 08:51:57] DEBUG: Executing ping test
+[2025-05-12 08:51:57] DEBUG: Successfully read 398 bytes from file config/ping.json
+[2025-05-12 08:51:57] DEBUG: Parsed host: youtube.com
+[2025-05-12 08:51:57] DEBUG: Pinging host: youtube.com
+[2025-05-12 08:52:01] DEBUG: Ping test result: Packets received=5/5, Packet loss=0.00%, Avg time=51.922 ms, Status=pass
+[2025-05-12 08:52:01] DEBUG: Ping test completed in 4 seconds
+[2025-05-12 08:52:01] DEBUG: Executing action: ping (service: ping, action: default)
+[2025-05-12 08:52:01] DEBUG: Executing ping test
+[2025-05-12 08:52:01] DEBUG: Successfully read 398 bytes from file config/ping.json
+[2025-05-12 08:52:01] DEBUG: Parsed host: facebook.com
+[2025-05-12 08:52:01] DEBUG: Pinging host: facebook.com
+[2025-05-12 08:52:05] DEBUG: Ping test result: Packets received=5/5, Packet loss=0.00%, Avg time=34.030 ms, Status=pass
+[2025-05-12 08:52:05] DEBUG: Ping test completed in 4 seconds
+[2025-05-12 08:52:05] DEBUG: Executing action: ping (service: ping, action: default)
+[2025-05-12 08:52:05] DEBUG: Executing ping test
+[2025-05-12 08:52:05] DEBUG: Successfully read 398 bytes from file config/ping.json
+[2025-05-12 08:52:05] ERROR: No params specified for test case 2
+[2025-05-12 08:52:05] DEBUG: Executing action: unknown_service (service: unknown_service, action: default)
+[2025-05-12 08:52:05] ERROR: No handler found for service: unknown_service
+[2025-05-12 08:52:05] DEBUG: Successfully wrote 460 bytes to file result/ping_20250512085205.json
+[2025-05-12 08:52:05] DEBUG: Moved file to processed/ping.json
