@@ -1,74 +1,74 @@
-# README - Hệ thống `testing_device`
+# README - `testing_device` System
 
-## Mục lục
+## Table of Contents
 
-- [Giới thiệu](#giới-thiệu)
-- [Cách hoạt động của hệ thống](#cách-hoạt-động-của-hệ-thống)
-  - [Quy trình tổng quan](#quy-trình-tổng-quan)
-  - [Cấu trúc file test case](#cấu-trúc-file-test-case)
-- [Hướng dẫn thêm test case mới](#hướng-dẫn-thêm-test-case-mới)
-  - [Tạo file test case JSON](#tạo-file-test-case-json)
-  - [Viết handler cho service mới](#viết-handler-cho-service-mới)
-  - [Đăng ký service vào hệ thống](#đăng-ký-service-vào-hệ-thống)
-  - [Cập nhật Makefile](#cập-nhật-makefile)
-  - [Build và kiểm tra](#build-và-kiểm-tra)
-- [Lưu ý và mẹo sử dụng](#lưu-ý-và-mẹo-sử-dụng)
-- [Kết luận](#kết-luận)
-
----
-
-## Giới thiệu
-
-Hệ thống `testing_device` là một ứng dụng tự động thực thi các test case được định nghĩa trong các file JSON. Hệ thống được thiết kế để:
-
-- Giám sát thư mục `config` để phát hiện các file test case mới (file JSON).
-- Parse file JSON để lấy danh sách test case.
-- Thực thi các test case theo service được chỉ định.
-- Ghi kết quả vào thư mục `result` và di chuyển file đã xử lý vào thư mục `processed`.
-
-Hệ thống chạy như một dịch vụ systemd (`testing_device.service`), tự động khởi động khi hệ thống khởi động, đảm bảo hoạt động liên tục.
+- [Introduction](#introduction)
+- [How the System Works](#how-the-system-works)
+  - [Overview Process](#overview-process)
+  - [Test Case File Structure](#test-case-file-structure)
+- [Guide to Adding New Test Cases](#guide-to-adding-new-test-cases)
+  - [Create JSON Test Case File](#create-json-test-case-file)
+  - [Write Handler for New Service](#write-handler-for-new-service)
+  - [Register Service in the System](#register-service-in-the-system)
+  - [Update Makefile](#update-makefile)
+  - [Build and Test](#build-and-test)
+- [Notes and Tips](#notes-and-tips)
+- [Conclusion](#conclusion)
 
 ---
 
-## Cách hoạt động của hệ thống
+## Introduction
 
-### Quy trình tổng quan
+The `testing_device` system is an application that automatically executes test cases defined in JSON files. The system is designed to:
 
-Hệ thống `testing_device` hoạt động theo các bước sau:
+- Monitor the `config` directory to detect new test case files (JSON files).
+- Parse JSON files to get the list of test cases.
+- Execute test cases according to the specified service.
+- Write results to the `result` directory and move processed files to the `processed` directory.
 
-1. **Giám sát thư mục `config`**:
-   - Sử dụng `inotify` để phát hiện các file JSON mới trong thư mục `config`.
-   - Khi phát hiện file JSON (như `ping.json`), hệ thống thêm đường dẫn file vào một hàng đợi (queue) để xử lý tuần tự.
+The system runs as a systemd service (`testing_device.service`), automatically starting when the system boots, ensuring continuous operation.
 
-2. **Lấy file từ hàng đợi**:
-   - Hệ thống lấy file từ hàng đợi theo thứ tự phát hiện (first-come, first-served).
-   - Gọi hàm xử lý để đọc và thực thi file JSON.
+---
 
-3. **Đọc và parse file JSON**:
-   - Đọc toàn bộ nội dung file JSON vào bộ nhớ.
-   - Parse nội dung JSON để lấy danh sách test case (mảng `test_cases`).
-   - Mỗi test case chứa thông tin: `service` (bắt buộc), `action` (tùy chọn), và `params` (tùy chọn).
+## How the System Works
 
-4. **Thực thi test case**:
-   - Với mỗi test case, hệ thống tra cứu handler (hàm xử lý) tương ứng với `service`.
-   - Gọi handler để thực thi test case (ví dụ: ping host, kiểm tra tốc độ mạng).
-   - Ghi kết quả thực thi vào một mảng JSON (`result_array`).
+### Overview Process
 
-5. **Ghi kết quả và di chuyển file**:
-   - Sau khi thực thi tất cả test case, kết quả được ghi vào file JSON trong thư mục `result` (ví dụ: `result/ping.json_20250506120000_result.json`).
-   - File JSON gốc được di chuyển vào thư mục `processed` (ví dụ: `processed/ping.json`) để tránh xử lý lại.
+The `testing_device` system operates in the following steps:
 
-### Cấu trúc file test case
+1. **Monitor the `config` directory**:
+   - Use `inotify` to detect new JSON files in the `config` directory.
+   - When a JSON file is detected (like `ping.json`), the system adds the file path to a queue for sequential processing.
 
-File test case là một file JSON chứa danh sách các test case. Cấu trúc cơ bản như sau:
+2. **Get file from queue**:
+   - The system gets files from the queue in order of detection (first-come, first-served).
+   - Calls the processing function to read and execute the JSON file.
 
-- **`"test_cases"`**: Một mảng chứa danh sách các test case.
-- **Mỗi test case**:
-  - `service` (bắt buộc): Tên dịch vụ (ví dụ: `"ping"`).
-  - `action` (tùy chọn): Hành động cụ thể (mặc định là `"default"` nếu không khai báo).
-  - `params` (tùy chọn): Tham số cho test case, dạng JSON object (ví dụ: `{"host": "youtube.com"}`).
+3. **Read and parse JSON file**:
+   - Read the entire JSON file content into memory.
+   - Parse the JSON content to get the test case list (`test_cases` array).
+   - Each test case contains: `service` (required), `action` (optional), and `params` (optional).
 
-**Ví dụ file `ping.json`**:
+4. **Execute test case**:
+   - For each test case, the system looks up the handler corresponding to the `service`.
+   - Calls the handler to execute the test case (e.g., ping host, check network speed).
+   - Records execution results in a JSON array (`result_array`).
+
+5. **Write results and move file**:
+   - After executing all test cases, results are written to a JSON file in the `result` directory (e.g., `result/ping.json_20250506120000_result.json`).
+   - The original JSON file is moved to the `processed` directory (e.g., `processed/ping.json`) to avoid reprocessing.
+
+### Test Case File Structure
+
+The test case file is a JSON file containing a list of test cases. The basic structure is as follows:
+
+- **`"test_cases"`**: An array containing the list of test cases.
+- **Each test case**:
+  - `service` (required): Service name (e.g., `"ping"`).
+  - `action` (optional): Specific action (default is `"default"` if not specified).
+  - `params` (optional): Parameters for the test case, as a JSON object (e.g., `{"host": "youtube.com"}`).
+
+**Example `ping.json` file**:
 
 ```json
 {
@@ -91,15 +91,15 @@ File test case là một file JSON chứa danh sách các test case. Cấu trúc
 
 ---
 
-## Hướng dẫn thêm test case mới
+## Guide to Adding New Test Cases
 
-Nếu bạn muốn thêm một test case mới (ví dụ: tạo kết nối WAN với service `wan`), hãy làm theo các bước sau:
+If you want to add a new test case (e.g., create a WAN connection with the `wan` service), follow these steps:
 
-### Tạo file test case JSON
+### Create JSON Test Case File
 
-1. **Tạo file JSON**:
-   - Tạo một file JSON mới trong thư mục `config`, ví dụ: `config/wan.json`.
-   - Nội dung file có cấu trúc như sau:
+1. **Create JSON file**:
+   - Create a new JSON file in the `config` directory, e.g., `config/wan.json`.
+   - The file content has the following structure:
 
      ```json
      {
@@ -125,57 +125,57 @@ Nếu bạn muốn thêm một test case mới (ví dụ: tạo kết nối WAN 
      }
      ```
 
-2. **Đặt file vào thư mục `config`**:
-   - Copy file vào thư mục `config`:
+2. **Place the file in the `config` directory**:
+   - Copy the file to the `config` directory:
      ```
-     cp wan.json /path/to/testing_device/config/
+     cp wan.json /home/tobie/testing_device/config/
      ```
-   - Hệ thống sẽ tự động phát hiện file và xử lý.
+   - The system will automatically detect and process the file.
 
-### Viết handler cho service mới
+### Write Handler for New Service
 
-Nếu service `wan` chưa được hỗ trợ, bạn cần viết một handler cho nó:
+If the `wan` service is not yet supported, you need to write a handler for it:
 
-1. **Tạo file header**:
-   - Tạo file `include/wan.h`.
-   - Khai báo prototype của handler:
+1. **Create header file**:
+   - Create the file `include/wan.h`.
+   - Declare the handler prototype:
 
      ```c
      void execute_wan(TestCase *test_case, const char *filepath, int index, cJSON *result_array);
      ```
 
-2. **Tạo file source**:
-   - Tạo file `src/test/wan.c`.
-   - Triển khai hàm `execute_wan`:
-     - Parse tham số từ `params` như `type`, `username`, `password`, `interface`.
-     - Kiểm tra action của test case:
-       Nếu `action` là `"create"`, thực hiện tạo kết nối WAN theo loại được chỉ định (PPPoE hoặc DHCP).
-     - Ghi kết quả vào `result_array` (pass nếu tạo thành công, fail nếu không).
+2. **Create source file**:
+   - Create the file `src/test/wan.c`.
+   - Implement the `execute_wan` function:
+     - Parse parameters from `params` like `type`, `username`, `password`, `interface`.
+     - Check the test case action:
+       If `action` is `"create"`, create a WAN connection according to the specified type (PPPoE or DHCP).
+     - Write the result to `result_array` (pass if created successfully, fail if not).
 
-### Đăng ký service vào hệ thống
+### Register Service in the System
 
-1. **Mở file `action_registry.c`**:
-   - File này chứa hàm `init_action_dispatch`, nơi các service được đăng ký.
+1. **Open the `action_registry.c` file**:
+   - This file contains the `init_action_dispatch` function, where services are registered.
 
-2. **Thêm lệnh đăng ký**:
-   - Trong hàm `init_action_dispatch`, thêm dòng sau:
+2. **Add registration command**:
+   - In the `init_action_dispatch` function, add the following line:
 
      ```c
       register_service("wan", execute_wan);
      ```
 
-   - Dòng này ánh xạ `service`: `"wan"` với handler `execute_wan`.
+   - This line maps the `service`: `"wan"` to the `execute_wan` handler.
 
-### Cập nhật Makefile
+### Update Makefile
 
-1. **Mở file `Makefile`**:
-   - Thêm file mới vào danh sách `SOURCES` và `OBJECTS`.
+1. **Open the `Makefile`**:
+   - Add the new file to the `SOURCES` and `OBJECTS` lists.
 
-2. **Cập nhật danh sách**:
-   - Thêm `$(TEST_DIR)/wan.c` vào `SOURCES`.
-   - Thêm `$(BIN_DIR)/wan.o` vào `OBJECTS`.
-   - Thêm `$(INCLUDE_DIR)/wan.h` vào `HEADERS`.
-   - Ví dụ:
+2. **Update the lists**:
+   - Add `$(TEST_DIR)/wan.c` to `SOURCES`.
+   - Add `$(BIN_DIR)/wan.o` to `OBJECTS`.
+   - Add `$(INCLUDE_DIR)/wan.h` to `HEADERS`.
+   - Example:
 
      ```makefile
      SOURCES = \
@@ -215,54 +215,54 @@ Nếu service `wan` chưa được hỗ trợ, bạn cần viết một handler 
          $(INCLUDE_DIR)/wan.h
      ```
 
-### Build và kiểm tra
+### Build and Test
 
-1. **Build lại hệ thống**:
-   - Chạy lệnh để làm sạch và build lại:
+1. **Rebuild the system**:
+   - Run the command to clean and rebuild:
 
      ```
      make clean
      make
      ```
 
-2. **Kiểm tra kết quả**:
-   - Đảm bảo dịch vụ `testing_device.service` đang chạy:
+2. **Check the results**:
+   - Ensure the `testing_device.service` service is running:
 
      ```
      sudo systemctl status testing_device.service
      ```
 
-     - Nếu chưa chạy, khởi động dịch vụ:
+     - If it's not running, start the service:
 
        ```
        sudo systemctl start testing_device.service
        ```
 
-   - Đặt file `wan.json` vào thư mục `config`.
-   - Kiểm tra file kết quả trong thư mục `result` (ví dụ: `result/wan.json_20250506120000_result.json`).
-   - Kiểm tra log để xem quá trình thực thi (thường trong `/var/log/testing_device.log` hoặc stdout/stderr).
+   - Place the `wan.json` file in the `config` directory.
+   - Check the result file in the `result` directory (e.g., `result/wan.json_20250506120000_result.json`).
+   - Check the log to see the execution process (typically in `/var/log/testing_device.log` or stdout/stderr).
 
 ---
 
-## Lưu ý và mẹo sử dụng
+## Notes and Tips
 
-- **Đảm bảo tên file JSON duy nhất**:
-  - Khi đặt file JSON vào `config`, hãy đảm bảo tên file là duy nhất (ví dụ: thêm timestamp như `ping_20250506120000.json`) để tránh ghi đè trong thư mục `processed`.
+- **Ensure unique JSON filenames**:
+  - When placing JSON files in `config`, make sure the filename is unique (e.g., add a timestamp like `ping_20250506120000.json`) to avoid overwriting in the `processed` directory.
 
-- **Kiểm tra log**:
-  - Log được ghi bởi hệ thống rất hữu ích để gỡ lỗi. Xem log để biết file có được phát hiện, xử lý, và ghi kết quả đúng không.
+- **Check the logs**:
+  - Logs written by the system are very useful for debugging. Check the logs to see if files are being detected, processed, and results are being written correctly.
 
-- **Thời gian xử lý**:
-  - Hệ thống xử lý file JSON tuần tự (theo hàng đợi). Nếu một file chứa nhiều test case hoặc test case mất nhiều thời gian (như ping host), các file sau sẽ phải chờ. Hãy cân nhắc số lượng test case trong mỗi file.
+- **Processing time**:
+  - The system processes JSON files sequentially (according to the queue). If a file contains many test cases or test cases take a long time (like pinging a host), subsequent files will have to wait. Consider the number of test cases in each file.
 
-- **Kiểm tra service hỗ trợ**:
-  - Trước khi thêm test case mới, kiểm tra xem `service` đã được hỗ trợ chưa (xem trong `init_action_dispatch` của `action_registry.c`). Nếu chưa, bạn cần viết handler mới.
+- **Check supported services**:
+  - Before adding a new test case, check if the `service` is already supported (look in `init_action_dispatch` of `action_registry.c`). If not, you need to write a new handler.
 
-- **Sao lưu file trước khi chạy**:
-  - File JSON sẽ được di chuyển từ `config` sang `processed` sau khi xử lý. Hãy sao lưu file nếu bạn cần dùng lại.
+- **Backup files before running**:
+  - JSON files will be moved from `config` to `processed` after processing. Back up the file if you need to use it again.
 
 ---
 
-## Kết luận
+## Conclusion
 
-Hệ thống `testing_device` cung cấp một cách linh hoạt để thực thi các test case tự động. Người dùng có thể dễ dàng thêm test case mới bằng cách tạo file JSON và viết handler nếu cần. Nếu bạn gặp vấn đề hoặc cần hỗ trợ thêm, hãy kiểm tra log và liên hệ với nhóm phát triển.
+The `testing_device` system provides a flexible way to execute automated test cases. Users can easily add new test cases by creating JSON files and writing handlers if needed. If you encounter issues or need additional support, check the logs and contact the development team.
