@@ -55,7 +55,7 @@ The `testing_device` system operates in the following steps:
    - Records execution results in a JSON array (`result_array`).
 
 5. **Write results and move file**:
-   - After executing all test cases, results are written to a JSON file in the `result` directory (e.g., `result/ping.json_20250506120000_result.json`).
+   - After executing all test cases, results are written to a JSON file in the `result` directory (e.g., `result/ping_20250506120000_result.json`).
    - The original JSON file is moved to the `processed` directory (e.g., `processed/ping.json`) to avoid reprocessing.
 
 ### Test Case File Structure
